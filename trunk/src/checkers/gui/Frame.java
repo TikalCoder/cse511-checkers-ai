@@ -19,7 +19,7 @@ public class Frame extends JFrame {
 	public Frame() {
 		setTitle("Checkers");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		getContentPane().add(new Board(), BorderLayout.CENTER);
+		getContentPane().add(new BoardUI(), BorderLayout.CENTER);
 		
 		// TODO: Add a menu bar with options
 		
