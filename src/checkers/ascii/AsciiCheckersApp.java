@@ -1,3 +1,5 @@
+package checkers.ascii;
+
 import java.util.ArrayList;
 
 /**
@@ -8,6 +10,8 @@ import java.util.ArrayList;
 * TODO: Move most of the nested classes out into their own files.  Integrate
 *       the game logic into the AIMA game engine.  Oh yeah, and make the game
 *       actually playable.
+*       
+* Note: Moved classes into their own files - SZB, 12/1/09
 */
 class AsciiCheckersApp {
     public static void main(String[] args) {

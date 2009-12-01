@@ -19,7 +19,7 @@ import checkers.Constants;
  * 
  * @author Scott Bressler
  */
-public class Board extends JPanel {
+public class BoardUI extends JPanel {
 	
 	/**
 	 * Default serial version UID.
@@ -36,7 +36,7 @@ public class Board extends JPanel {
 	 */
 	private int lastClickX, lastClickY;
 
-	public Board() {
+	public BoardUI() {
 		setPreferredSize(new Dimension(Constants.WIDTH, Constants.HEIGHT));
 		setLayout(new GridBagLayout());
 		
