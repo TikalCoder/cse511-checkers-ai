@@ -152,7 +152,7 @@ public class Board {
 		assert isValidPos(pos);
 		positionStates[pos - 1] = state;
 	}
-	
+
 	public int numPositionStates() {
 		return positionStates.length;
 	}
@@ -299,7 +299,24 @@ public class Board {
 
 		} else {
 			assert false;
+			return;
 		}
+
+		// assuming we got here, everthing went fine.  Need to check and
+		// see if a crowning needs to occur.
+		if (posIsInBlacksKingRow(toPos) && hasBlackManAt(toPos)) {
+			setStateAt(toPos, PositionState.BLACK_KING);
+		} else if (posIsInWhitesKingRow(toPos) && hasWhiteManAt(toPos)) {
+			setStateAt(toPos, PositionState.WHITE_KING);
+		}
+	}
+
+	static boolean posIsInBlacksKingRow(int pos) {
+		return 29 <= pos && pos <= 32;
+	}
+
+	static boolean posIsInWhitesKingRow(int pos) {
+		return 1 <= pos && pos <= 4;
 	}
 
 	/**
@@ -309,7 +326,7 @@ public class Board {
 	static int jumpOverPos(int fromPos, int toPos) {
 		assert areJumpable(fromPos, toPos);
 		for (Direction dir : Direction.values())
-			if (jumpPos(fromPos, dir) == toPos)
+			if (hasJumpPos(fromPos, dir) && jumpPos(fromPos, dir) == toPos)
 				return new SingleJumpInfo(fromPos, dir).jumpedPos();
 		return 0;
 	}
