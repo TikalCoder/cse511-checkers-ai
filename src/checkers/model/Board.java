@@ -140,6 +140,14 @@ public class Board {
 		return positionStates[pos - 1];
 	}
 
+	/**
+	 * Sets the PositionState enum of a given position.
+	 */
+	public void setStateAt(int pos, PositionState state) {
+		assert isValidPos(pos);
+		positionStates[pos - 1] = state;
+	}
+
 	public boolean hasPieceAt      (int pos) { return stateAt(pos).hasPiece(); }
 	public boolean hasManAt        (int pos) { return stateAt(pos).hasMan(); }
 	public boolean hasKingAt       (int pos) { return stateAt(pos).hasKing(); }
