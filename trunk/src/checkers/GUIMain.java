@@ -7,7 +7,7 @@ import checkers.gui.Frame;
  * 
  * @author Scott Bressler
  */
-public class Main {
+public class GUIMain {
 	/**
 	 * Run the program.
 	 * @param args command-line arguments
