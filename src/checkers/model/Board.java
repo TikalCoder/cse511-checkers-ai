@@ -247,13 +247,12 @@ public class Board {
 	static int walkPos(int pos, Direction dir) {
 		assert isValidPos(pos);
 		assert hasWalkPos(pos, dir);
-		int upLeftPosDiff  = isInOddRow(pos) ? 4 : 5;
-		int upRightPosDiff = isInOddRow(pos) ? 3 : 4;
 		switch (dir) {
-		case UP_LEFT:    return pos - upLeftPosDiff;
-		case UP_RIGHT:   return pos - upRightPosDiff;
-		case DOWN_LEFT:  return pos + upRightPosDiff;
-		case DOWN_RIGHT: return pos + upLeftPosDiff;
+		// sorry about this ugliness :( ------- (e.g. pos 9) (e.g. pos 6)
+		case UP_LEFT:    return isInOddRow(pos) ? (pos - 4) : (pos - 5);
+		case UP_RIGHT:   return isInOddRow(pos) ? (pos - 3) : (pos - 4);
+		case DOWN_LEFT:  return isInOddRow(pos) ? (pos + 4) : (pos + 3);
+		case DOWN_RIGHT: return isInOddRow(pos) ? (pos + 5) : (pos + 4);
 		default: assert false;
 		}
 		return 0;
@@ -273,23 +272,19 @@ public class Board {
 	}
 
 	static boolean areWalkable(int pos1, int pos2) {
-		int upLeftPosDiff  = isInOddRow(pos1) ? 4 : 5;
-		int upRightPosDiff = isInOddRow(pos1) ? 3 : 4;
-		return (
-			(pos1 - upLeftPosDiff == pos2 && hasWalkPos(pos1, Direction.UP_LEFT)) ||
-			(pos1 - upRightPosDiff == pos2 && hasWalkPos(pos1, Direction.UP_RIGHT)) ||
-			(pos1 + upRightPosDiff == pos2 && hasWalkPos(pos1, Direction.DOWN_LEFT)) ||
-			(pos1 + upLeftPosDiff == pos2 && hasWalkPos(pos1, Direction.DOWN_RIGHT))
-		);
+		for (Direction dir : Direction.values())
+		    if (hasWalkPos(pos1, dir) && walkPos(pos1, dir) == pos2)
+				return true;
+
+		return false;
 	}
 
 	static boolean areJumpable(int pos1, int pos2) {
-		return (
-			(pos1 - 9 == pos2 && hasJumpPos(pos1, Direction.UP_LEFT)) ||
-			(pos1 - 7 == pos2 && hasJumpPos(pos1, Direction.UP_RIGHT)) ||
-			(pos1 + 7 == pos2 && hasJumpPos(pos1, Direction.DOWN_LEFT)) ||
-			(pos1 + 9 == pos2 && hasJumpPos(pos1, Direction.DOWN_RIGHT))
-		);
+		for (Direction dir : Direction.values())
+		    if (hasJumpPos(pos1, dir) && jumpPos(pos1, dir) == pos2)
+				return true;
+
+		return false;
 	}
 
 	boolean canWalk(int pos, Direction dir) {
