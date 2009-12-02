@@ -24,6 +24,7 @@ public class Piece extends JPanel {
 
 	private int size;
 	private int player;
+	private boolean selected;
 
 	public Piece(final int size, final int player) {
 		this.size = size;
@@ -45,8 +46,27 @@ public class Piece extends JPanel {
 		// Only paint pieces every other square, following the rules of Checkers.
 		if (player > -1) {
 			// Set the color of the piece to be red for player 0 and white for player 1
+//			if (selected)
+//				g.setColor(new Color(0, 255, 0));
+//			else
+			
+
+			if (selected) {
+				if (player == 1)
+					g.setColor(new Color(255, 0, 0));
+				else
+					g.setColor(new Color(255, 255, 0));
+				
+				final int outlinePadding = 3;
+				g.fill(new Ellipse2D.Double(Constants.PADDING / 2.0 - outlinePadding, Constants.PADDING / 2.0 - outlinePadding, size + 2 * outlinePadding, size + 2 * outlinePadding));
+			}
+			
 			g.setColor(new Color(255, player == 0 ? 0 : 255, player == 0 ? 0 : 255));
-			g.fill(new Ellipse2D.Double(Constants.PADDING / 2, Constants.PADDING / 2, size, size));
+			g.fill(new Ellipse2D.Double(Constants.PADDING / 2.0, Constants.PADDING / 2.0, size, size));
 		}
+	}
+
+	public void setSelected(boolean selected) {
+		this.selected = selected;
 	}
 }

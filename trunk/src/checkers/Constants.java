@@ -9,12 +9,12 @@ public final class Constants {
 	/**
 	 * Width (in pixels) for Checkers GUI
 	 */
-	public static final int WIDTH = 400;
+	public static final int WIDTH = 600;
 	
 	/**
 	 * Height (in pixels) for Checkers GUI
 	 */
-	public static final int HEIGHT = 400;
+	public static final int HEIGHT = 600;
 	
 	/**
 	 * Padding (in pixels) for Checkers pieces (ovals)
