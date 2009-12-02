@@ -214,7 +214,7 @@ public class Board {
 	 * Makes a single move, from one position to another.  This may be a
 	 * walk move, or it may be one step of a jump sequence.
 	 */
-	void makeSingleMove(int fromPos, int toPos) {
+	public void makeSingleMove(int fromPos, int toPos) {
 	}
 
 	/**
