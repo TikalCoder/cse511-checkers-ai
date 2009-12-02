@@ -220,6 +220,10 @@ public class Board {
 		return !isInOddRow(pos);
 	}
 
+	/**
+	 * Returns true if there is a position that can be walked to from
+	 * the given position, in the given direction; else false.
+	 */
 	static boolean hasWalkPos(int pos, Direction dir) {
 		assert isValidPos(pos);
 		switch (dir) {
@@ -232,6 +236,10 @@ public class Board {
 		return false;
 	}
 
+	/**
+	 * Returns true if there is a position that can be jumped to from
+	 * the given position, in the given direction; else false.
+	 */
 	static boolean hasJumpPos(int pos, Direction dir) {
 		assert isValidPos(pos);
 		switch (dir) {
@@ -244,6 +252,10 @@ public class Board {
 		return false;
 	}
 
+	/**
+	 * Returns the position that can be walked to from the given
+	 * position, in the given direction.
+	 */
 	static int walkPos(int pos, Direction dir) {
 		assert isValidPos(pos);
 		assert hasWalkPos(pos, dir);
@@ -258,6 +270,10 @@ public class Board {
 		return 0;
 	}
 
+	/**
+	 * Returns the position that can be jumped to from the given
+	 * position, in the given direction.
+	 */
 	static int jumpPos(int pos, Direction dir) {
 		assert isValidPos(pos);
 		assert hasJumpPos(pos, dir);
@@ -271,6 +287,10 @@ public class Board {
 		return 0;
 	}
 
+	/**
+	 * Returns true if the two positions can be walked to from one
+	 * another; else false.
+	 */
 	static boolean areWalkable(int pos1, int pos2) {
 		for (Direction dir : Direction.values())
 		    if (hasWalkPos(pos1, dir) && walkPos(pos1, dir) == pos2)
@@ -279,6 +299,10 @@ public class Board {
 		return false;
 	}
 
+	/**
+	 * Returns true if the two positions can be jumped to from one
+	 * another; else false.
+	 */
 	static boolean areJumpable(int pos1, int pos2) {
 		for (Direction dir : Direction.values())
 		    if (hasJumpPos(pos1, dir) && jumpPos(pos1, dir) == pos2)
@@ -287,6 +311,12 @@ public class Board {
 		return false;
 	}
 
+	/**
+	 * Returns true if the piece in a given position can walk in the
+	 * given direction, considering the current board state.  Returns
+	 * false if for some reason the piece can't move in that direction,
+	 * or if there is no such piece in the given position.
+	 */
 	boolean canWalk(int pos, Direction dir) {
 		assert isValidPos(pos);
 		return (
@@ -301,7 +331,29 @@ public class Board {
 		);
 	}
 
-	boolean couldJump(PositionState hypotheticalPosState, int pos, Direction dir) {
+	/**
+	 * Returns true if the piece in a given position can jump in the
+	 * given direction, considering the current board state.  Returns
+	 * false if for some reason the piece can't move in that direction,
+	 * or if there is no such piece in the given position.
+	 */
+	boolean canJump(int pos, Direction dir) {
+		assert isValidPos(pos);
+		return hasPieceAt(pos) && couldJump(stateAt(pos), pos, dir);
+	}
+
+	/**
+	 * Returns true if, in a hypothetical situation in which the
+	 * specified position had the specified state, but the board state
+	 * was otherwise the same as it really is, a jump could be made from
+	 * that position in the given direction.  Returns false otherwise.
+	 * <p>
+	 * This can be used to help look ahead at a complete sequence of
+	 * jumps, without actually changing or duplicating the Board.
+	 */
+	boolean couldJump(
+			PositionState hypotheticalPosState, int pos, Direction dir
+	) {
 		assert isValidPos(pos);
 
 		// make sure the landing position exists and is empty
@@ -319,8 +371,7 @@ public class Board {
 			// fall thru
 		case BLACK_KING:
 			// pieces must jump over an opponent piece
-			return stateAt(walkPos(pos, dir)).hasPlayersPiece(
-					PlayerId.WHITE);
+			return stateAt(walkPos(pos, dir)).hasPlayersPiece(PlayerId.WHITE);
 
 		case WHITE_MAN:
 			// men have to jump in the correct direction
@@ -328,8 +379,7 @@ public class Board {
 			// fall thru
 		case WHITE_KING:
 			// pieces must jump over an opponent piece
-			return stateAt(walkPos(pos, dir)).hasPlayersPiece(
-					PlayerId.BLACK);
+			return stateAt(walkPos(pos, dir)).hasPlayersPiece(PlayerId.BLACK);
 
 		default:
 			assert false;
@@ -338,11 +388,11 @@ public class Board {
 		return false;
 	}
 
-	boolean canJump(int pos, Direction dir) {
-		assert isValidPos(pos);
-		return couldJump(stateAt(pos), pos, dir);
-	}
-
+	/**
+	 * Returns a list of all the possible walk moves that can be made
+	 * from the given position, in the current board state.  Assumes
+	 * that there are no jump moves available!
+	 */
 	ArrayList<Walk> possibleWalks(int pos) {
 		assert isValidPos(pos);
 		ArrayList<Walk> ret = new ArrayList<Walk>();
@@ -370,7 +420,11 @@ public class Board {
 		private Direction dir;
 	}
 
-	static boolean hasAlreadyJumpedOver(
+	/**
+	 * Returns true if the given jump sequence already contains a jump
+	 * that happened over the given position; false otherwise.
+	 */
+	private static boolean hasAlreadyJumpedOver(
 			ArrayList<SingleJumpInfo> jumpSequence, int pos
 	) {
 		assert isValidPos(pos);
@@ -382,7 +436,23 @@ public class Board {
 		return false;
 	}
 
-	void expandJumpSequence(
+	/**
+	 * Recursive method performs a depth-first search on the possible
+	 * jump sequences that can be made from the given partial jump
+	 * sequence, happening on the current board state.  If it reaches
+	 * the end of a jump sequence, it adds the complete sequence to the
+	 * list of jumps.
+	 *
+	 * @param startPosState state of the position that the jumpSequence
+	 *                      started from; this is just used to identify
+	 *                      the piece that is actually doing the jumping
+	 * @param jumpSequence  partial sequence of jumps; this acts as a
+	 *                      stack that maintains the current state of
+	 *                      our depth-first traversal of the jump
+	 *                      sequence tree
+	 * @param jumps         the output list of complete jump moves
+	 */
+	private void expandJumpSequence(
 			PositionState startPosState,
 			ArrayList<SingleJumpInfo> jumpSequence,
 			ArrayList<Jump> jumps
