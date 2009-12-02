@@ -9,21 +9,21 @@ import java.util.ArrayList;
  * This information, combined with whose turn it is, will result in the
  * complete game state.
  * <p>
- * This code's notion of the orientation of the board (as of now), and
- * of the position numbers:
+ * This code's notion of the orientation of the board, and of the
+ * position numbers:
  * <code>
- *             UP (where white pieces start)
- *      +----------------+
- *      |  32  31  30  29|----(black's king row)
- *      |28  27  26  25  |
- *    L |  24  23  22  21| R
- *    E |20  19  18  17  | I
- *    F |  16  15  14  13| G
- *    T |12  11  10  09  | H
- *      |  08  07  06  05| T
- *      |04  03  02  01  |----(white's king row)
- *      +----------------+
- *            DOWN (where black pieces start)
+ *               UP (where black pieces start)
+ *    row +----------------+
+ *      1 |01  02  03  04  |----(white's king row)
+ *      2 |  05  07  08  06|
+ *   L  3 |09  10  11  12  | R
+ *   E  4 |  13  15  16  14| I
+ *   F  5 |17  18  19  20  | G
+ *   T  6 |  21  23  24  22| H
+ *      7 |25  26  27  28  | T
+ *      8 |  29  31  32  30|----(black's king row)
+ *        +----------------+
+ *              DOWN (white black pieces start)
  * </code>
  *
  * @author Kurt Glastetter
@@ -37,10 +37,10 @@ public class Board {
 	 * the board given in the Board description above.
 	 */
 	static enum Direction {
-		DOWN_RIGHT { public boolean isUp() { return false; } },
-		DOWN_LEFT  { public boolean isUp() { return false; } },
+		UP_LEFT    { public boolean isUp() { return true; } },
 		UP_RIGHT   { public boolean isUp() { return true; } },
-		UP_LEFT    { public boolean isUp() { return true; } };
+		DOWN_LEFT  { public boolean isUp() { return false; } },
+		DOWN_RIGHT { public boolean isUp() { return false; } };
 
 		public abstract boolean isUp();
 		public boolean isDown() { return !isUp(); }
@@ -202,18 +202,31 @@ public class Board {
 		return ret;
 	}
 
-	static boolean isInRowWithBlackSquareOnLeft(int pos) {
+	/**
+	 * Returns true if the given position is a square in row 1, 3, 5, or
+	 * 7 (in other words, in 1-4, 9-12, 17-20, or 25-28); else false.
+	 */
+	static boolean isInOddRow(int pos) {
 		assert isValidPos(pos);
 		return ((pos - 1) / 4) % 2 == 0;
+	}
+
+	/**
+	 * Returns true if the given position is a square in row 2, 4, 6, or
+	 * 8 (in other words, in 5-8, 13-16, 21-24, or 29-32); else false.
+	 */
+	static boolean isInEvenRow(int pos) {
+		assert isValidPos(pos);
+		return !isInOddRow(pos);
 	}
 
 	static boolean hasWalkPos(int pos, Direction dir) {
 		assert isValidPos(pos);
 		switch (dir) {
-		case DOWN_RIGHT: return (pos >  4) && (pos % 8 != 5);
-		case DOWN_LEFT:  return (pos >  4) && (pos % 8 != 4);
-		case UP_RIGHT:   return (pos < 29) && (pos % 8 != 5);
-		case UP_LEFT:    return (pos < 29) && (pos % 8 != 4);
+		case UP_LEFT:    return (pos >  4) && (pos % 8 != 5);
+		case UP_RIGHT:   return (pos >  4) && (pos % 8 != 4);
+		case DOWN_LEFT:  return (pos < 29) && (pos % 8 != 5);
+		case DOWN_RIGHT: return (pos < 29) && (pos % 8 != 4);
 		default: assert false;
 		}
 		return false;
@@ -222,10 +235,10 @@ public class Board {
 	static boolean hasJumpPos(int pos, Direction dir) {
 		assert isValidPos(pos);
 		switch (dir) {
-		case DOWN_RIGHT: return (pos >  8) && (pos % 4 != 1);
-		case DOWN_LEFT:  return (pos >  8) && (pos % 4 != 0);
-		case UP_RIGHT:   return (pos < 25) && (pos % 4 != 1);
-		case UP_LEFT:    return (pos < 25) && (pos % 4 != 0);
+		case UP_LEFT:    return (pos >  8) && (pos % 4 != 1);
+		case UP_RIGHT:   return (pos >  8) && (pos % 4 != 0);
+		case DOWN_LEFT:  return (pos < 25) && (pos % 4 != 1);
+		case DOWN_RIGHT: return (pos < 25) && (pos % 4 != 0);
 		default: assert false;
 		}
 		return false;
@@ -234,13 +247,13 @@ public class Board {
 	static int walkPos(int pos, Direction dir) {
 		assert isValidPos(pos);
 		assert hasWalkPos(pos, dir);
-		int upLeftPosDiff  = isInRowWithBlackSquareOnLeft(pos) ? 5 : 4;
-		int upRightPosDiff = isInRowWithBlackSquareOnLeft(pos) ? 4 : 3;
+		int upLeftPosDiff  = isInOddRow(pos) ? 4 : 5;
+		int upRightPosDiff = isInOddRow(pos) ? 3 : 4;
 		switch (dir) {
-		case DOWN_RIGHT: return pos - upLeftPosDiff;
-		case DOWN_LEFT:  return pos - upRightPosDiff;
-		case UP_RIGHT:   return pos + upRightPosDiff;
-		case UP_LEFT:    return pos + upLeftPosDiff;
+		case UP_LEFT:    return pos - upLeftPosDiff;
+		case UP_RIGHT:   return pos - upRightPosDiff;
+		case DOWN_LEFT:  return pos + upRightPosDiff;
+		case DOWN_RIGHT: return pos + upLeftPosDiff;
 		default: assert false;
 		}
 		return 0;
@@ -250,42 +263,46 @@ public class Board {
 		assert isValidPos(pos);
 		assert hasJumpPos(pos, dir);
 		switch (dir) {
-		case DOWN_RIGHT: return pos - 9;
-		case DOWN_LEFT:  return pos - 7;
-		case UP_RIGHT:   return pos + 7;
-		case UP_LEFT:    return pos + 9;
+		case UP_LEFT:    return pos - 9;
+		case UP_RIGHT:   return pos - 7;
+		case DOWN_LEFT:  return pos + 7;
+		case DOWN_RIGHT: return pos + 9;
 		default: assert false;
 		}
 		return 0;
 	}
 
 	static boolean areWalkable(int pos1, int pos2) {
-		int upLeftPosDiff  = isInRowWithBlackSquareOnLeft(pos1) ? 5 : 4;
-		int upRightPosDiff = isInRowWithBlackSquareOnLeft(pos1) ? 4 : 3;
-		return pos1 - upLeftPosDiff  == pos2 && hasWalkPos(pos1, Direction.DOWN_RIGHT) ||
-		pos1 - upRightPosDiff == pos2 && hasWalkPos(pos1, Direction.DOWN_LEFT)  ||
-		pos1 + upRightPosDiff == pos2 && hasWalkPos(pos1, Direction.UP_RIGHT)   ||
-		pos1 + upLeftPosDiff  == pos2 && hasWalkPos(pos1, Direction.UP_LEFT);
+		int upLeftPosDiff  = isInOddRow(pos1) ? 4 : 5;
+		int upRightPosDiff = isInOddRow(pos1) ? 3 : 4;
+		return (
+			(pos1 - upLeftPosDiff == pos2 && hasWalkPos(pos1, Direction.UP_LEFT)) ||
+			(pos1 - upRightPosDiff == pos2 && hasWalkPos(pos1, Direction.UP_RIGHT)) ||
+			(pos1 + upRightPosDiff == pos2 && hasWalkPos(pos1, Direction.DOWN_LEFT)) ||
+			(pos1 + upLeftPosDiff == pos2 && hasWalkPos(pos1, Direction.DOWN_RIGHT))
+		);
 	}
 
 	static boolean areJumpable(int pos1, int pos2) {
-		return pos1 - 9 == pos2 && hasJumpPos(pos1, Direction.DOWN_RIGHT) ||
-		pos1 - 7 == pos2 && hasJumpPos(pos1, Direction.DOWN_LEFT)  ||
-		pos1 + 7 == pos2 && hasJumpPos(pos1, Direction.UP_RIGHT)   ||
-		pos1 + 9 == pos2 && hasJumpPos(pos1, Direction.UP_LEFT);
+		return (
+			(pos1 - 9 == pos2 && hasJumpPos(pos1, Direction.UP_LEFT)) ||
+			(pos1 - 7 == pos2 && hasJumpPos(pos1, Direction.UP_RIGHT)) ||
+			(pos1 + 7 == pos2 && hasJumpPos(pos1, Direction.DOWN_LEFT)) ||
+			(pos1 + 9 == pos2 && hasJumpPos(pos1, Direction.DOWN_RIGHT))
+		);
 	}
 
 	boolean canWalk(int pos, Direction dir) {
 		assert isValidPos(pos);
 		return (
-				// make sure the walk-to position exists and is empty
-				hasWalkPos(pos, dir) && !hasPieceAt(walkPos(pos, dir)) && (
-						// kings can walk in any direction
-						hasKingAt(pos) ||
-						// men have to walk in the correct direction
-						(hasBlackManAt(pos) && dir.isUp()) ||
-						(hasWhiteManAt(pos) && dir.isDown())
-				)
+			// make sure the walk-to position exists and is empty
+			hasWalkPos(pos, dir) && !hasPieceAt(walkPos(pos, dir)) && (
+				// kings can walk in any direction
+				hasKingAt(pos) ||
+				// men have to walk in the correct direction
+				(hasBlackManAt(pos) && dir.isDown()) ||
+				(hasWhiteManAt(pos) && dir.isUp())
+			)
 		);
 	}
 
@@ -303,7 +320,7 @@ public class Board {
 
 		case BLACK_MAN:
 			// men have to jump in the correct direction
-			if (dir.isDown()) return false;
+			if (dir.isUp()) return false;
 			// fall thru
 		case BLACK_KING:
 			// pieces must jump over an opponent piece
@@ -312,7 +329,7 @@ public class Board {
 
 		case WHITE_MAN:
 			// men have to jump in the correct direction
-			if (dir.isUp()) return false;
+			if (dir.isDown()) return false;
 			// fall thru
 		case WHITE_KING:
 			// pieces must jump over an opponent piece
@@ -370,9 +387,11 @@ public class Board {
 		return false;
 	}
 
-	void expandJumpSequence(PositionState startPosState,
+	void expandJumpSequence(
+			PositionState startPosState,
 			ArrayList<SingleJumpInfo> jumpSequence,
-			ArrayList<Jump> jumps) {
+			ArrayList<Jump> jumps
+	) {
 		boolean atEndOfJump = true;
 
 		for (Direction dir : Direction.values()) {

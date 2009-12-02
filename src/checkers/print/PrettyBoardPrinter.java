@@ -13,11 +13,9 @@ public class PrettyBoardPrinter implements BoardPrinter {
 
 	public void print(Board b) {
 		System.out.println(TOP_BORDER);
-		for (int r = 7; r >= 0; --r) {
-			//for (int r = 0; r < 8; ++r) {
+		for (int r = 0; r < 8; ++r) {
 			System.out.print(LEFT_BORDER);
-			for (int c = 7; c >= 0; --c) {
-				//for (int c = 0; c < 8; ++c) {
+			for (int c = 0; c < 8; ++c) {
 				if ((r + c) % 2 == 0) {
 					System.out.print("::::::::");
 				} else {
@@ -29,8 +27,7 @@ public class PrettyBoardPrinter implements BoardPrinter {
 				}
 			}
 			System.out.print(RIGHT_BORDER + "\n" + LEFT_BORDER);
-			for (int c = 7; c >= 0; --c) {
-				//for (int c = 0; c < 8; ++c) {
+			for (int c = 0; c < 8; ++c) {
 				if ((r + c) % 2 == 0) {
 					System.out.print("::::::::");
 				} else {
@@ -45,8 +42,7 @@ public class PrettyBoardPrinter implements BoardPrinter {
 				}
 			}
 			System.out.print(RIGHT_BORDER + "\n" + LEFT_BORDER);
-			for (int c = 7; c >= 0; --c) {
-				//for (int c = 0; c < 8; ++c) {
+			for (int c = 0; c < 8; ++c) {
 				if ((r + c) % 2 == 0) {
 					System.out.print("::::::::");
 				} else {
@@ -61,8 +57,7 @@ public class PrettyBoardPrinter implements BoardPrinter {
 				}
 			}
 			System.out.print(RIGHT_BORDER + "\n" + LEFT_BORDER);
-			for (int c = 7; c >= 0; --c) {
-				//for (int c = 0; c < 8; ++c) {
+			for (int c = 0; c < 8; ++c) {
 				if ((r + c) % 2 == 0) {
 					System.out.print("::::::::");
 				} else {
