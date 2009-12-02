@@ -25,5 +25,11 @@ public class AsciiMain {
 		    System.out.print(possibleMoves.get(i));
 		}
 		System.out.println(".");
+
+		board.makeSingleMove(10, 14);
+		new PrettyBoardPrinter().print(board);
+
+		board.makeSingleMove(23, 18);
+		new PrettyBoardPrinter().print(board);
 	}
 }
