@@ -10,7 +10,7 @@ public abstract class Move {
 		sequence.add(startPos);
 		sequence.add(nextPos);
 	}
-	
+
 	public abstract boolean isJump();
 
 	public int startPos() {
@@ -19,6 +19,10 @@ public abstract class Move {
 
 	public int endPos() {
 		return sequence.get(sequence.size() - 1);
+	}
+
+	public ArrayList<Integer> getSequence() {
+		return sequence;
 	}
 
 	public String toString() {

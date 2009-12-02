@@ -228,10 +228,12 @@ public class Board {
 	public void makeSingleMove(int fromPos, int toPos) {
 		if (!areWalkable(fromPos, toPos) && !areJumpable(fromPos, toPos)) {
 			// impossible move; should probably throw exception?
+			assert false;
 			return;
 		}
 		if (!hasPieceAt(fromPos)) {
 			// no piece to move; should probably throw exception?
+			assert false;
 			return;
 		}
 
@@ -243,11 +245,28 @@ public class Board {
 			// make sure there are no jumps available
 			if (possibleJumps(movingPlayer).size() > 0) {
 				// forced jump! throw excepton?
+				assert false;
 				return;
 			}
 
 			if (hasPieceAt(toPos)) {
 				// can't move to occupied square; throw exception?
+				assert false;
+				return;
+			}
+
+			if ((movingPlayer == PlayerId.BLACK && toPos < fromPos) ||
+					(movingPlayer == PlayerId.WHITE && toPos > fromPos)) {
+				// can't move a man backwards; throw exception?
+				assert false;
+				return;
+			}
+
+			// one last double-check
+			if (!walkIsInList(new Walk(fromPos, toPos),
+					possibleWalks(movingPlayer))) {
+				// we must have missed something...  exception?
+				assert false;
 				return;
 			}
 
@@ -256,11 +275,69 @@ public class Board {
 			setStateAt(fromPos, PositionState.EMPTY);
 
 		} else if (areJumpable(fromPos, toPos)) {
-			// TODO: fill in...
+			int jumpOverPos = jumpOverPos(fromPos, toPos);
+
+			if (!hasPlayersPieceAt(jumpOverPos, movingPlayer.opponent())) {
+				// no opposing checker to jump; throw exception?
+				assert false;
+				return;
+			}
+
+			// can probably do more checks here...
+
+			// one last double-check
+			if (!singleJumpIsPossible(fromPos, toPos)) {
+				// throw exception?
+				assert false;
+				return;
+			}
+
+			// ok, safe to jump
+			setStateAt(toPos, stateAt(fromPos));
+			setStateAt(fromPos, PositionState.EMPTY);
+			setStateAt(jumpOverPos, PositionState.EMPTY);
 
 		} else {
 			assert false;
 		}
+	}
+
+	/**
+	 * Returns the position that is jumped over when jumping from one
+	 * given position to the other.
+	 */
+	static int jumpOverPos(int fromPos, int toPos) {
+		assert areJumpable(fromPos, toPos);
+		for (Direction dir : Direction.values())
+			if (jumpPos(fromPos, dir) == toPos)
+				return new SingleJumpInfo(fromPos, dir).jumpedPos();
+		return 0;
+	}
+
+	/**
+	 * Returns whether or not a given Walk move is in the given Walk
+	 * list.
+	 */
+	static boolean walkIsInList(Walk walk, ArrayList<Walk> list) {
+		for (Walk w : list) {
+			if (w.startPos() == walk.startPos() &&
+					w.endPos() == walk.endPos()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Returns whether or not a single jump move is possible, based on
+	 * all the currently possible jump move sequences.
+	 */
+	boolean singleJumpIsPossible(int fromPos, int toPos) {
+		for (Jump j : possibleJumps(fromPos))
+			if (j.startPos() == fromPos && j.getSequence().get(1) == toPos)
+				return true;
+
+		return false;
 	}
 
 	/**
