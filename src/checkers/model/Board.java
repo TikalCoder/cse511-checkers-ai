@@ -89,6 +89,11 @@ public class Board {
 				(p == PlayerId.WHITE && hasWhiteKing())
 			);
 		}
+
+		public PlayerId playerOfPiece() {
+			assert hasPiece();
+			return hasBlackPiece() ? PlayerId.BLACK : PlayerId.WHITE;
+		}
 	}
 
 	/**
@@ -162,6 +167,8 @@ public class Board {
 	public boolean hasPlayersManAt   (int pos, PlayerId p) { return stateAt(pos).hasPlayersMan(p); }
 	public boolean hasPlayersKingAt  (int pos, PlayerId p) { return stateAt(pos).hasPlayersKing(p); }
 
+	public PlayerId playerOfPieceAt(int pos) { return stateAt(pos).playerOfPiece(); }
+
 	/**
 	 * Returns a list of all the possible moves from the current board
 	 * state that can be made by the specified player (whose turn it
@@ -215,6 +222,41 @@ public class Board {
 	 * walk move, or it may be one step of a jump sequence.
 	 */
 	public void makeSingleMove(int fromPos, int toPos) {
+		if (!areWalkable(fromPos, toPos) && !areJumpable(fromPos, toPos)) {
+			// impossible move; should probably throw exception?
+			return;
+		}
+		if (!hasPieceAt(fromPos)) {
+			// no piece to move; should probably throw exception?
+			return;
+		}
+
+		PlayerId movingPlayer = playerOfPieceAt(fromPos);
+
+		if (areWalkable(fromPos, toPos)) {
+			// this is a walk move
+
+			// make sure there are no jumps available
+			if (possibleJumps(movingPlayer).size() > 0) {
+				// forced jump! throw excepton?
+				return;
+			}
+
+			if (hasPieceAt(toPos)) {
+				// can't move to occupied square; throw exception?
+				return;
+			}
+
+			// ok, safe to move
+			setStateAt(toPos, stateAt(fromPos));
+			setStateAt(fromPos, PositionState.EMPTY);
+
+		} else if (areJumpable(fromPos, toPos)) {
+			// TODO: fill in...
+
+		} else {
+			assert false;
+		}
 	}
 
 	/**
