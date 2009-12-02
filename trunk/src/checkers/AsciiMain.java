@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import checkers.model.Board;
 import checkers.model.Move;
-import checkers.model.Board.PlayerId;
+import checkers.model.PlayerId;
 import checkers.print.PrettyBoardPrinter;
 
 public class AsciiMain {
