@@ -211,7 +211,7 @@ public class Board {
 	 * from the current board state, where a jump move is a complete
 	 * jump sequence until no more individual jumps can be made.
 	 */
-	ArrayList<Jump> possibleJumps(PlayerId p) {
+	public ArrayList<Jump> possibleJumps(PlayerId p) {
 		ArrayList<Jump> ret = new ArrayList<Jump>();
 
 		for (int i = 1; i <= 32; ++i)
@@ -575,7 +575,7 @@ public class Board {
 	 * from the given position, in the current board state.  Assumes
 	 * that there are no jump moves available!
 	 */
-	ArrayList<Walk> possibleWalks(int pos) {
+	public ArrayList<Walk> possibleWalks(int pos) {
 		assert isValidPos(pos);
 		ArrayList<Walk> ret = new ArrayList<Walk>();
 
@@ -591,7 +591,7 @@ public class Board {
 	 * sequences) that can be made from the given position, in the
 	 * current board state.
 	 */
-	ArrayList<Jump> possibleJumps(int pos) {
+	public ArrayList<Jump> possibleJumps(int pos) {
 		assert isValidPos(pos);
 
 		ArrayList<Jump> ret = new ArrayList<Jump>();

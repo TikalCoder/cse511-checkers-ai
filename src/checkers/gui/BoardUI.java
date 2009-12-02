@@ -19,10 +19,11 @@ import javax.swing.JPanel;
 import checkers.Constants;
 import checkers.Utils;
 import checkers.model.Board;
+import checkers.model.Jump;
 import checkers.model.Move;
 import checkers.model.PlayerId;
+import checkers.model.Walk;
 import checkers.model.Board.PositionState;
-import checkers.print.PrettyBoardPrinter;
 
 /**
  * This class represents a Checkers board with Piece objects on it.
@@ -50,7 +51,7 @@ public class BoardUI extends JPanel {
 	 * Board model.
 	 */
 	private Board board;
-	
+
 	private PlayerId playerToMove;
 
 	public BoardUI() {
@@ -88,7 +89,7 @@ public class BoardUI extends JPanel {
 					System.out.println("Make move from: " + oldIndex + " to: " + selectedIndex);
 					if (board.makeSingleMove(oldIndex, selectedIndex))
 						playerToMove = playerToMove.opponent();
-//					new PrettyBoardPrinter().print(board);
+					//					new PrettyBoardPrinter().print(board);
 				}
 
 				// Update the display
@@ -109,6 +110,24 @@ public class BoardUI extends JPanel {
 		int cellHeight = getHeight() / GRID_SIZE;
 		int pieceWidth = (getWidth() - (Constants.PADDING * 8)) / GRID_SIZE;
 		int pieceHeight = (getHeight() - (Constants.PADDING * 8)) / GRID_SIZE;
+
+		// Draw the board squares
+		drawBoard(g, cellWidth, cellHeight);
+
+		// Draw the possible moves
+		drawPossibleMoves(g, cellWidth, cellHeight, pieceWidth, pieceHeight);
+
+		for (int i = 0; i < GRID_SIZE; i++) {
+			for (int j = 0; j < GRID_SIZE; j++) {
+				if (validSquare(i, j) && board.stateAt(gridToPosition(i, j)) != PositionState.EMPTY) { // if looking at a cell with a piece
+					highlightSelectedPiece(g, cellWidth, cellHeight, pieceWidth, pieceHeight, i, j);
+					drawAllPieces(g, cellWidth, cellHeight, pieceWidth, pieceHeight, i, j);
+				}
+			}
+		}
+	}
+
+	private void drawBoard(Graphics2D g, int cellWidth, int cellHeight) {
 		for (int i = 0; i < GRID_SIZE; i++) {
 			for (int j = 0; j < GRID_SIZE; j++) {
 				int color = validSquare(i, j) ? 152 : 0;
@@ -116,30 +135,6 @@ public class BoardUI extends JPanel {
 				g.fillRect(cellWidth * i, cellHeight * j, cellWidth, cellHeight);
 			}
 		}
-
-		for (int i = 0; i < GRID_SIZE; i++) {
-			for (int j = 0; j < GRID_SIZE; j++) {
-				drawPossibleMoves(g, cellWidth, cellHeight, pieceWidth, pieceHeight);
-			}
-		}
-
-		for (int i = 0; i < GRID_SIZE; i++) {
-			for (int j = 0; j < GRID_SIZE; j++) {
-				int color = validSquare(i, j) ? 152 : 0;
-				g.setColor(new Color(color, color, color));
-//				g.fillRect(cellWidth * i, cellHeight * j, cellWidth, cellHeight);
-
-				if (validSquare(i, j) && board.stateAt(gridToPosition(i, j)) != PositionState.EMPTY) { // if looking at a cell with a piece
-//					drawPossibleMoves(g, cellWidth, cellHeight, pieceWidth, pieceHeight);
-					
-					highlightSelectedPiece(g, cellWidth, cellHeight, pieceWidth, pieceHeight, i, j);
-
-					drawAllPieces(g, cellWidth, cellHeight, pieceWidth, pieceHeight, i, j);
-				}
-			}
-		}
-		
-		
 	}
 
 	/**
@@ -171,25 +166,35 @@ public class BoardUI extends JPanel {
 		double y = cellHeight * j + Constants.PADDING / 2.0;
 		g.fill(new Ellipse2D.Double(x, y, pieceWidth, pieceHeight));
 	}
-	
+
 	private void drawPossibleMoves(Graphics2D g, int cellWidth, int cellHeight, int pieceWidth, int pieceHeight) {
-		ArrayList<Move> possibleMoves = board.possibleMoves(playerToMove);
-		for (Move move : possibleMoves) {
-			ArrayList<Integer> sequence = move.getSequence();
-			for (int i = 0; i < sequence.size(); i++) {
-				int positionIndex = sequence.get(i);
-				Point p = Utils.positionToGridPoint(positionIndex);
-				final int outlinePadding = 3;
-				if (i == 0) {
-					g.setColor(new Color(255, 140, 0));
-					g.fill(new Ellipse2D.Double(cellWidth * p.getX() + Constants.PADDING / 2.0 - outlinePadding, cellHeight * p.getY() + Constants.PADDING / 2.0 - outlinePadding, pieceWidth + 2 * outlinePadding, pieceHeight + 2 * outlinePadding));
-				} else if (i >= 1) {
-					g.setColor(new Color(255, 0, 0));
-					g.fill(new Ellipse2D.Double(cellWidth * p.getX() + Constants.PADDING / 2.0 - outlinePadding, cellHeight * p.getY() + Constants.PADDING / 2.0 - outlinePadding, pieceWidth + 2 * outlinePadding, pieceHeight + 2 * outlinePadding));
-					
-					g.setColor(new Color(152, 152, 152));
-					g.fill(new Ellipse2D.Double(cellWidth * p.getX() + Constants.PADDING / 2.0, cellHeight * p.getY() + Constants.PADDING / 2.0, pieceWidth, pieceHeight));
+		if (selectedSquare == null) {
+			ArrayList<Move> possibleMoves = board.possibleMoves(playerToMove);
+			for (Move move : possibleMoves) {
+				ArrayList<Integer> sequence = move.getSequence();
+				for (int i = 0; i < sequence.size(); i++) {
+					int positionIndex = sequence.get(i);
+					Point p = Utils.positionToGridPoint(positionIndex);
+					final int outlinePadding = 3;
+					if (i == 0) {
+						g.setColor(new Color(255, 140, 0));
+						g.fill(new Ellipse2D.Double(cellWidth * p.getX() + Constants.PADDING / 2.0 - outlinePadding, cellHeight * p.getY() + Constants.PADDING / 2.0 - outlinePadding, pieceWidth + 2 * outlinePadding, pieceHeight + 2 * outlinePadding));
+					} else if (i >= 1) {
+						g.setColor(new Color(255, 0, 0));
+						g.fill(new Ellipse2D.Double(cellWidth * p.getX() + Constants.PADDING / 2.0 - outlinePadding, cellHeight * p.getY() + Constants.PADDING / 2.0 - outlinePadding, pieceWidth + 2 * outlinePadding, pieceHeight + 2 * outlinePadding));
+
+						g.setColor(new Color(152, 152, 152));
+						g.fill(new Ellipse2D.Double(cellWidth * p.getX() + Constants.PADDING / 2.0, cellHeight * p.getY() + Constants.PADDING / 2.0, pieceWidth, pieceHeight));
+					}
 				}
+			}
+		} else {
+			ArrayList<Jump> possibleJumps = board.possibleJumps(playerToMove);
+			int selectedIndex = gridToPosition(selectedSquare);
+			if (possibleJumps.isEmpty()) { // if no possible jumps possible, draw walks from selected piece
+				ArrayList<Walk> walks = board.possibleWalks(selectedIndex);
+			} else { // draw jumps from selected piece
+				ArrayList<Jump> jumps = board.possibleJumps(selectedIndex);
 			}
 		}
 	}
