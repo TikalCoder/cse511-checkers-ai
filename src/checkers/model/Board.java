@@ -222,22 +222,25 @@ public class Board {
 	}
 
 	/**
-	 * Makes a single move, from one position to another.  This may be a
-	 * walk move, or it may be one step of a jump sequence.
+	 * Makes a single move, from one position to another; this may be a
+	 * walk move, or it may be one step of a jump sequence; returns true
+	 * if the move constitutes a complete turn, and false if either
+	 * there are more jumps to make, or the move failed.
 	 */
-	public void makeSingleMove(int fromPos, int toPos) {
+	public boolean makeSingleMove(int fromPos, int toPos) {
 		if (!areWalkable(fromPos, toPos) && !areJumpable(fromPos, toPos)) {
 			// impossible move; should probably throw exception?
 			assert false;
-			return;
+			return false;
 		}
 		if (!hasPieceAt(fromPos)) {
 			// no piece to move; should probably throw exception?
 			assert false;
-			return;
+			return false;
 		}
 
 		PlayerId movingPlayer = playerOfPieceAt(fromPos);
+		boolean moveIsComplete = false;
 
 		if (areWalkable(fromPos, toPos)) {
 			// this is a walk move
@@ -246,20 +249,20 @@ public class Board {
 			if (possibleJumps(movingPlayer).size() > 0) {
 				// forced jump! throw excepton?
 				assert false;
-				return;
+				return false;
 			}
 
 			if (hasPieceAt(toPos)) {
 				// can't move to occupied square; throw exception?
 				assert false;
-				return;
+				return false;
 			}
 
 			if ((movingPlayer == PlayerId.BLACK && toPos < fromPos) ||
 					(movingPlayer == PlayerId.WHITE && toPos > fromPos)) {
 				// can't move a man backwards; throw exception?
 				assert false;
-				return;
+				return false;
 			}
 
 			// one last double-check
@@ -267,12 +270,15 @@ public class Board {
 					possibleWalks(movingPlayer))) {
 				// we must have missed something...  exception?
 				assert false;
-				return;
+				return false;
 			}
 
 			// ok, safe to move
 			setStateAt(toPos, stateAt(fromPos));
 			setStateAt(fromPos, PositionState.EMPTY);
+
+			// since this is not a jump, our move is definitely complete
+			moveIsComplete = true;
 
 		} else if (areJumpable(fromPos, toPos)) {
 			int jumpOverPos = jumpOverPos(fromPos, toPos);
@@ -280,7 +286,7 @@ public class Board {
 			if (!hasPlayersPieceAt(jumpOverPos, movingPlayer.opponent())) {
 				// no opposing checker to jump; throw exception?
 				assert false;
-				return;
+				return false;
 			}
 
 			// can probably do more checks here...
@@ -289,7 +295,12 @@ public class Board {
 			if (!singleJumpIsPossible(fromPos, toPos)) {
 				// throw exception?
 				assert false;
-				return;
+				return false;
+			}
+
+			// see if this is the end of the jump sequence
+			if (singleJumpIsComplete(fromPos, toPos)) {
+				moveIsComplete = true;
 			}
 
 			// ok, safe to jump
@@ -299,7 +310,7 @@ public class Board {
 
 		} else {
 			assert false;
-			return;
+			return false;
 		}
 
 		// assuming we got here, everthing went fine.  Need to check and
@@ -309,6 +320,8 @@ public class Board {
 		} else if (posIsInWhitesKingRow(toPos) && hasWhiteManAt(toPos)) {
 			setStateAt(toPos, PositionState.WHITE_KING);
 		}
+
+		return moveIsComplete;
 	}
 
 	static boolean posIsInBlacksKingRow(int pos) {
@@ -347,12 +360,26 @@ public class Board {
 
 	/**
 	 * Returns whether or not a single jump move is possible, based on
-	 * all the currently possible jump move sequences.
+	 * all the currently possible jump move sequences.  Note that this
+	 * single jump move may be part of a longer sequence of jumps.
 	 */
 	boolean singleJumpIsPossible(int fromPos, int toPos) {
 		for (Jump j : possibleJumps(fromPos))
 			if (j.startPos() == fromPos && j.getSequence().get(1) == toPos)
 				return true;
+
+		return false;
+	}
+
+	/**
+	 * Returns whether or not a single jump move is both possible and a
+	 * complete jump sequence in itself, based on all the currently
+	 * possible jump move sequences.
+	 */
+	boolean singleJumpIsComplete(int fromPos, int toPos) {
+		for (Jump j : possibleJumps(fromPos))
+			if (j.startPos() == fromPos && j.getSequence().get(1) == toPos)
+				return j.getSequence().size() == 2;
 
 		return false;
 	}
