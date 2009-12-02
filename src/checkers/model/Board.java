@@ -258,8 +258,8 @@ public class Board {
 				return false;
 			}
 
-			if ((movingPlayer == PlayerId.BLACK && toPos < fromPos) ||
-					(movingPlayer == PlayerId.WHITE && toPos > fromPos)) {
+			if ((hasBlackManAt(fromPos) && toPos < fromPos) ||
+					(hasWhiteManAt(fromPos) && toPos > fromPos)) {
 				// can't move a man backwards; throw exception?
 				assert false;
 				return false;
