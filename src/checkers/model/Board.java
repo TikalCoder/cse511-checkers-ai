@@ -5,13 +5,6 @@ import java.util.ArrayList;
 public class Board {
 	private PositionState[] positionStates;
 
-	public static enum PlayerId {
-		BLACK { public PlayerId opponent() { return WHITE; } },
-		WHITE { public PlayerId opponent() { return BLACK; } };
-
-		public abstract PlayerId opponent();
-	}
-	
 	public static enum PositionState {
 		EMPTY       { public String toString() { return "."; } },
 		BLACK_MAN   { public String toString() { return "b"; } },
