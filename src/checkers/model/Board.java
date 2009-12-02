@@ -15,13 +15,13 @@ import java.util.ArrayList;
  *               UP (where black pieces start)
  *    row +----------------+
  *      1 |01  02  03  04  |----(white's king row)
- *      2 |  05  07  08  06|
+ *      2 |  05  06  07  08|
  *   L  3 |09  10  11  12  | R
- *   E  4 |  13  15  16  14| I
+ *   E  4 |  13  14  15  16| I
  *   F  5 |17  18  19  20  | G
- *   T  6 |  21  23  24  22| H
+ *   T  6 |  21  22  23  24| H
  *      7 |25  26  27  28  | T
- *      8 |  29  31  32  30|----(black's king row)
+ *      8 |  29  30  31  32|----(black's king row)
  *        +----------------+
  *              DOWN (white black pieces start)
  * </code>
