@@ -486,7 +486,7 @@ public class Board {
 
 			Jump jump = new Jump(pos0, pos1);
 
-			for (int i = 2; i < jumpSequence.size(); ++i)
+			for (int i = 1; i < jumpSequence.size(); ++i)
 				jump.jumpAgain(jumpSequence.get(i).endPos());
 
 			jumps.add(jump);
