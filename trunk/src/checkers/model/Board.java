@@ -211,6 +211,13 @@ public class Board {
 	}
 
 	/**
+	 * Makes a single move, from one position to another.  This may be a
+	 * walk move, or it may be one step of a jump sequence.
+	 */
+	void makeSingleMove(int fromPos, int toPos) {
+	}
+
+	/**
 	 * Returns true if the given position is a square in row 1, 3, 5, or
 	 * 7 (in other words, in 1-4, 9-12, 17-20, or 25-28); else false.
 	 */
