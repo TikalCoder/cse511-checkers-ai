@@ -9,20 +9,21 @@ import checkers.print.PrettyBoardPrinter;
 
 public class AsciiMain {
 	public static void main(String[] args) {
-        Board board = new Board();
+		Board board = new Board();
 
-        System.out.println("\n");
-        new PrettyBoardPrinter().print(board);
+		System.out.println("\n");
+		new PrettyBoardPrinter().print(board);
 
-        System.out.print("  ___\n" +
-                         " (   )\n" +
-                         "  \"\"\"  to move.  Possible moves are: ");
+		System.out.print(
+			"  ___\n" +
+			" (   )\n" +
+			"  \"\"\"  to move.  Possible moves are: ");
 
-        ArrayList<Move> possibleMoves = board.possibleMoves(PlayerId.BLACK);
-        for (int i = 0; i < possibleMoves.size(); ++i) {
-            if (i != 0) System.out.print(", ");
-            System.out.print(possibleMoves.get(i));
-        }
-        System.out.println(".");
-    }
+		ArrayList<Move> possibleMoves = board.possibleMoves(PlayerId.BLACK);
+		for (int i = 0; i < possibleMoves.size(); ++i) {
+		    if (i != 0) System.out.print(", ");
+		    System.out.print(possibleMoves.get(i));
+		}
+		System.out.println(".");
+	}
 }
