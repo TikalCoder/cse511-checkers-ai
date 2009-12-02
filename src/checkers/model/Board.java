@@ -413,6 +413,39 @@ public class Board {
 	}
 
 	/**
+	 * Returns a list of all the possible jump moves (full jump
+	 * sequences) that can be made from the given position, in the
+	 * current board state.
+	 */
+	ArrayList<Jump> possibleJumps(int pos) {
+		assert isValidPos(pos);
+
+		ArrayList<Jump> ret = new ArrayList<Jump>();
+		ArrayList<SingleJumpInfo> jumpSequence =
+			new ArrayList<SingleJumpInfo>();
+
+		for (Direction dir : Direction.values()) {
+			if (canJump(pos, dir)) {
+				// temporarily "pick up" the piece we are considering
+				// jumping with, such that its position appears empty,
+				// such that the piece can conceivably jump around in a
+				// circle and land in the original position.
+				PositionState origPosState = stateAt(pos);
+				setStateAt(pos, PositionState.EMPTY);
+
+				jumpSequence.add(new SingleJumpInfo(pos, dir));
+				expandJumpSequence(origPosState, jumpSequence, ret);
+				jumpSequence.clear();
+
+				// put the piece back (we haven't really jumped yet)
+				setStateAt(pos, origPosState);
+			}
+		}
+
+		return ret;
+	}
+
+	/**
 	 * Somewhat klugey class that temporarily maintains information
 	 * about a single, individual jump (part of a complete jump
 	 * sequence).
@@ -496,38 +529,5 @@ public class Board {
 
 			jumps.add(jump);
 		}
-	}
-
-	/**
-	 * Returns a list of all the possible jump moves (full jump
-	 * sequences) that can be made from the given position, in the
-	 * current board state.
-	 */
-	ArrayList<Jump> possibleJumps(int pos) {
-		assert isValidPos(pos);
-
-		ArrayList<Jump> ret = new ArrayList<Jump>();
-		ArrayList<SingleJumpInfo> jumpSequence =
-			new ArrayList<SingleJumpInfo>();
-
-		for (Direction dir : Direction.values()) {
-			if (canJump(pos, dir)) {
-				// temporarily "pick up" the piece we are considering
-				// jumping with, such that its position appears empty,
-				// such that the piece can conceivably jump around in a
-				// circle and land in the original position.
-				PositionState origPosState = stateAt(pos);
-				setStateAt(pos, PositionState.EMPTY);
-
-				jumpSequence.add(new SingleJumpInfo(pos, dir));
-				expandJumpSequence(origPosState, jumpSequence, ret);
-				jumpSequence.clear();
-
-				// put the piece back (we haven't really jumped yet)
-				setStateAt(pos, origPosState);
-			}
-		}
-
-		return ret;
 	}
 }
