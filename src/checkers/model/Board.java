@@ -2,9 +2,56 @@ package checkers.model;
 
 import java.util.ArrayList;
 
+/**
+ * Represents the checkers board, and where all the pieces are, at a
+ * given time.
+ * <p>
+ * This information, combined with whose turn it is, will result in the
+ * complete game state.
+ * <p>
+ * This code's notion of the orientation of the board (as of now), and
+ * of the position numbers:
+ * <code>
+ *             UP (where white pieces start)
+ *      +----------------+
+ *      |  32  31  30  29|----(black's king row)
+ *      |28  27  26  25  |
+ *    L |  24  23  22  21| R
+ *    E |20  19  18  17  | I
+ *    F |  16  15  14  13| G
+ *    T |12  11  10  09  | H
+ *      |  08  07  06  05| T
+ *      |04  03  02  01  |----(white's king row)
+ *      +----------------+
+ *            DOWN (where black pieces start)
+ * </code>
+ *
+ * @author Kurt Glastetter
+ */
 public class Board {
 	private PositionState[] positionStates;
 
+	/**
+	 * Enumeration identifying the different diagonal directions that
+	 * pieces can move in.  Directions correspond to the orientation of
+	 * the board given in the Board description above.
+	 */
+	static enum Direction {
+		DOWN_RIGHT { public boolean isUp() { return false; } },
+		DOWN_LEFT  { public boolean isUp() { return false; } },
+		UP_RIGHT   { public boolean isUp() { return true; } },
+		UP_LEFT    { public boolean isUp() { return true; } };
+
+		public abstract boolean isUp();
+		public boolean isDown() { return !isUp(); }
+	}
+
+	/**
+	 * Enumeration identifying the state of a given valid position
+	 * square (what kind of piece it has, or no piece).
+	 * <p>
+	 * Provides several boolean accessors meant to make logic easier.
+	 */
 	public static enum PositionState {
 		EMPTY       { public String toString() { return "."; } },
 		BLACK_MAN   { public String toString() { return "b"; } },
@@ -12,6 +59,9 @@ public class Board {
 		WHITE_MAN   { public String toString() { return "w"; } },
 		WHITE_KING  { public String toString() { return "W"; } };
 
+		/**
+		 * toString is just for debug purposes.
+		 */
 		public abstract String toString();
 
 		public boolean hasPiece()      { return this != EMPTY; }
@@ -24,22 +74,40 @@ public class Board {
 		public boolean hasWhiteMan()   { return this == WHITE_MAN; }
 		public boolean hasWhiteKing()  { return this == WHITE_KING; }
 
-		public boolean hasPlayersPiece (PlayerId p) { return hasPlayersMan(p) ||
-			hasPlayersKing(p); }
-		public boolean hasPlayersMan   (PlayerId p) { return p == PlayerId.BLACK && hasBlackMan() ||
-			p == PlayerId.WHITE && hasWhiteMan(); }
-		public boolean hasPlayersKing  (PlayerId p) { return p == PlayerId.BLACK && hasBlackKing() ||
-			p == PlayerId.WHITE && hasWhiteKing(); }
+		public boolean hasPlayersPiece(PlayerId p) {
+			return hasPlayersMan(p) || hasPlayersKing(p);
+		}
+		public boolean hasPlayersMan(PlayerId p) {
+			return (
+				(p == PlayerId.BLACK && hasBlackMan()) ||
+				(p == PlayerId.WHITE && hasWhiteMan())
+			);
+		}
+		public boolean hasPlayersKing(PlayerId p) {
+			return (
+				(p == PlayerId.BLACK && hasBlackKing()) ||
+				(p == PlayerId.WHITE && hasWhiteKing())
+			);
+		}
 	}
 
+	/**
+	 * Constructor initializes the board to the start of a new game.
+	 */
 	public Board() {
 		positionStates = new PositionState[32];
 
-		for (int i =  0; i < 12; ++i) positionStates[i] = PositionState.BLACK_MAN;
-		for (int i = 12; i < 20; ++i) positionStates[i] = PositionState.EMPTY;
-		for (int i = 20; i < 32; ++i) positionStates[i] = PositionState.WHITE_MAN;
+		for (int i =  0; i < 12; ++i)
+			positionStates[i] = PositionState.BLACK_MAN;
+		for (int i = 12; i < 20; ++i)
+			positionStates[i] = PositionState.EMPTY;
+		for (int i = 20; i < 32; ++i)
+			positionStates[i] = PositionState.WHITE_MAN;
 	}
 
+	/**
+	 * toString is not a pretty output; it's just for debug purposes
+	 */
 	public String toString() {
 		String ret = "";
 		for (int i = 0; i < 8; ++i) {
@@ -53,10 +121,20 @@ public class Board {
 		return ret;
 	}
 
+	/**
+	 * Tells if an int is a valid position ID.  Position ID's
+	 * (<code>pos</code>) are <code>int</code>s from 1 thru 32
+	 * inclusive.  This matches the usual checkers notation.
+	 */
 	public static boolean isValidPos(int pos) {
 		return 1 <= pos && pos <= 32;
 	}
 
+	/**
+	 * Accesses the PositionState enum of a given position.  Useful if
+	 * you want to do a switch statement, or if you don't want to use
+	 * the boolean accessors provide below.
+	 */
 	public PositionState stateAt(int pos) {
 		assert isValidPos(pos);
 		return positionStates[pos - 1];
@@ -76,6 +154,13 @@ public class Board {
 	public boolean hasPlayersManAt   (int pos, PlayerId p) { return stateAt(pos).hasPlayersMan(p); }
 	public boolean hasPlayersKingAt  (int pos, PlayerId p) { return stateAt(pos).hasPlayersKing(p); }
 
+	/**
+	 * Returns a list of all the possible moves from the current board
+	 * state that can be made by the specified player (whose turn it
+	 * presumably is).
+	 * <p>
+	 * Note: Maybe should return a set instead?
+	 */
 	public ArrayList<Move> possibleMoves(PlayerId p) {
 		ArrayList<Move> ret = new ArrayList<Move>();
 
@@ -87,6 +172,11 @@ public class Board {
 		return ret;
 	}
 
+	/**
+	 * Returns a list of all the possible walk moves that can be made
+	 * from the current board state.  Assumes that there are no jump
+	 * moves available!
+	 */
 	ArrayList<Walk> possibleWalks(PlayerId p) {
 		ArrayList<Walk> ret = new ArrayList<Walk>();
 
@@ -97,6 +187,11 @@ public class Board {
 		return ret;
 	}
 
+	/**
+	 * Returns a list of all the possible jump moves that can be made
+	 * from the current board state, where a jump move is a complete
+	 * jump sequence until no more individual jumps can be made.
+	 */
 	ArrayList<Jump> possibleJumps(PlayerId p) {
 		ArrayList<Jump> ret = new ArrayList<Jump>();
 
@@ -105,32 +200,6 @@ public class Board {
 				ret.addAll(possibleJumps(i));
 
 		return ret;
-	}
-
-	/*
-	 * This code's notion of the orientation of the board.
-	 *
-	 *             UP (where white pieces start)
-	 *      +----------------+
-	 *      |  32  31  30  29|  <-- (black's king row)
-	 *      |28  27  26  25  |
-	 *    L |  24  23  22  21| R
-	 *    E |20  19  18  17  | I
-	 *    F |  16  15  14  13| G
-	 *    T |12  11  10  09  | H
-	 *      |  08  07  06  05| T
-	 *      |04  03  02  01  |  <-- (white's king row)
-	 *      +----------------+
-	 *            DOWN (where black pieces start)
-	 */
-	static enum Direction {
-		DOWN_RIGHT { public boolean isUp() { return false; } },
-		DOWN_LEFT  { public boolean isUp() { return false; } },
-		UP_RIGHT   { public boolean isUp() { return true; } },
-		UP_LEFT    { public boolean isUp() { return true; } };
-
-		public abstract boolean isUp();
-		public boolean isDown() { return !isUp(); }
 	}
 
 	static boolean isInRowWithBlackSquareOnLeft(int pos) {
