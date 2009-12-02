@@ -412,7 +412,12 @@ public class Board {
 		return ret;
 	}
 
-	static class SingleJumpInfo {
+	/**
+	 * Somewhat klugey class that temporarily maintains information
+	 * about a single, individual jump (part of a complete jump
+	 * sequence).
+	 */
+	private static class SingleJumpInfo {
 		public SingleJumpInfo(int startPos, Direction dir) {
 			this.startPos = startPos;
 			this.dir = dir;
@@ -493,6 +498,11 @@ public class Board {
 		}
 	}
 
+	/**
+	 * Returns a list of all the possible jump moves (full jump
+	 * sequences) that can be made from the given position, in the
+	 * current board state.
+	 */
 	ArrayList<Jump> possibleJumps(int pos) {
 		assert isValidPos(pos);
 
