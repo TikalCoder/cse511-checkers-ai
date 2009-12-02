@@ -152,6 +152,10 @@ public class Board {
 		assert isValidPos(pos);
 		positionStates[pos - 1] = state;
 	}
+	
+	public int numPositionStates() {
+		return positionStates.length;
+	}
 
 	public boolean hasPieceAt      (int pos) { return stateAt(pos).hasPiece(); }
 	public boolean hasManAt        (int pos) { return stateAt(pos).hasMan(); }
