@@ -13,6 +13,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.JPanel;
 
 import checkers.Constants;
+import checkers.model.Board;
 
 /**
  * This class represents a Checkers board with Piece objects on it.
@@ -34,9 +35,16 @@ public class BoardUI extends JPanel {
 	/**
 	 * Keep track of the piece selected, if any.
 	 */
-	private int lastClickX, lastClickY;
+	private Piece selectedPiece;
+	
+	/**
+	 * Board model.
+	 */
+	private Board board;
 
 	public BoardUI() {
+		this.board = new Board();
+		
 		setPreferredSize(new Dimension(Constants.WIDTH, Constants.HEIGHT));
 		setLayout(new GridBagLayout());
 		
@@ -54,7 +62,11 @@ public class BoardUI extends JPanel {
 				
 				// set player to 0 if in top 3 rows, 1 if in bottom 3 rows, and -1
 				// otherwise
-				final int player = (j <= 2) ? 0 : (j >= 5) ? 1 : -1;
+				final int player;
+				if ((i + j) % 2 != 0)
+					player = (j <= 2) ? 0 : (j >= 5) ? 1 : -1;
+				else
+					player = -1;
 				
 				int numerator = Constants.WIDTH - (Constants.PADDING * 8);
 				add(pieces[i][j] = new Piece(numerator/GRID_SIZE, player), constraints);
@@ -63,11 +75,21 @@ public class BoardUI extends JPanel {
 		
 		addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent me) {
-				// determine the selected piece
-				// TODO: add logic to move pieces around
+				// clear last selected piece
+				if (selectedPiece != null) {
+					selectedPiece.setSelected(false);
+					selectedPiece.repaint();
+				}
+				
+				// determine the newly selected piece
 				int cellSize = Constants.WIDTH / GRID_SIZE;
-				int lastClickX = me.getX() / cellSize;
-				int lastClickY = me.getY() / cellSize;
+				int x = me.getX() / cellSize;
+				int y = me.getY() / cellSize;
+				selectedPiece = pieces[x][y];
+				selectedPiece.setSelected(true);
+				selectedPiece.repaint();
+				
+				// TODO: add logic to move pieces around
 			}
 		});
 	}
@@ -90,7 +112,7 @@ public class BoardUI extends JPanel {
 		
 		for (int i = 0; i < GRID_SIZE; i++) {
 			for (int j = 0; j < GRID_SIZE; j++) {
-				int color = (i + j) % 2 != 0 ? 0 : 192;
+				int color = (i + j) % 2 != 0 ? 0 : 152;
 				g.setColor(new Color(color, color, color));
 				g.fillRect(cellWidth * i, cellHeight * j, cellWidth, cellHeight);
 			}
