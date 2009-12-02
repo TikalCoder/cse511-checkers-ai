@@ -9,6 +9,7 @@ import java.awt.geom.Ellipse2D;
 import javax.swing.JPanel;
 
 import checkers.Constants;
+import checkers.model.Board.PositionState;
 
 /**
  * This class represents a Checkers piece on a Checkers board.
@@ -25,11 +26,22 @@ public class Piece extends JPanel {
 	private int size;
 	private int player;
 	private boolean selected;
+	private PositionState state;
+
+	public Piece(final int size) {
+		this.size = size;
+		this.state = PositionState.EMPTY;
+		
+		setPreferredSize(new Dimension(size, size));
+		
+		// Make pieces transparent so that underlying board will appear below
+		setOpaque(false);
+	}
 
 	public Piece(final int size, final int player) {
 		this.size = size;
 		this.player = player;
-
+		
 		setPreferredSize(new Dimension(size, size));
 		
 		// Make pieces transparent so that underlying board will appear below
@@ -52,8 +64,10 @@ public class Piece extends JPanel {
 			
 
 			if (selected) {
+//				if (state.hasBlackPiece())
 				if (player == 1)
 					g.setColor(new Color(255, 0, 0));
+//				else if (state.hasWhitePiece())
 				else
 					g.setColor(new Color(255, 255, 0));
 				
@@ -68,5 +82,13 @@ public class Piece extends JPanel {
 
 	public void setSelected(boolean selected) {
 		this.selected = selected;
+	}
+
+	public int getPlayer() {
+		return player;
+	}
+
+	public void setPlayer(int player) {
+		this.player = player;
 	}
 }

@@ -20,6 +20,14 @@ public class UtilsTest {
 		assertEquals("Position index was not as expected", 32, gridToPosition(7, 7));
 	}
 	
+	@Test(expected=IllegalArgumentException.class)
+	public void testGridToPositionFailure() {
+		gridToPosition(1, 0);
+		gridToPosition(2, 5);
+		gridToPosition(5, 2);
+		gridToPosition(7, 6);
+	}
+	
 	@Test
 	public void testGridToPositionPoint() {
 		assertEquals("Position index was not as expected", 1, gridToPosition(new Point(0, 0)));

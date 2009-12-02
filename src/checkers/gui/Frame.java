@@ -18,7 +18,7 @@ public class Frame extends JFrame {
 
 	public Frame() {
 		setTitle("Checkers");
-		setResizable(false);
+//		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		getContentPane().add(new BoardUI(), BorderLayout.CENTER);
 		
