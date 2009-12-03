@@ -12,8 +12,12 @@ import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import checkers.Constants;
@@ -49,11 +53,17 @@ public class BoardUI extends JPanel {
 
 	private PlayerId playerToMove;
 
+	private BufferedImage kingImg;
+	
 	public BoardUI() {
 		this.board = new Board();
 		this.playerToMove = PlayerId.BLACK;
 
 		setPreferredSize(new Dimension(Constants.WIDTH, Constants.HEIGHT));
+		kingImg = null;
+		try {
+		    kingImg = ImageIO.read(new File("crown-smaller.png"));
+		} catch (IOException e) {}
 
 		addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent me) {
@@ -89,7 +99,10 @@ public class BoardUI extends JPanel {
 					if (board.makeSingleMove(oldIndex, selectedIndex)) {
 						playerToMove = playerToMove.opponent();
 						clearSelection();
-					} /* Note: will not work until there is some way to know the user is in the middle of a jump
+					} /* if no move was made at all, change selected square back to oldSquare.
+					   * This will happen if clicking from a square with a piece to a square that
+					   * cannot be reached from that piece should not change the selection.
+					   * Note: will not work until there is some way to know the user is in the middle of a jump
 					else if (!inMiddleOfJump)
 						selectedSquare = oldSquare;*/
 					
@@ -113,7 +126,7 @@ public class BoardUI extends JPanel {
 	public void paintComponent(Graphics graphics) {
 		super.paintComponent(graphics);
 		Graphics2D g = (Graphics2D) graphics;
-
+		
 		int cellWidth = getWidth() / GRID_SIZE;
 		int cellHeight = getHeight() / GRID_SIZE;
 		int pieceWidth = (getWidth() - (Constants.PADDING * 8)) / GRID_SIZE;
@@ -173,30 +186,34 @@ public class BoardUI extends JPanel {
 		double x = cellWidth * i + Constants.PADDING / 2.0;
 		double y = cellHeight * j + Constants.PADDING / 2.0;
 		g.fill(new Ellipse2D.Double(x, y, pieceWidth, pieceHeight));
+		
+		if (state.hasKing()) {
+			g.drawImage(kingImg, cellWidth * i + cellWidth / 2 - kingImg.getWidth() / 2, cellHeight * j + cellHeight / 2 - kingImg.getHeight() / 2, null);
+		}
 	}
 
 	private void drawPossibleMoves(Graphics2D g, int cellWidth, int cellHeight, int pieceWidth, int pieceHeight) {
 		if (selectedSquare == null) {
 			ArrayList<Move> possibleMoves = board.possibleMoves(playerToMove);
 			for (Move move : possibleMoves) {
-				drawMove(g, cellWidth, cellHeight, pieceWidth, pieceHeight, move);
+				drawPossibleMove(g, cellWidth, cellHeight, pieceWidth, pieceHeight, move);
 			}
 		} else {
 			int selectedIndex = gridToPosition(selectedSquare);
 			if (board.possibleJumps(playerToMove).isEmpty()) { // if no possible jumps possible on board, draw walks from selected piece
 				ArrayList<Walk> walks = board.possibleWalks(selectedIndex);
 				for (Walk walk : walks) {
-					drawMove(g, cellWidth, cellHeight, pieceWidth, pieceHeight, walk);	
+					drawPossibleMove(g, cellWidth, cellHeight, pieceWidth, pieceHeight, walk);	
 				}
 			} else { // draw jumps from selected piece
 				ArrayList<Jump> jumps = board.possibleJumps(selectedIndex);
 				for (Jump jump : jumps)
-					drawMove(g, cellWidth, cellHeight, pieceWidth, pieceHeight, jump);
+					drawPossibleMove(g, cellWidth, cellHeight, pieceWidth, pieceHeight, jump);
 			}
 		}
 	}
 
-	private void drawMove(Graphics2D g, int cellWidth, int cellHeight, int pieceWidth, int pieceHeight, Move move) {
+	private void drawPossibleMove(Graphics2D g, int cellWidth, int cellHeight, int pieceWidth, int pieceHeight, Move move) {
 		ArrayList<Integer> sequence = move.getSequence();
 		for (int i = 0; i < sequence.size(); i++) {
 			int positionIndex = sequence.get(i);
