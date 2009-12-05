@@ -20,4 +20,9 @@ public final class Constants {
 	 * Padding (in pixels) for Checkers pieces (ovals)
 	 */
 	public static final int PADDING = 14;
+	
+	/**
+	 * Filename of crown image.
+	 */
+	public static final String CROWN_IMG = "crown-smaller.png";
 }
