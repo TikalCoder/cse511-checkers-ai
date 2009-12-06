@@ -473,7 +473,7 @@ public class Board {
 	 * Returns true if the two positions can be walked to from one
 	 * another; else false.
 	 */
-	static boolean areWalkable(int pos1, int pos2) {
+	public static boolean areWalkable(int pos1, int pos2) {
 		for (Direction dir : Direction.values())
 		    if (hasWalkPos(pos1, dir) && walkPos(pos1, dir) == pos2)
 				return true;
@@ -485,7 +485,7 @@ public class Board {
 	 * Returns true if the two positions can be jumped to from one
 	 * another; else false.
 	 */
-	static boolean areJumpable(int pos1, int pos2) {
+	public static boolean areJumpable(int pos1, int pos2) {
 		for (Direction dir : Direction.values())
 		    if (hasJumpPos(pos1, dir) && jumpPos(pos1, dir) == pos2)
 				return true;

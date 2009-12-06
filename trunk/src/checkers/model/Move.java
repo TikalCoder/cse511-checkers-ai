@@ -37,4 +37,13 @@ public abstract class Move {
 
 		return ret;
 	}
+
+	public boolean equals(Object other) {
+		if (!(other instanceof Move)) return false;
+		return sequence.equals(((Move)other).sequence);
+	}
+
+	public int hashCode() {
+		return sequence.hashCode();
+	}
 }
