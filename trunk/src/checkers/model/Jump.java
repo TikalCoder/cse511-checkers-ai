@@ -1,11 +1,14 @@
 package checkers.model;
 
-//TODO: replace assertions with IllegalArgumentExceptions
+import java.lang.IllegalArgumentException;
 
 public class Jump extends Move {
 	public Jump(int startPos, int landPos) {
 		super(startPos, landPos);
-		assert Board.areJumpable(startPos, landPos);
+
+		if (!Board.areJumpable(startPos, landPos))
+			throw new IllegalArgumentException(
+					"invalid jump beginning " + toString());
 	}
 
 	public boolean isJump() {
@@ -13,7 +16,10 @@ public class Jump extends Move {
 	}
 
 	public void jumpAgain(int landPos) {
-		assert Board.areJumpable(sequence.get(sequence.size() - 1), landPos);
+		if (!Board.areJumpable(sequence.get(sequence.size() - 1), landPos))
+			throw new IllegalArgumentException(
+					"invalid jump continuation " + toString());
+
 		sequence.add(landPos);
 	}
 }
