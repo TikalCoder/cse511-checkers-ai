@@ -1,11 +1,14 @@
 package checkers.model;
 
+import java.lang.IllegalArgumentException;
+import java.util.ArrayList;
+
 /**
 * Maintains the complete information about the current state of a
 * checkers game.  User interfaces and AI players should be able to query
 * this object for whatever they need to know.
 */
-class GameState {
+public class GameState {
 	/**
 	* This is whose turn it is.
 	*/
@@ -27,12 +30,39 @@ class GameState {
 	/**
 	* Constructor initializes to the start of a new game.
 	*/
-	GameState() {
+	public GameState() {
 		playerToMove = PlayerId.BLACK;
 		jumper = 0;
 		board = new Board();
 	}
 
-	//TODO: add lots of accessors to query the game state, what moves
-	//      are valid, etc., and mutators to make the moves.
+	public boolean gameIsOver() {
+		return board.possibleMoves(playerToMove).size() == 0;
+	}
+
+	public PlayerId playerToMove() {
+		return playerToMove;
+	}
+
+	public ArrayList<Move> possibleMoves() {
+		return board.possibleMoves(playerToMove);
+	}
+
+	public void makeMove(Move move) {
+		if (!board.possibleMoves(playerToMove).contains(move))
+			throw new IllegalArgumentException("impossible move " + move);
+
+		//TODO: simply board.makeMove(move) ?
+		ArrayList<Integer> sequence = move.getSequence();
+		for (int i = 0; i < sequence.size() - 1; ++i)
+		{
+			board.makeSingleMove(sequence.get(i), sequence.get(i + 1));
+		}
+
+		playerToMove = playerToMove.opponent();
+	}
+
+	public Board getBoard() {
+		return board;
+	}
 }
