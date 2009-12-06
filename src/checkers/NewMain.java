@@ -3,7 +3,7 @@ package checkers;
 import checkers.Display;
 import checkers.Game;
 import checkers.Player;
-import checkers.RandomPlayer;
+import checkers.ai.RandomPlayer;
 import checkers.ascii.AsciiDisplay;
 import checkers.ascii.AsciiPlayer;
 

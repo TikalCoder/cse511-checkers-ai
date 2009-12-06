@@ -1,4 +1,4 @@
-package checkers;
+package checkers.ai;
 
 import java.lang.Math;
 import java.util.ArrayList;
