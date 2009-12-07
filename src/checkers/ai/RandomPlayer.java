@@ -7,6 +7,11 @@ import checkers.Player;
 import checkers.model.GameState;
 import checkers.model.Move;
 
+/**
+ * A simple AI player that makes completely random moves.
+ *
+ * @author Kurt Glastetter
+ */
 public class RandomPlayer extends Player {
 	public Move chooseMove(GameState state) {
 		ArrayList<Move> possibleMoves = state.possibleMoves();

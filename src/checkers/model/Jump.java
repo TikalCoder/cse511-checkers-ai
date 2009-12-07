@@ -2,6 +2,11 @@ package checkers.model;
 
 import java.lang.IllegalArgumentException;
 
+/**
+ * A Move that represents a complete jump sequence.
+ *
+ * @author Kurt Glastetter
+ */
 public class Jump extends Move {
 	public Jump(int startPos, int landPos) {
 		super(startPos, landPos);

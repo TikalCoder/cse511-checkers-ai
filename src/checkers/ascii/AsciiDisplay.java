@@ -7,6 +7,11 @@ import checkers.model.PlayerId;
 import checkers.print.BoardPrinter;
 import checkers.print.PrettyBoardPrinter;
 
+/**
+ * A pretty-printed, ASCII-based Display class.
+ *
+ * @author Kurt Glastetter
+ */
 public class AsciiDisplay extends Display {
 	private BoardPrinter printer = new PrettyBoardPrinter();
 

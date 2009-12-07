@@ -7,6 +7,8 @@ import java.util.ArrayList;
 * Maintains the complete information about the current state of a
 * checkers game.  User interfaces and AI players should be able to query
 * this object for whatever they need to know.
+*
+* @author Kurt Glastetter
 */
 public class GameState {
 	/**
@@ -36,18 +38,31 @@ public class GameState {
 		board = new Board();
 	}
 
+	/**
+	 * Returns true if and only if this GameState is a terminal state (which
+	 * means, someone has won).
+	 */
 	public boolean gameIsOver() {
 		return board.possibleMoves(playerToMove).size() == 0;
 	}
 
+	/**
+	 * Returns the PlayerId of the player whose turn it is.
+	 */
 	public PlayerId playerToMove() {
 		return playerToMove;
 	}
 
+	/**
+	 * Returns a list of the possible moves that can be made from this state.
+	 */
 	public ArrayList<Move> possibleMoves() {
 		return board.possibleMoves(playerToMove);
 	}
 
+	/**
+	 * Makes the specified move, updating this GameState.
+	 */
 	public void makeMove(Move move) {
 		if (!board.possibleMoves(playerToMove).contains(move))
 			throw new IllegalArgumentException("impossible move " + move);
@@ -62,6 +77,9 @@ public class GameState {
 		playerToMove = playerToMove.opponent();
 	}
 
+	/**
+	 * Returns the board object.
+	 */
 	public Board getBoard() {
 		return board;
 	}
