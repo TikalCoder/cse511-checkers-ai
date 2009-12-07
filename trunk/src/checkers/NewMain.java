@@ -7,6 +7,12 @@ import checkers.ai.RandomPlayer;
 import checkers.ascii.AsciiDisplay;
 import checkers.ascii.AsciiPlayer;
 
+/**
+ * Meant to provide a unified main program, to execute a checkers game for any
+ * kind of AI or human player.
+ *
+ * @author Kurt Glastetter
+ */
 class NewMain {
 	public static void main(String args[]) {
 		Player playerForBlack = new RandomPlayer();

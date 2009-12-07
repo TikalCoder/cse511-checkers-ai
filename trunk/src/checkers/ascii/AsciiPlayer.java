@@ -12,6 +12,11 @@ import checkers.model.Move;
 import checkers.model.PlayerId;
 import checkers.model.Walk;
 
+/**
+ * A pretty-printed, ASCII-based command-line interface for a human player.
+ *
+ * @author Kurt Glastetter
+ */
 public class AsciiPlayer extends Player {
 	public Move chooseMove(GameState state) {
 		ArrayList<Move> possibleMoves = state.possibleMoves();
@@ -75,6 +80,9 @@ public class AsciiPlayer extends Player {
 		}
 	}
 
+	/**
+	 * Converts a sequence of position integers into a Move object.
+	 */
 	private static Move positionSequenceToMove(ArrayList<Integer> sequence) {
 		if (sequence.size() < 2)
 			throw new IllegalArgumentException(

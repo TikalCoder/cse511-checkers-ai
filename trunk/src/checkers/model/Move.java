@@ -2,6 +2,12 @@ package checkers.model;
 
 import java.util.ArrayList;
 
+/**
+ * Abstract base class representing a complete move (either a walk, or a
+ * complete jump sequence).
+ *
+ * @author Kurt Glastetter
+ */
 public abstract class Move {
 	protected ArrayList<Integer> sequence;
 
