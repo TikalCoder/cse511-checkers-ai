@@ -15,14 +15,14 @@ import checkers.model.Move;
  */
 public class RandomPlayer extends Player {
 	static Random r = new Random(Utils.SEED);
-	
+
 	public Move chooseMove(GameState state) {
 //		try {
 //			Thread.sleep(3);
 //		} catch (InterruptedException e) {
 //			e.printStackTrace();
 //		}
-		ArrayList<Move> possibleMoves = state.possibleMoves();
+		ArrayList<? extends Move> possibleMoves = state.possibleMoves();
 		return possibleMoves.get((int) (r.nextDouble() * possibleMoves.size()));
 	}
 }
