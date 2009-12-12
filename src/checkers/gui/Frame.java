@@ -21,18 +21,26 @@ public class Frame extends JFrame {
 	 * Default serial version UID.
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	private BoardUI boardUI;
 
 	public Frame() {
 		setTitle("Checkers");
 //		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		getContentPane().add(new BoardUI(), BorderLayout.CENTER);
+		boardUI = new BoardUI();
+		
+		getContentPane().add(boardUI, BorderLayout.CENTER);
 		getContentPane().add(setUpMenuBar(), BorderLayout.NORTH);
 		
 		pack();
 		setLocationRelativeTo(null); // center the frame on the screen
 		setVisible(true);
+	}
+	
+	public BoardUI getBoardUI() {
+		return boardUI;
 	}
 
 	private JMenuBar setUpMenuBar() {

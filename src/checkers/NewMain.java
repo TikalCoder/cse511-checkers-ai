@@ -22,11 +22,10 @@ class NewMain {
 		
 		Player playerForBlack = new RandomPlayer();
 //		Player playerForWhite = new AsciiPlayer();
-		Player playerForWhite = new GUIPlayer(gui);
+		Player playerForWhite = new GUIPlayer(gui.getBoardUI());
 		
 		Display display = new AsciiDisplay();
-		Display guiDisplay = new GUIDisplay(gui);
-		
+		Display guiDisplay = new GUIDisplay(gui.getBoardUI());
 
 		Game game = new Game(playerForBlack, playerForWhite);
 
