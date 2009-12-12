@@ -56,8 +56,12 @@ public class GameState {
 	/**
 	 * Returns a list of the possible moves that can be made from this state.
 	 */
-	public ArrayList<Move> possibleMoves() {
-		return board.possibleMoves(playerToMove);
+	public ArrayList<? extends Move> possibleMoves() {
+		if (isJumping()) {
+			return board.possibleJumps(jumper);
+		} else {
+			return board.possibleMoves(playerToMove);
+		}
 	}
 
 	/**
@@ -77,17 +81,71 @@ public class GameState {
 		playerToMove = playerToMove.opponent();
 	}
 
+	public void makeSingleMove(int startPos, int nextPos) {
+		ArrayList<? extends Move> possibleMoves = possibleMoves();
+
+		ArrayList<Integer> moveSequence = new ArrayList<Integer>(2);
+		moveSequence.add(startPos);
+		moveSequence.add(nextPos);
+
+		if (!isStartOfMoveInList(moveSequence, possibleMoves)) {
+			throw new IllegalArgumentException("invalid move " + startPos +
+					"-" + nextPos);
+		}
+
+		if (board.makeSingleMove(startPos, nextPos))
+			playerToMove = playerToMove.opponent();
+		else
+			jumper = nextPos;
+	}
+
+	/**
+	 * Returns whether the given moveSequence constitutes at least part
+	 * of one of the given completeMoves (could match more than one)
+	 */
+	private static boolean isStartOfMoveInList(
+			ArrayList<Integer> moveSequence,
+			ArrayList<? extends Move> completeMoves) {
+		for (Move m : completeMoves)
+			if (isStartOfMove(moveSequence, m))
+				return true;
+		return false;
+	}
+
+	/**
+	 * Returns whether the given moveSequence constitutes at least part
+	 * of the given completeMove.
+	 */
+	private static boolean isStartOfMove(
+			ArrayList<Integer> moveSequence, Move completeMove) {
+		// moveSequence can't be longer than completeMove
+		if (completeMove.getSequence().size() < moveSequence.size())
+			return false;
+
+		// moveSequence has to have at least one move (2 positions)
+		if (moveSequence.size() < 2)
+			return false;
+
+		// moveSequence needs to match at least the first part of completeMove
+		for (int i = 0; i < moveSequence.size(); ++i) {
+			if (completeMove.getSequence().get(i) != moveSequence.get(i))
+				return false;
+		}
+
+		return true;
+	}
+
 	/**
 	 * Returns the board object.
 	 */
 	public Board getBoard() {
 		return board;
 	}
-	
+
 	public boolean isJumping() {
 		return jumper != 0;
 	}
-	
+
 	public int getJumpingPos() {
 		return jumper;
 	}
