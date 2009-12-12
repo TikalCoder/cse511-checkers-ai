@@ -19,7 +19,7 @@ import checkers.model.Walk;
  */
 public class AsciiPlayer extends Player {
 	public Move chooseMove(GameState state) {
-		ArrayList<Move> possibleMoves = state.possibleMoves();
+		ArrayList<? extends Move> possibleMoves = state.possibleMoves();
 
 		// prompt for the player's move
 		printPlayerSymbol(state.playerToMove());
