@@ -23,7 +23,7 @@ public class Jump extends Move {
 	public void jumpAgain(int landPos) {
 		if (!Board.areJumpable(sequence.get(sequence.size() - 1), landPos))
 			throw new IllegalArgumentException(
-					"invalid jump continuation " + toString());
+					"invalid jump continuation " + toString() + "x" + landPos);
 
 		sequence.add(landPos);
 	}
