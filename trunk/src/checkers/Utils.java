@@ -7,6 +7,8 @@ import java.awt.Point;
 import checkers.model.Board;
 
 public class Utils {
+	public static final long SEED = 10;
+
 	/**
 	 * Converts an (x,y) location to a position index as described by {@link Board}. 
 	 * @param x x-coordinate

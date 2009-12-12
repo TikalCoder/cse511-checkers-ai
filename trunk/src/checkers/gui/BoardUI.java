@@ -23,10 +23,8 @@ import javax.swing.JPanel;
 
 import checkers.Constants;
 import checkers.Utils;
-import checkers.model.Board;
 import checkers.model.GameState;
 import checkers.model.Move;
-import checkers.model.PlayerId;
 import checkers.model.Board.PositionState;
 
 /**
@@ -47,32 +45,18 @@ public class BoardUI extends JPanel {
 	 */
 	private Point selectedSquare;
 
-	/**
-	 * Board model.
-	 */
-	private Board board;
-
-	private PlayerId playerToMove;
-
 	private BufferedImage kingImg;
 
-	private boolean allowedToMove;
-	
 	private GameState gameState;
 
 	private GUIPlayer player;
 	
 	public BoardUI() {
-		this.board = new Board();
-		this.playerToMove = PlayerId.BLACK;
-
 		setPreferredSize(new Dimension(Constants.WIDTH, Constants.HEIGHT));
 		kingImg = null;
 		try {
 		    kingImg = ImageIO.read(new File(CROWN_IMG));
 		} catch (IOException e) {}
-		
-		allowedToMove = false;
 		
 		addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent me) {
@@ -82,7 +66,7 @@ public class BoardUI extends JPanel {
 				int oldIndex = -1;
 				if (oldSquare != null) {
 					oldIndex = gridToPosition(oldSquare);
-					oldState = board.stateAt(oldIndex);
+					oldState = gameState.getBoard().stateAt(oldIndex);
 				}
 				
 				// Determine the newly selected square
@@ -93,9 +77,9 @@ public class BoardUI extends JPanel {
 				Point selection = new Point(x, y);
 				int selectedIndex = gridToPosition(selection);
 				if (selectedIndex == -1
-						|| board.stateAt(selectedIndex).hasPlayersPiece(playerToMove.opponent())) // ignore clicks on invalid locations
+						|| gameState.getBoard().hasPlayersPieceAt(selectedIndex, gameState.playerToMove().opponent())) // ignore clicks on invalid locations
 					return;
-				PositionState selectedState = board.stateAt(selectedIndex);
+				PositionState selectedState = gameState.getBoard().stateAt(selectedIndex);
 				selectedSquare = selection;
 				
 				
@@ -106,7 +90,10 @@ public class BoardUI extends JPanel {
 						&& selectedState == PositionState.EMPTY) {
 					// try to make a move from oldSquare to selectedSquare in Board (model)...
 					System.out.println("Make move from: " + oldIndex + " to: " + selectedIndex);
-					player.notify();
+					synchronized (player) {
+						player.setNextMove(oldIndex, selectedIndex);
+						player.notify();
+					}
 //					if (board.makeSingleMove(oldIndex, selectedIndex)) {
 //						playerToMove = playerToMove.opponent();
 //						clearSelection();
@@ -138,6 +125,9 @@ public class BoardUI extends JPanel {
 		super.paintComponent(graphics);
 		Graphics2D g = (Graphics2D) graphics;
 		
+		if (gameState == null)
+			return;
+		
 		int cellWidth = getWidth() / GRID_SIZE;
 		int cellHeight = getHeight() / GRID_SIZE;
 		int pieceWidth = (getWidth() - (Constants.PADDING * 8)) / GRID_SIZE;
@@ -151,7 +141,7 @@ public class BoardUI extends JPanel {
 
 		for (int i = 0; i < GRID_SIZE; i++) {
 			for (int j = 0; j < GRID_SIZE; j++) {
-				if (validSquare(i, j) && board.stateAt(gridToPosition(i, j)) != PositionState.EMPTY) { // if looking at a cell with a piece
+				if (validSquare(i, j) && gameState.getBoard().hasPieceAt(gridToPosition(i, j))) { // if looking at a cell with a piece
 					highlightSelectedPiece(g, cellWidth, cellHeight, pieceWidth, pieceHeight, i, j);
 					drawAllPieces(g, cellWidth, cellHeight, pieceWidth, pieceHeight, i, j);
 				}
@@ -174,7 +164,7 @@ public class BoardUI extends JPanel {
 	 */
 	private void highlightSelectedPiece(Graphics2D g, int cellWidth, int cellHeight, int pieceWidth, int pieceHeight, int x, int y) {
 		if (new Point(x, y).equals(selectedSquare)) {
-			PositionState state = board.stateAt(gridToPosition(x, y));
+			PositionState state = gameState.getBoard().stateAt(gridToPosition(x, y));
 			if (state.hasBlackPiece())
 				g.setColor(new Color(0, 255, 255));
 			else if (state.hasWhitePiece())
@@ -188,7 +178,7 @@ public class BoardUI extends JPanel {
 	 * Helper method for paintComponent that draws all the pieces on the board. 
 	 */
 	private void drawAllPieces(Graphics2D g, int cellWidth, int cellHeight,int pieceWidth, int pieceHeight, int i, int j) {
-		PositionState state = board.stateAt(gridToPosition(i, j));
+		PositionState state = gameState.getBoard().stateAt(gridToPosition(i, j));
 		if (state.hasBlackPiece())
 			g.setColor(new Color(0, 0, 0));
 		else if (state.hasWhitePiece())
@@ -206,13 +196,13 @@ public class BoardUI extends JPanel {
 	private void drawPossibleMoves(Graphics2D g, int cellWidth, int cellHeight, int pieceWidth, int pieceHeight) {
 		ArrayList<? extends Move> moves = null;
 		if (selectedSquare == null)
-			moves = board.possibleMoves(playerToMove);
+			moves = gameState.possibleMoves();
 		else {
 			int selectedIndex = gridToPosition(selectedSquare);
-			if (board.possibleJumps(playerToMove).isEmpty()) // if no possible jumps possible on board, draw walks from selected piece
-				moves = board.possibleWalks(selectedIndex);
+			if (gameState.getBoard().possibleJumps(gameState.playerToMove()).isEmpty()) // if no possible jumps possible on board, draw walks from selected piece
+				moves = gameState.getBoard().possibleWalks(selectedIndex);
 			else // draw jumps from selected piece
-				moves = board.possibleJumps(selectedIndex);
+				moves = gameState.getBoard().possibleJumps(selectedIndex);
 		}
 		
 		drawPossibleMoves(g, cellWidth, cellHeight, pieceWidth, pieceHeight, moves);
@@ -239,14 +229,12 @@ public class BoardUI extends JPanel {
 		}
 	}
 
-	public synchronized void allowedToMove(boolean b) {
-		allowedToMove = b;
-	}
-	
-
-
 	public synchronized void allowedToMove(GameState gameState, GUIPlayer player) {
 		this.gameState = gameState;
 		this.player = player;
+	}
+
+	public void setGameState(GameState newState) {
+		gameState = newState;
 	}
 }
