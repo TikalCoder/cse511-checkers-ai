@@ -85,7 +85,7 @@ public class GameState {
 	}
 	
 	public boolean isJumping() {
-		return jumper == 0;
+		return jumper != 0;
 	}
 	
 	public int getJumpingPos() {
