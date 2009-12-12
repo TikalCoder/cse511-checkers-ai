@@ -634,8 +634,6 @@ public class Board {
 		int jumpedPos() { return walkPos(startPos, dir); }
 		int endPos() { return jumpPos(startPos, dir); }
 
-		Direction dir() { return dir; }
-
 		private int startPos;
 		private Direction dir;
 	}

@@ -5,10 +5,10 @@ import checkers.model.GameState;
 import checkers.model.Move;
 
 public class GUIDisplay extends Display {
-	private Frame gui;
+	private BoardUI gui;
 	
-	public GUIDisplay(Frame gui) {
-		this.gui = gui;
+	public GUIDisplay(BoardUI boardUI) {
+		this.gui = boardUI;
 	}
 
 	@Override

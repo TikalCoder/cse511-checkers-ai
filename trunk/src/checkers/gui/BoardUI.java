@@ -24,6 +24,7 @@ import javax.swing.JPanel;
 import checkers.Constants;
 import checkers.Utils;
 import checkers.model.Board;
+import checkers.model.GameState;
 import checkers.model.Move;
 import checkers.model.PlayerId;
 import checkers.model.Board.PositionState;
@@ -54,6 +55,12 @@ public class BoardUI extends JPanel {
 	private PlayerId playerToMove;
 
 	private BufferedImage kingImg;
+
+	private boolean allowedToMove;
+	
+	private GameState gameState;
+
+	private GUIPlayer player;
 	
 	public BoardUI() {
 		this.board = new Board();
@@ -64,7 +71,9 @@ public class BoardUI extends JPanel {
 		try {
 		    kingImg = ImageIO.read(new File(CROWN_IMG));
 		} catch (IOException e) {}
-
+		
+		allowedToMove = false;
+		
 		addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent me) {
 				// Keep track of last selection
@@ -97,13 +106,14 @@ public class BoardUI extends JPanel {
 						&& selectedState == PositionState.EMPTY) {
 					// try to make a move from oldSquare to selectedSquare in Board (model)...
 					System.out.println("Make move from: " + oldIndex + " to: " + selectedIndex);
-					if (board.makeSingleMove(oldIndex, selectedIndex)) {
-						playerToMove = playerToMove.opponent();
-						clearSelection();
-					} /* If no move was made at all, change selected square back to oldSquare.
+					player.notify();
+//					if (board.makeSingleMove(oldIndex, selectedIndex)) {
+//						playerToMove = playerToMove.opponent();
+//						clearSelection();
+				/*	}*/ /* If no move was made at all, change selected square back to oldSquare.
 					   * This will happen if clicking from a square with a piece to a square that
 					   * cannot be reached from that piece should not change the selection.
-					   * Note: will not work until there is some way to know the user is in the middle of a jump
+					   * Note/TODO: will not work until there is some way to know the user is in the middle of a jump
 					else if (!inMiddleOfJump)
 						selectedSquare = oldSquare;*/
 					
@@ -227,5 +237,16 @@ public class BoardUI extends JPanel {
 				}
 			}
 		}
+	}
+
+	public synchronized void allowedToMove(boolean b) {
+		allowedToMove = b;
+	}
+	
+
+
+	public synchronized void allowedToMove(GameState gameState, GUIPlayer player) {
+		this.gameState = gameState;
+		this.player = player;
 	}
 }
