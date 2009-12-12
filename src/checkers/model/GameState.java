@@ -10,7 +10,7 @@ import java.util.ArrayList;
 *
 * @author Kurt Glastetter
 */
-public class GameState {
+public class GameState implements Cloneable {
 	/**
 	* This is whose turn it is.
 	*/
@@ -149,4 +149,15 @@ public class GameState {
 	public int getJumpingPos() {
 		return jumper;
 	}
+
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		GameState clone = new GameState();
+		clone.board = (Board) board.clone();
+		clone.jumper = jumper;
+		clone.playerToMove = playerToMove;
+		return clone;
+	}
+	
+	
 }

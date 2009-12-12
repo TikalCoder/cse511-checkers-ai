@@ -28,8 +28,20 @@ import java.util.ArrayList;
  *
  * @author Kurt Glastetter
  */
-public class Board {
+public class Board implements Cloneable {
 	private PositionState[] positionStates;
+
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		Board clone = new Board();
+		PositionState[] positionStatesClone = new PositionState[positionStates.length];
+		
+		for (int i = 0; i < positionStates.length; i++)
+			positionStatesClone[i] = positionStates[i];
+		
+		clone.positionStates = positionStatesClone;
+		return clone;
+	}
 
 	/**
 	 * Enumeration identifying the different diagonal directions that
