@@ -13,12 +13,13 @@ public class GUIDisplay extends Display {
 
 	@Override
 	public void init(GameState newState) {
-		// TODO Auto-generated method stub
-
+		gui.setGameState(newState);
+		gui.repaint();
 	}
 
 	@Override
 	public void update(Move move, GameState newState) {
+//		gui.setGameState(newState);
 		gui.repaint();
 	}
 

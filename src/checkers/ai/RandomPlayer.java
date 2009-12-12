@@ -1,9 +1,10 @@
 package checkers.ai;
 
-import java.lang.Math;
 import java.util.ArrayList;
+import java.util.Random;
 
 import checkers.Player;
+import checkers.Utils;
 import checkers.model.GameState;
 import checkers.model.Move;
 
@@ -13,8 +14,15 @@ import checkers.model.Move;
  * @author Kurt Glastetter
  */
 public class RandomPlayer extends Player {
+	static Random r = new Random(Utils.SEED);
+	
 	public Move chooseMove(GameState state) {
+//		try {
+//			Thread.sleep(3);
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
 		ArrayList<Move> possibleMoves = state.possibleMoves();
-		return possibleMoves.get((int) (Math.random() * possibleMoves.size()));
+		return possibleMoves.get((int) (r.nextDouble() * possibleMoves.size()));
 	}
 }
