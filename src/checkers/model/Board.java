@@ -592,7 +592,7 @@ public class Board {
 	 * current board state.
 	 */
 	public ArrayList<Jump> possibleJumps(int pos) {
-		assert isValidPos(pos);
+		assert isValidPos(pos) : pos;
 
 		ArrayList<Jump> ret = new ArrayList<Jump>();
 		ArrayList<SingleJumpInfo> jumpSequence =
