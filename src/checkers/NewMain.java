@@ -29,8 +29,8 @@ class NewMain {
 		
 		Frame gui = new Frame();
 		
-		Player playerForWhite = new RandomPlayer();
-//		Player playerForWhite = new GUIPlayer(gui.getBoardUI());
+//		Player playerForWhite = new RandomPlayer();
+		Player playerForWhite = new GUIPlayer(gui.getBoardUI());
 //		Player playerForWhite = new AsciiPlayer();
 		Player playerForBlack = new GUIPlayer(gui.getBoardUI());
 //		Player playerForBlack = new RandomPlayer();
