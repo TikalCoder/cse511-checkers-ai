@@ -37,6 +37,17 @@ public class GameState implements Cloneable {
 		jumper = 0;
 		board = new Board();
 	}
+	
+	/**
+	* Copy constructor.
+	* 
+	* @param toCopy The GameState to copy.
+	*/
+	public GameState(GameState toCopy) {
+		playerToMove = toCopy.playerToMove;
+		jumper = toCopy.jumper;
+		board = new Board(toCopy.board);
+	}
 
 	/**
 	 * Constructor initializes the game state described by the parameters.
