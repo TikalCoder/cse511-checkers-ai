@@ -37,10 +37,10 @@ public class GameState implements Cloneable {
 		jumper = 0;
 		board = new Board();
 	}
-	
+
 	/**
 	* Copy constructor.
-	* 
+	*
 	* @param toCopy The GameState to copy.
 	*/
 	public GameState(GameState toCopy) {
@@ -165,6 +165,10 @@ public class GameState implements Cloneable {
 		}
 
 		return true;
+	}
+
+	public Move generateMove(ArrayList<Integer> positionSequence) {
+		return board.generateMove(positionSequence);
 	}
 
 	/**
