@@ -8,7 +8,7 @@ import java.util.ListIterator;
 import checkers.model.Move;
 
 
-public class OrderedMoveList {
+public class OrderedMoveList implements Iterable<Move> {
 	
 	private List<Pair> list;
 	
@@ -31,7 +31,7 @@ public class OrderedMoveList {
 		return list.get(index).getMove();
 	}
 	
-	public OrderedMoveListIterator iterator() {
+	public Iterator<Move> iterator() {
 		return new OrderedMoveListIterator();
 	}
 	
