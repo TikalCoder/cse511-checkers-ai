@@ -13,7 +13,7 @@ public class Jump extends Move {
 
 		if (!Board.areJumpable(startPos, landPos))
 			throw new IllegalArgumentException(
-					"invalid jump beginning " + toString());
+					"invalid jump beginning " + this);
 	}
 
 	public boolean isJump() {
@@ -23,7 +23,7 @@ public class Jump extends Move {
 	public void jumpAgain(int landPos) {
 		if (!Board.areJumpable(sequence.get(sequence.size() - 1), landPos))
 			throw new IllegalArgumentException(
-					"invalid jump continuation " + toString() + "x" + landPos);
+					"invalid jump continuation " + this + "x" + landPos);
 
 		sequence.add(landPos);
 	}

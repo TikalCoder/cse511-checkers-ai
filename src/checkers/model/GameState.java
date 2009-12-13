@@ -37,6 +37,15 @@ public class GameState implements Cloneable {
 		jumper = 0;
 		board = new Board();
 	}
+	
+	/**
+	 * Constructor initializes the game state described by the parameters.
+	*/
+	public GameState(PlayerId playerToMove, int jumper, Board board) {
+		this.playerToMove = playerToMove;
+		this.jumper = jumper;
+		this.board = board;
+	}
 
 	/**
 	 * Returns true if and only if this GameState is a terminal state (which
@@ -81,7 +90,7 @@ public class GameState implements Cloneable {
 		playerToMove = playerToMove.opponent();
 	}
 
-	public void makeSingleMove(int startPos, int nextPos) {
+	public boolean makeSingleMove(int startPos, int nextPos) {
 		ArrayList<? extends Move> possibleMoves = possibleMoves();
 
 		ArrayList<Integer> moveSequence = new ArrayList<Integer>(2);
@@ -90,13 +99,16 @@ public class GameState implements Cloneable {
 
 		if (!isStartOfMoveInList(moveSequence, possibleMoves)) {
 			throw new IllegalArgumentException("invalid move " + startPos +
-					"-" + nextPos);
+					"-" + nextPos + " player " + playerToMove);
 		}
 
-		if (board.makeSingleMove(startPos, nextPos))
+		boolean moveComplete = board.makeSingleMove(startPos, nextPos);
+		if (moveComplete)
 			playerToMove = playerToMove.opponent();
 		else
 			jumper = nextPos;
+		
+		return moveComplete;
 	}
 
 	/**
@@ -159,5 +171,10 @@ public class GameState implements Cloneable {
 		return clone;
 	}
 	
-	
+	// Used for Undo?
+	public void setState(GameState state) {
+		board.set(state.board);
+		jumper = state.jumper;
+		playerToMove = state.playerToMove;
+	}
 }

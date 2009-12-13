@@ -2,6 +2,7 @@ package checkers;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.Stack;
 
 import checkers.model.GameState;
 import checkers.model.Move;
@@ -14,6 +15,8 @@ import checkers.model.PlayerId;
  * @author Kurt Glastetter
  */
 public class Game {
+	private static Game CURRENT_GAME;
+	
 	// stores the current state of this Game
 	private GameState state;
 
@@ -25,18 +28,41 @@ public class Game {
 	// from this Game
 	private ArrayList<Display> displays;
 
+	private Stack<GameState> stateHistory;
+	
 	/**
-	 * Constructor initializes to the start of a new game, and remembers who
+	 * Constructor initializes to a specified game state, and remembers who
 	 * the players are.
 	 */
-	public Game(Player playerForBlack, Player playerForWhite) {
-		state = new GameState();
+	public Game(Player playerForBlack, Player playerForWhite, GameState state) {
+		this.state = state;
 
 		players = new EnumMap<PlayerId, Player>(PlayerId.class);
 		players.put(PlayerId.BLACK, playerForBlack);
 		players.put(PlayerId.WHITE, playerForWhite);
 
 		displays = new ArrayList<Display>();
+		
+		stateHistory = new Stack<GameState>();
+		
+		// Add first state to state history for undo support.
+		try {
+			stateHistory.push((GameState) state.clone());
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		
+		if (CURRENT_GAME == null)
+			CURRENT_GAME = this;
+	}
+	
+
+	/**
+	 * Constructor initializes to a specified game state, and remembers who
+	 * the players are.
+	 */
+	public Game(Player playerForBlack, Player playerForWhite) {
+		this(playerForBlack, playerForWhite, new GameState());
 	}
 
 	/**
@@ -61,6 +87,12 @@ public class Game {
 	 */
 	public void makeMove(Move move) {
 		state.makeMove(move);
+		
+		try {
+			stateHistory.add((GameState) state.clone());
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
 
 		// update the displays with the move and new state
 		for (Display display : displays)
@@ -79,5 +111,18 @@ public class Game {
 	 */
 	public Player getPlayerToMove() {
 		return players.get(state.playerToMove());
+	}
+	
+	public static Game currentGame() {
+		return CURRENT_GAME;
+	}
+
+	public void undo() {
+		if (stateHistory.size() > 1) {
+			stateHistory.pop();
+			state.setState(stateHistory.peek());
+			for (Display display : displays)
+				display.init(state);	
+		}
 	}
 }
