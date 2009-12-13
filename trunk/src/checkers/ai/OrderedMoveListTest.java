@@ -15,13 +15,16 @@ public class OrderedMoveListTest {
 		Move move0 = new Walk(1, 6);
 		Move move1 = new Walk(7, 10);
 		Move move2 = new Walk(18, 22);
+		Move move3 = new Walk(18, 22);
 		t.add(move0, 4.0);
 		t.add(move1, 3.0);
 		t.add(move2, 5.0);
+		t.add(move3, 3.0); //Another 3.0 to make sure the ordering is stable
 		
 		assertEquals(t.get(0), move1);
-		assertEquals(t.get(1), move0);
-		assertEquals(t.get(2), move2);
+		assertEquals(t.get(1), move3);
+		assertEquals(t.get(2), move0);
+		assertEquals(t.get(3), move2);
 	}
 	
 }
