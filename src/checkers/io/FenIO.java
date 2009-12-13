@@ -24,6 +24,7 @@ public class FenIO {
 		PositionState[] positionStates = new PositionState[32];
 		for (int i = 0; i < positionStates.length; i++)
 			positionStates[i] = PositionState.EMPTY;
+		
 		PlayerId playerToMove;
 		int jumper = 0;
 		
@@ -31,16 +32,10 @@ public class FenIO {
 		sc.findInLine("([WB]):(.+?):(.+?)\\.");
 		MatchResult result = sc.match();
 		
-		boolean whiteToMove = result.group(1).toUpperCase().charAt(0) == 'W';
-		playerToMove = (whiteToMove) ? PlayerId.WHITE: PlayerId.BLACK;
+		playerToMove = playerCharToPlayerId(result.group(1));
 		
-		System.out.println(playerToMove);
-		
-		boolean whitesPieces = result.group(2).toUpperCase().charAt(0) == 'W';
-		PlayerId whosePieces = (whitesPieces) ? PlayerId.WHITE: PlayerId.BLACK;
-			
-		parsePieces(positionStates, result, whosePieces, 2);
-		parsePieces(positionStates, result, whosePieces.opponent(), 3);
+		parsePieces(positionStates, result.group(2), playerCharToPlayerId(result.group(2)));
+		parsePieces(positionStates, result.group(3), playerCharToPlayerId(result.group(3)));
 		
 		startingState = new GameState(playerToMove, jumper, new Board(positionStates));
 		return startingState;
@@ -51,10 +46,15 @@ public class FenIO {
 		return null;
 	}
 
-	private static void parsePieces(PositionState[] positionStates, MatchResult result,
-			PlayerId whosePieces, int resultGroup) {
+	private static PlayerId playerCharToPlayerId(String group) {
+		boolean whiteToMove = group.toUpperCase().charAt(0) == 'W';
+		return (whiteToMove) ? PlayerId.WHITE: PlayerId.BLACK;
+	}
+
+	private static void parsePieces(PositionState[] positionStates, String group,
+			PlayerId whosePieces) {
 		Scanner pieceScanner;
-		pieceScanner = new Scanner(result.group(resultGroup).substring(1)).useDelimiter(",");
+		pieceScanner = new Scanner(group.substring(1)).useDelimiter(",");
 		while (pieceScanner.hasNext()) {
 			String loc = pieceScanner.next();
 			boolean isKing = loc.toUpperCase().charAt(0) == 'K';
