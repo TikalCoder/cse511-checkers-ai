@@ -106,6 +106,13 @@ public class Board implements Cloneable {
 			assert hasPiece();
 			return hasBlackPiece() ? PlayerId.BLACK : PlayerId.WHITE;
 		}
+		
+		public static PositionState createPieceForPlayer(PlayerId player, boolean isKing) {
+			if (player == PlayerId.BLACK)
+				return isKing ? BLACK_KING : BLACK_MAN;
+			else
+				return isKing ? WHITE_KING : WHITE_MAN;
+		}
 	}
 
 	/**
@@ -120,6 +127,32 @@ public class Board implements Cloneable {
 			positionStates[i] = PositionState.EMPTY;
 		for (int i = 20; i < 32; ++i)
 			positionStates[i] = PositionState.WHITE_MAN;
+	}
+	
+	public Board(PositionState[] positionStates) {
+		this.positionStates = positionStates;
+	}
+	
+	
+	/**
+	 * Constructor initializes the board to a game in progress using
+	 * with both a double-jump and a single jump possible.
+	 * 
+	 * TODO: Test that the GUI doesn't allow a certain moving the piece
+	 * not in progress.
+	 */
+	public Board(boolean b) {
+		positionStates = new PositionState[32];
+
+		for (int i =  0; i < 32; ++i)
+			positionStates[i] = PositionState.EMPTY;
+		
+		positionStates[8] = PositionState.BLACK_MAN;
+		positionStates[9] = PositionState.BLACK_MAN;
+
+		positionStates[13] = PositionState.WHITE_MAN;
+		positionStates[14] = PositionState.WHITE_MAN;
+		positionStates[21] = PositionState.WHITE_MAN;
 	}
 
 	/**
@@ -375,7 +408,7 @@ public class Board implements Cloneable {
 	 * all the currently possible jump move sequences.  Note that this
 	 * single jump move may be part of a longer sequence of jumps.
 	 */
-	boolean singleJumpIsPossible(int fromPos, int toPos) {
+	public boolean singleJumpIsPossible(int fromPos, int toPos) {
 		for (Jump j : possibleJumps(fromPos))
 			if (j.startPos() == fromPos && j.getSequence().get(1) == toPos)
 				return true;
@@ -712,6 +745,12 @@ public class Board implements Cloneable {
 				jump.jumpAgain(jumpSequence.get(i).endPos());
 
 			jumps.add(jump);
+		}
+	}
+
+	public void set(Board board) {
+		for (int i = 0; i < positionStates.length; i++) {
+			positionStates[i] = board.positionStates[i];
 		}
 	}
 }

@@ -17,12 +17,14 @@ public class RandomPlayer extends Player {
 	static Random r = new Random(Utils.SEED);
 
 	public Move chooseMove(GameState state) {
-//		try {
-//			Thread.sleep(3);
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		}
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		ArrayList<? extends Move> possibleMoves = state.possibleMoves();
-		return possibleMoves.get((int) (r.nextDouble() * possibleMoves.size()));
+		Move moveToMake = possibleMoves.get((int) (r.nextDouble() * possibleMoves.size()));
+		System.out.println("Random player making move: " + moveToMake);
+		return moveToMake;
 	}
 }

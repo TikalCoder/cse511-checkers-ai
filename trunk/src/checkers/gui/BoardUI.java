@@ -63,7 +63,7 @@ public class BoardUI extends JPanel {
 				// Keep track of last selection
 				Point oldSquare = selectedSquare;
 				PositionState oldState = null;
-				int oldIndex = -1;
+				int oldIndex = 0;
 				if (oldSquare != null) {
 					oldIndex = gridToPosition(oldSquare);
 					oldState = gameState.getBoard().stateAt(oldIndex);
@@ -76,7 +76,7 @@ public class BoardUI extends JPanel {
 				int y = me.getY() / cellHeight;
 				Point selection = new Point(x, y);
 				int selectedIndex = gridToPosition(selection);
-				if (selectedIndex == -1
+				if (selectedIndex == 0
 						|| gameState.getBoard().hasPlayersPieceAt(selectedIndex, gameState.playerToMove().opponent())) // ignore clicks on invalid locations
 					return;
 				PositionState selectedState = gameState.getBoard().stateAt(selectedIndex);
@@ -89,9 +89,11 @@ public class BoardUI extends JPanel {
 						&& oldState != PositionState.EMPTY
 						&& selectedState == PositionState.EMPTY) {
 					// try to make a move from oldSquare to selectedSquare in Board (model)...
-					System.out.println("Make move from: " + oldIndex + " to: " + selectedIndex);
+					String move = gameState.getBoard().singleJumpIsPossible(oldIndex, selectedIndex) ? "jump" : "walk";
+					System.out.println(gameState.playerToMove() + " " + move + " from: " + oldIndex + " to: " + selectedIndex);
 					synchronized (player) {
 						player.setNextMove(oldIndex, selectedIndex);
+						clearSelection();
 						player.notify();
 					}
 //					if (board.makeSingleMove(oldIndex, selectedIndex)) {
@@ -236,5 +238,6 @@ public class BoardUI extends JPanel {
 
 	public void setGameState(GameState newState) {
 		gameState = newState;
+		repaint();
 	}
 }

@@ -19,7 +19,7 @@ public class GUIDisplay extends Display {
 
 	@Override
 	public void update(Move move, GameState newState) {
-//		gui.setGameState(newState);
+		gui.setGameState(newState);
 		gui.repaint();
 	}
 

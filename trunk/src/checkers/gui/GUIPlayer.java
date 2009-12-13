@@ -24,16 +24,29 @@ public class GUIPlayer extends Player {
 
 	@Override
 	public Move chooseMove(GameState state) {
-		synchronized (this) {
-			gui.allowedToMove(state, this);
-			try {
-				wait();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			System.out.println("done waiting");
+		GameState stateClone = null;
+		try {
+			 stateClone = (GameState) state.clone();
+		} catch (CloneNotSupportedException e1) {
+			e1.printStackTrace();
 		}
-		return new Walk(nextStartPos, nextEndPos);
+		ArrayList<Integer> moveSequence = new ArrayList<Integer>();
+		do {
+			synchronized (this) {
+				gui.allowedToMove(stateClone, this);
+				try {
+					wait();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			if (moveSequence.isEmpty())
+				moveSequence.add(nextStartPos);
+			moveSequence.add(nextEndPos);
+		} while (!stateClone.makeSingleMove(nextStartPos, nextEndPos));
+		
+		return moveSequenceToMove(moveSequence);
 	}
 
 	public void setNextMove(int startPos, int endPos) {
@@ -63,7 +76,7 @@ public class GUIPlayer extends Player {
 		Jump jump = new Jump(moveSequence.get(0), moveSequence.get(1));
 
 		for (int i = 2; i < moveSequence.size(); ++i) {
-			jump.jumpAgain(i);
+			jump.jumpAgain(moveSequence.get(i));
 		}
 
 		return jump;
