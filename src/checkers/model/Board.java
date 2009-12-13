@@ -1,6 +1,7 @@
 package checkers.model;
 
 import java.util.ArrayList;
+import static java.lang.System.arraycopy;
 
 /**
  * Represents the checkers board, and where all the pieces are, at a
@@ -127,6 +128,16 @@ public class Board implements Cloneable {
 			positionStates[i] = PositionState.EMPTY;
 		for (int i = 20; i < 32; ++i)
 			positionStates[i] = PositionState.WHITE_MAN;
+	}
+	
+	/**
+	 * Copy constructor.
+	 * 
+	 * @param toCopy The Board to copy.
+	 */
+	public Board(Board toCopy) {
+		positionStates = new PositionState[32];
+		arraycopy(toCopy.positionStates, 0, positionStates, 0, 32);
 	}
 	
 	public Board(PositionState[] positionStates) {
