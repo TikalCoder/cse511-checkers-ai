@@ -37,8 +37,7 @@ public class Board implements Cloneable {
 		Board clone = new Board();
 		PositionState[] positionStatesClone = new PositionState[positionStates.length];
 
-		for (int i = 0; i < positionStates.length; i++)
-			positionStatesClone[i] = positionStates[i];
+		arraycopy(positionStates, 0, positionStatesClone, 0, 32);
 
 		clone.positionStates = positionStatesClone;
 		return clone;
