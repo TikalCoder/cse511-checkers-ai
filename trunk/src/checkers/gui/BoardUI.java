@@ -103,8 +103,9 @@ public class BoardUI extends JPanel {
 					   * This will happen if clicking from a square with a piece to a square that
 					   * cannot be reached from that piece should not change the selection.
 					   * Note/TODO: will not work until there is some way to know the user is in the middle of a jump
-					else if (!inMiddleOfJump)
-						selectedSquare = oldSquare;*/
+					  
+					if (gameState.isJumping())
+						selectedSquare = oldSquare; */
 					
 //					new PrettyBoardPrinter().print(board);
 				}
