@@ -2,6 +2,7 @@ package checkers;
 
 import java.io.FileNotFoundException;
 
+import checkers.ai.NegamaxPlayer;
 import checkers.ai.RandomPlayer;
 import checkers.ascii.AsciiDisplay;
 import checkers.ascii.AsciiPlayer;
@@ -29,8 +30,9 @@ class NewMain {
 		
 		Frame gui = new Frame();
 		
-//		Player playerForWhite = new RandomPlayer();
-		Player playerForWhite = new GUIPlayer(gui.getBoardUI());
+		Player playerForWhite = new RandomPlayer();
+//		Player playerForWhite = new NegamaxPlayer(10);
+//		Player playerForWhite = new GUIPlayer(gui.getBoardUI());
 //		Player playerForWhite = new AsciiPlayer();
 		Player playerForBlack = new GUIPlayer(gui.getBoardUI());
 //		Player playerForBlack = new RandomPlayer();
@@ -47,8 +49,11 @@ class NewMain {
 			game.makeMove(game.getPlayerToMove().chooseMove(game.getState()));
 		}
 
-
 		// Print end-game messages
+		printEndGameMessages(game);
+	}
+
+	private static void printEndGameMessages(Game game) {
 		System.out.println("\n");
 		new PrettyBoardPrinter().print(game.getState().getBoard());
 		System.out.println("\n" + game.getState().playerToMove().opponent() + " wins!!!\n");

@@ -42,7 +42,7 @@ public class NegamaxOrderingPlayer extends Player {
 		Double alpha = Double.NEGATIVE_INFINITY;
 		Double beta = Double.POSITIVE_INFINITY;
 		for (Move choice : getOrderedMoves(state, searchDepth + orderingSearchDepth, alpha, beta)) {
-			GameState successor = new GameState(state);
+			GameState successor = (GameState) state.clone();
 			successor.makeMove(choice);
 			Double util = -negamax(successor, searchDepth - 1, searchDepth + orderingSearchDepth,  -beta, -alpha);
 			
@@ -67,7 +67,7 @@ public class NegamaxOrderingPlayer extends Player {
 		}
 		
 		for (Move choice : getOrderedMoves(state, interiorSearchDepth, alpha, beta)) {
-			GameState successor = new GameState(state);
+			GameState successor = (GameState) state.clone();
 			successor.makeMove(choice);
 			Double util = -negamax(successor, depth - 1, interiorSearchDepth, -beta, -alpha);
 			
@@ -90,7 +90,7 @@ public class NegamaxOrderingPlayer extends Player {
 		// the negamax method doesn't keep track of moves, just values).
 		OrderedMoveList orderedChoices = new OrderedMoveList();
 		for (Move choice : state.possibleMoves()) {
-			GameState successor = new GameState(state);
+			GameState successor = (GameState) state.clone();
 			successor.makeMove(choice);
 			
 			Double util = -negamax(successor, interiorSearchDepth - 1, interiorSearchDepth + orderingSearchDepth, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);

@@ -232,7 +232,7 @@ public class BoardUI extends JPanel {
 		}
 	}
 
-	public synchronized void allowedToMove(GameState gameState, GUIPlayer player) {
+	public void allowedToMove(GameState gameState, GUIPlayer player) {
 		this.gameState = gameState;
 		this.player = player;
 	}

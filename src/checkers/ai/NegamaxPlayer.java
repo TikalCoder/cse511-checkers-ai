@@ -1,14 +1,9 @@
 package checkers.ai;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import checkers.Player;
 import checkers.model.GameState;
 import checkers.model.Move;
 import checkers.model.PlayerId;
-import checkers.ai.Utils;
-import checkers.model.Board;
 
 public class NegamaxPlayer extends Player {
 	private Integer searchDepth;
@@ -42,7 +37,7 @@ public class NegamaxPlayer extends Player {
 		Move bestChoice = null;
 		Double val = Double.NEGATIVE_INFINITY;
 		for (Move choice : state.possibleMoves()) {
-			GameState successor = new GameState(state);
+			GameState successor = (GameState) state.clone();
 			successor.makeMove(choice);
 			Double util = -negamax(successor, searchDepth - 1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
 			if (util.compareTo(val) > 0) {
@@ -61,7 +56,7 @@ public class NegamaxPlayer extends Player {
 		}
 		
 		for (Move choice : state.possibleMoves()) {
-			GameState successor = new GameState(state);
+			GameState successor = (GameState) state.clone();
 			successor.makeMove(choice);
 			Double util = -negamax(successor, depth - 1, -beta, -alpha);
 			if (util > alpha) alpha = util;

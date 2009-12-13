@@ -24,12 +24,7 @@ public class GUIPlayer extends Player {
 
 	@Override
 	public Move chooseMove(GameState state) {
-		GameState stateClone = null;
-		try {
-			 stateClone = (GameState) state.clone();
-		} catch (CloneNotSupportedException e1) {
-			e1.printStackTrace();
-		}
+		GameState stateClone = (GameState) state.clone();
 		ArrayList<Integer> moveSequence = new ArrayList<Integer>();
 		do {
 			synchronized (this) {

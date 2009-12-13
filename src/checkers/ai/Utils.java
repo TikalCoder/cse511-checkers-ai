@@ -1,11 +1,7 @@
 package checkers.ai;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import checkers.model.Board;
 import checkers.model.GameState;
-import checkers.model.Move;
 import checkers.model.Board.PositionState;
 
 public class Utils {

@@ -33,7 +33,7 @@ public class Board implements Cloneable {
 	private PositionState[] positionStates;
 
 	@Override
-	public Object clone() throws CloneNotSupportedException {
+	public Object clone() {
 		Board clone = new Board();
 		PositionState[] positionStatesClone = new PositionState[positionStates.length];
 		
