@@ -183,7 +183,7 @@ public class GameState implements Cloneable {
 	}
 
 	@Override
-	public Object clone() throws CloneNotSupportedException {
+	public Object clone() {
 		GameState clone = new GameState();
 		clone.board = (Board) board.clone();
 		clone.jumper = jumper;

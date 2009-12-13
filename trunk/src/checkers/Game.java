@@ -11,28 +11,41 @@ import checkers.model.PlayerId;
 /**
  * Represents a single checkers game, and allows it to be played by any kind of
  * Player (human or AI) and displayed by any kind of Display.
- *
+ * 
  * @author Kurt Glastetter
  */
 public class Game {
+	/**
+	 * Singleton maintaining a reference to the current game.
+	 */
 	private static Game CURRENT_GAME;
-	
-	// stores the current state of this Game
+
+	/**
+	 * Stores the current state of this Game.
+	 */
 	private GameState state;
 
-	// maps each PlayerId onto an actual Player object, which may be any human
-	// or AI player
+	/**
+	 * Maps each PlayerId onto an actual Player object, which may be any human
+	 * or AI player
+	 */
 	private EnumMap<PlayerId, Player> players;
 
-	// list of all the Display objects that are registered to receive updates
-	// from this Game
+	/**
+	 * List of all the Display objects that are registered to receive updates
+	 * from this Game
+	 */
 	private ArrayList<Display> displays;
 
-	private Stack<GameState> stateHistory;
-	
 	/**
-	 * Constructor initializes to a specified game state, and remembers who
-	 * the players are.
+	 * Stack holding all the game states that the game has gone through, used
+	 * for allowing undo operations.
+	 */
+	private Stack<GameState> stateHistory;
+
+	/**
+	 * Constructor initializes to a specified game state, and remembers who the
+	 * players are.
 	 */
 	public Game(Player playerForBlack, Player playerForWhite, GameState state) {
 		this.state = state;
@@ -42,32 +55,27 @@ public class Game {
 		players.put(PlayerId.WHITE, playerForWhite);
 
 		displays = new ArrayList<Display>();
-		
+
 		stateHistory = new Stack<GameState>();
-		
+
 		// Add first state to state history for undo support.
-		try {
-			stateHistory.push((GameState) state.clone());
-		} catch (CloneNotSupportedException e) {
-			e.printStackTrace();
-		}
-		
+		stateHistory.push((GameState) state.clone());
+
 		if (CURRENT_GAME == null)
 			CURRENT_GAME = this;
 	}
-	
 
 	/**
-	 * Constructor initializes to a specified game state, and remembers who
-	 * the players are.
+	 * Constructor initializes to a specified game state, and remembers who the
+	 * players are.
 	 */
 	public Game(Player playerForBlack, Player playerForWhite) {
 		this(playerForBlack, playerForWhite, new GameState());
 	}
 
 	/**
-	 * Registers the given Display object to receive updates everytime a move
-	 * is made, and also initializes it to the current state of the game.
+	 * Registers the given Display object to receive updates everytime a move is
+	 * made, and also initializes it to the current state of the game.
 	 */
 	public void registerDisplay(Display display) {
 		displays.add(display);
@@ -87,14 +95,10 @@ public class Game {
 	 */
 	public void makeMove(Move move) {
 		state.makeMove(move);
-		
-		try {
-			stateHistory.add((GameState) state.clone());
-		} catch (CloneNotSupportedException e) {
-			e.printStackTrace();
-		}
 
-		// update the displays with the move and new state
+		stateHistory.add((GameState) state.clone());
+
+		// Update the displays with the move and new state
 		for (Display display : displays)
 			display.update(move, state);
 	}
@@ -112,17 +116,23 @@ public class Game {
 	public Player getPlayerToMove() {
 		return players.get(state.playerToMove());
 	}
-	
+
+	/**
+	 * Returns a reference to the singleton current game.
+	 */
 	public static Game currentGame() {
 		return CURRENT_GAME;
 	}
 
+	/**
+	 * Undo a single move in this Game.
+	 */
 	public void undo() {
 		if (stateHistory.size() > 1) {
 			stateHistory.pop();
 			state.setState(stateHistory.peek());
 			for (Display display : displays)
-				display.init(state);	
+				display.init(state);
 		}
 	}
 }
