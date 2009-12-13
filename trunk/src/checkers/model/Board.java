@@ -380,6 +380,25 @@ public class Board implements Cloneable {
 		return moveIsComplete;
 	}
 
+	public void makeMove(Move move) {
+		//TODO: fill this in (Kurt)
+	}
+
+	public void makeMoveUnchecked(Move move) {
+		setStateAt(move.endPos(), stateAt(move.startPos()));
+		setStateAt(move.startPos(), PositionState.EMPTY);
+
+		if (move.isJump()) {
+			for (int i = 1; i < move.getSequence().size(); ++i) {
+				setStateAt(jumpOverPos(
+							move.getSequence().get(i - 1),
+							move.getSequence().get(i)), PositionState.EMPTY);
+			}
+		}
+	}
+
+	//TODO: undo move
+
 	static boolean posIsInBlacksKingRow(int pos) {
 		return 29 <= pos && pos <= 32;
 	}
