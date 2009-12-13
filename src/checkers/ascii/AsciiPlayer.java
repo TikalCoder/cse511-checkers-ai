@@ -50,7 +50,7 @@ public class AsciiPlayer extends Player {
 				}
 
 				// turn the position sequence into a Move
-				Move move = positionSequenceToMove(positionSequence);
+				Move move = state.generateMove(positionSequence);
 
 				// make sure the move matches a possible move
 				if (possibleMoves.contains(move))
@@ -77,31 +77,6 @@ public class AsciiPlayer extends Player {
 				"  ___\n" +
 				" (###)\n" +
 				"  \"\"\"");
-		}
-	}
-
-	/**
-	 * Converts a sequence of position integers into a Move object.
-	 */
-	private static Move positionSequenceToMove(ArrayList<Integer> sequence) {
-		if (sequence.size() < 2)
-			throw new IllegalArgumentException(
-					"position sequence must have at least 2 positions to be"
-					+ " considered a move");
-
-		int pos0 = sequence.get(0);
-		int pos1 = sequence.get(1);
-
-		if (Board.areWalkable(pos0, pos1) && sequence.size() == 2) {
-			// we have a walk move
-			return new Walk(pos0, pos1);
-		} else {
-			// we have a jump move or an invalid move; here we just assume it
-			// is a valid jump and return it
-			Jump jump = new Jump(pos0, pos1);
-			for (int i = 2; i < sequence.size(); ++i)
-				jump.jumpAgain(sequence.get(i));
-			return jump;
 		}
 	}
 }

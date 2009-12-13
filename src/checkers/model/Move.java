@@ -12,7 +12,7 @@ public abstract class Move {
 	protected ArrayList<Integer> sequence;
 
 	protected Move(int startPos, int nextPos) {
-		sequence = new ArrayList<Integer>(2);
+		sequence = new ArrayList<Integer>(10);
 		sequence.add(startPos);
 		sequence.add(nextPos);
 	}

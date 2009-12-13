@@ -36,10 +36,10 @@ public class Board implements Cloneable {
 	public Object clone() {
 		Board clone = new Board();
 		PositionState[] positionStatesClone = new PositionState[positionStates.length];
-		
+
 		for (int i = 0; i < positionStates.length; i++)
 			positionStatesClone[i] = positionStates[i];
-		
+
 		clone.positionStates = positionStatesClone;
 		return clone;
 	}
@@ -107,7 +107,7 @@ public class Board implements Cloneable {
 			assert hasPiece();
 			return hasBlackPiece() ? PlayerId.BLACK : PlayerId.WHITE;
 		}
-		
+
 		public static PositionState createPieceForPlayer(PlayerId player, boolean isKing) {
 			if (player == PlayerId.BLACK)
 				return isKing ? BLACK_KING : BLACK_MAN;
@@ -129,26 +129,26 @@ public class Board implements Cloneable {
 		for (int i = 20; i < 32; ++i)
 			positionStates[i] = PositionState.WHITE_MAN;
 	}
-	
+
 	/**
 	 * Copy constructor.
-	 * 
+	 *
 	 * @param toCopy The Board to copy.
 	 */
 	public Board(Board toCopy) {
 		positionStates = new PositionState[32];
 		arraycopy(toCopy.positionStates, 0, positionStates, 0, 32);
 	}
-	
+
 	public Board(PositionState[] positionStates) {
 		this.positionStates = positionStates;
 	}
-	
-	
+
+
 	/**
 	 * Constructor initializes the board to a game in progress using
 	 * with both a double-jump and a single jump possible.
-	 * 
+	 *
 	 * TODO: Test that the GUI doesn't allow a certain moving the piece
 	 * not in progress.
 	 */
@@ -157,7 +157,7 @@ public class Board implements Cloneable {
 
 		for (int i =  0; i < 32; ++i)
 			positionStates[i] = PositionState.EMPTY;
-		
+
 		positionStates[8] = PositionState.BLACK_MAN;
 		positionStates[9] = PositionState.BLACK_MAN;
 
@@ -749,14 +749,58 @@ public class Board implements Cloneable {
 		if (atEndOfJump) {
 			int pos0 = jumpSequence.get(0).startPos();
 			int pos1 = jumpSequence.get(0).endPos();
+			boolean jumpedKingFirst =
+					hasKingAt(jumpSequence.get(0).jumpedPos());
 
-			Jump jump = new Jump(pos0, pos1);
+			Jump jump = new Jump(pos0, pos1, jumpedKingFirst);
 
 			for (int i = 1; i < jumpSequence.size(); ++i)
-				jump.jumpAgain(jumpSequence.get(i).endPos());
+				jump.jumpAgain(
+						jumpSequence.get(i).endPos(),
+						hasKingAt(jumpSequence.get(i).jumpedPos()));
 
 			jumps.add(jump);
 		}
+	}
+
+	/**
+	 * Converts a sequence of position integers into a Move object.
+	 */
+	public Move generateMove(ArrayList<Integer> positionSequence) {
+		if (positionSequence.size() < 2)
+			throw new IllegalArgumentException(
+					"position sequence must have at least 2 positions to be"
+					+ " considered a move");
+
+		if (areWalkable(positionSequence.get(0), positionSequence.get(1)))
+			return generateWalk(positionSequence);
+		else if (areJumpable(positionSequence.get(0), positionSequence.get(1)))
+			return generateJump(positionSequence);
+		else
+			throw new IllegalArgumentException(
+					"postion sequence does not represent a possible move");
+	}
+
+	public Walk generateWalk(ArrayList<Integer> posSequence) {
+		if (posSequence.size() != 2)
+			throw new IllegalArgumentException("can only walk one step at a time");
+
+		return new Walk(posSequence.get(0), posSequence.get(1));
+	}
+
+	public Jump generateJump(ArrayList<Integer> posSequence) {
+		Jump jump = new Jump(posSequence.get(0), posSequence.get(1),
+				hasKingAt(jumpOverPos(
+						posSequence.get(0), posSequence.get(1))));
+
+		for (int i = 2; i < posSequence.size(); ++i) {
+			jump.jumpAgain(
+					posSequence.get(i),
+					hasKingAt(jumpOverPos(
+							posSequence.get(i - 1), posSequence.get(i))));
+		}
+
+		return jump;
 	}
 
 	public void set(Board board) {
