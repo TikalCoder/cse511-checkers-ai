@@ -9,6 +9,7 @@ import checkers.ascii.AsciiPlayer;
 import checkers.gui.Frame;
 import checkers.gui.GUIDisplay;
 import checkers.gui.GUIPlayer;
+import checkers.io.FenDisplay;
 import checkers.io.FenIO;
 import checkers.model.GameState;
 import checkers.print.PrettyBoardPrinter;
@@ -44,6 +45,7 @@ class NewMain {
 
 //		game.registerDisplay(display);
 		game.registerDisplay(guiDisplay);
+		game.registerDisplay(new FenDisplay());
 
 		while (!game.isOver()) {
 			game.makeMove(game.getPlayerToMove().chooseMove(game.getState()));
