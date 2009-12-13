@@ -37,7 +37,7 @@ public class GameState implements Cloneable {
 		jumper = 0;
 		board = new Board();
 	}
-	
+
 	/**
 	 * Constructor initializes the game state described by the parameters.
 	*/
@@ -71,6 +71,15 @@ public class GameState implements Cloneable {
 		} else {
 			return board.possibleMoves(playerToMove);
 		}
+	}
+
+	public ArrayList<SingleMove> possibleSingleMoves() {
+		ArrayList<SingleMove> ret = new ArrayList<SingleMove>();
+		for (Move move : possibleMoves())
+			ret.add(new SingleMove(
+					move.getSequence().get(0),
+					move.getSequence().get(1)));
+		return ret;
 	}
 
 	/**
@@ -107,7 +116,7 @@ public class GameState implements Cloneable {
 			playerToMove = playerToMove.opponent();
 		else
 			jumper = nextPos;
-		
+
 		return moveComplete;
 	}
 
@@ -170,7 +179,7 @@ public class GameState implements Cloneable {
 		clone.playerToMove = playerToMove;
 		return clone;
 	}
-	
+
 	// Used for Undo?
 	public void setState(GameState state) {
 		board.set(state.board);
