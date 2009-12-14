@@ -8,10 +8,16 @@ import checkers.model.Move;
  *
  * @author Kurt Glastetter
  */
-public abstract class Player {
+public abstract class Player implements Cloneable {
 	/**
 	 * Called when the checkers game engine requests this Player to make a
 	 * move, from the given game state.
 	 */
 	public abstract Move chooseMove(GameState state);
+
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		return super.clone();
+	}
+	
 }

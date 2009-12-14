@@ -7,7 +7,7 @@ import checkers.model.Board.PositionState;
 
 public class Utils {
 	
-	public static Double utilityOf(GameState state) {
+	public static double utilityOf(GameState state) {
 		if (state.gameIsOver()) {
 			if (state.playerToMove() == PlayerId.WHITE) { // white lost!
 				return Double.NEGATIVE_INFINITY;
@@ -31,10 +31,10 @@ public class Utils {
 			}
 		}
 		
-		Integer util = white - black;
+		int util = white - black;
 		util += (250 * (white - black)) / (white + black);
 		
-		return new Double(util);
+		return util;
 	}
 	
 	

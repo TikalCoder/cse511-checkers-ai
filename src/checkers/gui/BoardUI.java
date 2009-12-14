@@ -7,6 +7,7 @@ import static checkers.Utils.validSquare;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -22,10 +23,15 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import checkers.Constants;
+import checkers.Game;
+import checkers.Player;
 import checkers.Utils;
+import checkers.ai.AIPlayer;
 import checkers.model.GameState;
 import checkers.model.Move;
+import checkers.model.SingleMove;
 import checkers.model.Board.PositionState;
+import checkers.print.PrettyBoardPrinter;
 
 /**
  * This class represents a Checkers board with pieces on it, displaying the
@@ -47,9 +53,20 @@ public class BoardUI extends JPanel {
 
 	private BufferedImage kingImg;
 
+	/**
+	 * Maintain the current game state.
+	 */
 	private GameState gameState;
 
+	/**
+	 * The player that chooses moves for this UI.
+	 */
 	private GUIPlayer player;
+	
+	/**
+	 * True if the possible moves a computer player can make should be hidden.
+	 */
+	private boolean hidePossibleAIMoves;
 	
 	public BoardUI() {
 		setPreferredSize(new Dimension(Constants.WIDTH, Constants.HEIGHT));
@@ -76,9 +93,24 @@ public class BoardUI extends JPanel {
 				int y = me.getY() / cellHeight;
 				Point selection = new Point(x, y);
 				int selectedIndex = gridToPosition(selection);
-				if (selectedIndex == 0
-						|| gameState.getBoard().hasPlayersPieceAt(selectedIndex, gameState.playerToMove().opponent())) // ignore clicks on invalid locations
+				
+				ArrayList<SingleMove> possibleMoves = gameState.possibleSingleMoves();
+				boolean validStart = false;
+				boolean validEnd = false;
+				for (SingleMove singleMove : possibleMoves) {
+					if (singleMove.startPos == selectedIndex)
+						validStart = true;
+					if (singleMove.endPos == selectedIndex)
+						validEnd = true;
+				}
+				
+				if (Game.currentGame().getPlayerToMove() instanceof AIPlayer
+						|| !(validStart
+							|| oldState != null
+							&& oldState.hasPlayersPiece(gameState.playerToMove())
+							&& validEnd)) // ignore clicks on invalid locations
 					return;
+				
 				PositionState selectedState = gameState.getBoard().stateAt(selectedIndex);
 				selectedSquare = selection;
 				
@@ -86,8 +118,9 @@ public class BoardUI extends JPanel {
 				if (selectedSquare.equals(oldSquare)) {
 					clearSelection();
 				} else if (validSquare(x, y) && oldSquare != null
-						&& oldState != PositionState.EMPTY
-						&& selectedState == PositionState.EMPTY) {
+						&& oldState.hasPlayersPiece(gameState.playerToMove())
+						//&& gameState.getBoard().possibleSingleMove(oldIndex, selectedIndex)) {
+						&& gameState.isPossibleSingleMove(oldIndex, selectedIndex)) {
 					// try to make a move from oldSquare to selectedSquare in Board (model)...
 					String move = gameState.getBoard().singleJumpIsPossible(oldIndex, selectedIndex) ? "jump" : "walk";
 					System.out.println(gameState.playerToMove() + " " + move + " from: " + oldIndex + " to: " + selectedIndex);
@@ -103,12 +136,14 @@ public class BoardUI extends JPanel {
 					   * This will happen if clicking from a square with a piece to a square that
 					   * cannot be reached from that piece should not change the selection.
 					   * Note/TODO: will not work until there is some way to know the user is in the middle of a jump
-					  
-					if (gameState.isJumping())
-						selectedSquare = oldSquare; */
+				*/	  
+//					if (!gameState.isJumping())
+//						selectedSquare = oldSquare;
 					
-//					new PrettyBoardPrinter().print(board);
-				}
+					new PrettyBoardPrinter().print(gameState.getBoard());
+				} else if (oldSquare != null)
+					selectedSquare = oldSquare;
+				
 
 				// Update the display
 				repaint();
@@ -118,6 +153,14 @@ public class BoardUI extends JPanel {
 				selectedSquare = null;
 			}
 		});
+	}
+
+	public boolean hidePossibleAIMoves() {
+		return hidePossibleAIMoves;
+	}
+
+	public void setHidePossibleAIMoves(boolean hidePossibleAIMoves) {
+		this.hidePossibleAIMoves = hidePossibleAIMoves;
 	}
 
 	/**
@@ -139,8 +182,10 @@ public class BoardUI extends JPanel {
 		// Draw the board squares
 		drawBoard(g, cellWidth, cellHeight);
 
-		// Draw the possible moves
-		drawPossibleMoves(g, cellWidth, cellHeight, pieceWidth, pieceHeight);
+		// Draw the possible moves from the current game state for non-AI players
+		Player currPlayer = Game.currentGame().getPlayerToMove();
+		if (currPlayer instanceof AIPlayer && !hidePossibleAIMoves || !(currPlayer instanceof AIPlayer))
+			drawPossibleMoves(g, cellWidth, cellHeight, pieceWidth, pieceHeight);
 
 		for (int i = 0; i < GRID_SIZE; i++) {
 			for (int j = 0; j < GRID_SIZE; j++) {
@@ -150,6 +195,16 @@ public class BoardUI extends JPanel {
 				}
 			}
 		}
+		
+		if (Game.currentGame().isOver())
+			drawEndGameMessage(g);
+	}
+
+	private void drawEndGameMessage(Graphics2D g) {
+		String winner = Game.currentGame().getWinner().toString();
+		g.setFont(new Font("Verdana", Font.BOLD, getWidth() / 10));
+		g.setColor(Color.green);
+		g.drawString(winner + " wins!!", getWidth() / 7, getHeight() / 2 + getHeight() / 30);
 	}
 
 	private void drawBoard(Graphics2D g, int cellWidth, int cellHeight) {
@@ -192,7 +247,10 @@ public class BoardUI extends JPanel {
 		g.fill(new Ellipse2D.Double(x, y, pieceWidth, pieceHeight));
 		
 		if (state.hasKing()) {
-			g.drawImage(kingImg, cellWidth * i + cellWidth / 2 - kingImg.getWidth() / 2, cellHeight * j + cellHeight / 2 - kingImg.getHeight() / 2, null);
+			g.drawImage(kingImg,
+						cellWidth * i + cellWidth / 2 - kingImg.getWidth() / 2,
+						cellHeight * j + cellHeight / 2 - kingImg.getHeight() / 2,
+						null);
 		}
 	}
 
@@ -202,7 +260,7 @@ public class BoardUI extends JPanel {
 			moves = gameState.possibleMoves();
 		else {
 			int selectedIndex = gridToPosition(selectedSquare);
-			if (gameState.getBoard().possibleJumps(gameState.playerToMove()).isEmpty()) // if no possible jumps possible on board, draw walks from selected piece
+			if (gameState.getBoard().possibleJumps(gameState.playerToMove()).isEmpty()) // if no jumps possible anywhere on board, draw walks from selected piece
 				moves = gameState.getBoard().possibleWalks(selectedIndex);
 			else // draw jumps from selected piece
 				moves = gameState.getBoard().possibleJumps(selectedIndex);
@@ -220,13 +278,22 @@ public class BoardUI extends JPanel {
 				final int outlinePadding = 3;
 				if (i == 0) {
 					g.setColor(new Color(255, 140, 0));
-					g.fill(new Ellipse2D.Double(cellWidth * p.getX() + Constants.PADDING / 2.0 - outlinePadding, cellHeight * p.getY() + Constants.PADDING / 2.0 - outlinePadding, pieceWidth + 2 * outlinePadding, pieceHeight + 2 * outlinePadding));
+					g.fill(new Ellipse2D.Double(cellWidth * p.getX() + Constants.PADDING / 2.0 - outlinePadding,
+												cellHeight * p.getY() + Constants.PADDING / 2.0 - outlinePadding,
+												pieceWidth + 2 * outlinePadding,
+												pieceHeight + 2 * outlinePadding));
 				} else if (i >= 1) {
 					g.setColor(new Color(255, 0, 0));
-					g.fill(new Ellipse2D.Double(cellWidth * p.getX() + Constants.PADDING / 2.0 - outlinePadding, cellHeight * p.getY() + Constants.PADDING / 2.0 - outlinePadding, pieceWidth + 2 * outlinePadding, pieceHeight + 2 * outlinePadding));
+					g.fill(new Ellipse2D.Double(cellWidth * p.getX() + Constants.PADDING / 2.0 - outlinePadding,
+												cellHeight * p.getY() + Constants.PADDING / 2.0 - outlinePadding,
+												pieceWidth + 2 * outlinePadding,
+												pieceHeight + 2 * outlinePadding));
 
 					g.setColor(new Color(152, 152, 152));
-					g.fill(new Ellipse2D.Double(cellWidth * p.getX() + Constants.PADDING / 2.0, cellHeight * p.getY() + Constants.PADDING / 2.0, pieceWidth, pieceHeight));
+					g.fill(new Ellipse2D.Double(cellWidth * p.getX() + Constants.PADDING / 2.0,
+												cellHeight * p.getY() + Constants.PADDING / 2.0,
+												pieceWidth,
+												pieceHeight));
 				}
 			}
 		}

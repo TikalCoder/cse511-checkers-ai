@@ -60,7 +60,7 @@ public class GameState implements Cloneable {
 
 	/**
 	 * Returns true if and only if this GameState is a terminal state (which
-	 * means, someone has won).
+	 * means playerToMove's opponent has won).
 	 */
 	public boolean gameIsOver() {
 		return board.possibleMoves(playerToMove).size() == 0;
@@ -90,6 +90,42 @@ public class GameState implements Cloneable {
 			ret.add(new SingleMove(
 					move.getSequence().get(0),
 					move.getSequence().get(1)));
+		return ret;
+	}
+	
+	/**
+	 * Returns true if the given endPos is a valid end position for a currently
+	 * possible single move.
+	 */
+	public boolean isValidSingleMoveEndPos(int endPos) {
+		boolean ret = false;
+		
+		ArrayList<SingleMove> moves = possibleSingleMoves();
+		for (SingleMove singleMove : moves) {
+			if (singleMove.endPos() == endPos) {
+				ret = true;
+				break;
+			}
+		}
+		
+		return ret;
+	}
+	
+	/**
+	 * Returns true if the given startPos and endPos describe a possible single move
+	 * from the current state.
+	 */
+	public boolean isPossibleSingleMove(int startPos, int endPos) {
+		boolean ret = false;
+		
+		ArrayList<SingleMove> moves = possibleSingleMoves();
+		for (SingleMove singleMove : moves) {
+			if (singleMove.startPos() == startPos && singleMove.endPos() == endPos) {
+				ret = true;
+				break;
+			}
+		}
+		
 		return ret;
 	}
 
