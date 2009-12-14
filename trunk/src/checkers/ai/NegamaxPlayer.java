@@ -1,14 +1,10 @@
 package checkers.ai;
 
-import java.util.List;
-
-import checkers.Player;
 import checkers.model.GameState;
 import checkers.model.Move;
 import checkers.model.PlayerId;
-import checkers.ai.Utils;
 
-public class NegamaxPlayer extends Player {
+public class NegamaxPlayer extends AIPlayer {
 	private Integer searchDepth;
 	private Integer searches;
 	private Integer evals;
