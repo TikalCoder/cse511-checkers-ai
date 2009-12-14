@@ -1,7 +1,8 @@
 package checkers.io;
 
-import java.io.FileNotFoundException;
+import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.Scanner;
 import java.util.regex.MatchResult;
 
@@ -19,7 +20,16 @@ import checkers.model.Board.PositionState;
  * @author Kurt Glastetter
  */
 public class FenIO {
-	public static GameState parseFen(String filename) throws FileNotFoundException {
+	public static GameState parseFenFile(String filename) throws IOException {
+		BufferedReader reader = new BufferedReader(new FileReader(filename));
+		String line = "";
+		String file = "";
+		while ((line = reader.readLine()) != null)
+			file += line + "\n";
+		return parseFen(file);
+	}
+	
+	public static GameState parseFen(String fen) {
 		GameState startingState;
 		PositionState[] positionStates = new PositionState[32];
 		for (int i = 0; i < positionStates.length; i++)
@@ -28,7 +38,7 @@ public class FenIO {
 		PlayerId playerToMove;
 		int jumper = 0;
 
-		Scanner sc = new Scanner(new FileReader(filename));
+		Scanner sc = new Scanner(fen);
 		sc.findInLine("([WB]):(.+?):(.+?)\\.");
 		MatchResult result = sc.match();
 

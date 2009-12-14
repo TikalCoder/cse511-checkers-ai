@@ -1,6 +1,6 @@
 package checkers;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import checkers.ai.NegamaxPlayer;
 import checkers.ai.RandomPlayer;
@@ -17,22 +17,37 @@ import checkers.print.PrettyBoardPrinter;
 /**
  * Meant to provide a unified main program, to execute a checkers game for any
  * kind of AI or human player.
+ * 
+ * Usage:
+ * 1) Without any arguments, a new checkers game will be created.
+ * 1) Provide the filename of a file containing FEN.
+ * 2) Provide FEN input directly.
+ * 
+ * Using either options 2 or 3, the initial game state will be set to match the provided FEN.
  *
  * @author Kurt Glastetter
+ * @author Scott Bressler
  */
 class NewMain {
-	public static void main(String args[]) throws FileNotFoundException {
+	public static void main(String args[]) throws IOException {
 		GameState startingState = new GameState();
 
 		// If filename is provided via command-line argument, parse the file as
 		// FEN input to set up the initial game state.
-		if (args.length > 0)
-			startingState = FenIO.parseFen(args[0]);
+		if (args.length > 0) {
+			String filename = args[0];
+			String ext = (filename.lastIndexOf(".")==-1)?"":filename.substring(filename.lastIndexOf(".")+1,filename.length());
+			if (ext.equals("fen") || ext.equals("txt"))
+				startingState = FenIO.parseFenFile(filename);
+			else
+				startingState = FenIO.parseFen(filename);
+			
+		}
 		
 		Frame gui = new Frame();
 		
 //		Player playerForWhite = new RandomPlayer();
-		Player playerForWhite = new NegamaxPlayer(5);
+		Player playerForWhite = new NegamaxPlayer(6);
 //		Player playerForWhite = new GUIPlayer(gui.getBoardUI());
 //		Player playerForWhite = new AsciiPlayer();
 		Player playerForBlack = new GUIPlayer(gui.getBoardUI());
