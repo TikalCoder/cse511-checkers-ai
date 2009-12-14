@@ -1,16 +1,12 @@
 package checkers.ascii;
 
-import java.lang.IllegalArgumentException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 import checkers.Player;
-import checkers.model.Board;
 import checkers.model.GameState;
-import checkers.model.Jump;
 import checkers.model.Move;
 import checkers.model.PlayerId;
-import checkers.model.Walk;
 
 /**
  * A pretty-printed, ASCII-based command-line interface for a human player.
