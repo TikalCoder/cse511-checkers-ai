@@ -45,8 +45,6 @@ public class FenIO {
 		if (state.isJumping())
 			throw new IllegalArgumentException("can't output FEN mid-jump");
 
-		String fen = "";
-
 		return playerIdToPlayerChar(state.playerToMove()) + ":"
 				+ outputPieces(state.getBoard(), PlayerId.WHITE) + ":"
 				+ outputPieces(state.getBoard(), PlayerId.BLACK) + ".";
