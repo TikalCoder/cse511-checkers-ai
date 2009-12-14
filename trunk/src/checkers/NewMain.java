@@ -36,7 +36,7 @@ class NewMain {
 		// FEN input to set up the initial game state.
 		if (args.length > 0) {
 			String filename = args[0];
-			String ext = (filename.lastIndexOf(".")==-1)?"":filename.substring(filename.lastIndexOf(".")+1,filename.length()).toLowerCase();
+			String ext = getFileExtension(filename);
 			if (ext.equals("fen") || ext.equals("txt"))
 				startingState = FenIO.parseFenFile(filename);
 			else
@@ -68,6 +68,11 @@ class NewMain {
 
 		// Print end-game messages
 		printEndGameMessages(game);
+	}
+
+	private static String getFileExtension(String filename) {
+		String ext = (filename.lastIndexOf(".")==-1)?"":filename.substring(filename.lastIndexOf(".")+1,filename.length()).toLowerCase();
+		return ext;
 	}
 
 	private static void printEndGameMessages(Game game) {
