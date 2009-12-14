@@ -147,9 +147,6 @@ public class Board implements Cloneable {
 	/**
 	 * Constructor initializes the board to a game in progress using
 	 * with both a double-jump and a single jump possible.
-	 *
-	 * TODO: Test that the GUI doesn't allow a certain moving the piece
-	 * not in progress.
 	 */
 	public Board(boolean b) {
 		positionStates = new PositionState[32];
