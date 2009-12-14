@@ -32,8 +32,8 @@ class NewMain {
 	public static void main(String args[]) throws IOException {
 		GameState startingState = new GameState();
 
-		// If filename is provided via command-line argument, parse the file as
-		// FEN input to set up the initial game state.
+		// If FEN notation is provided to the game, parse the FEN input
+		// to set up the initial game state.
 		if (args.length > 0) {
 			String filename = args[0];
 			String ext = getFileExtension(filename);
