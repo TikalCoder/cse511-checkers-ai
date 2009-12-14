@@ -13,11 +13,11 @@ public class Utils {
 	 * Converts an (x,y) location to a position index as described by {@link Board}. 
 	 * @param x x-coordinate
 	 * @param y y-coordinate
-	 * @return the position index as described by {@link Board}, or -1 if location is invalid
+	 * @return the position index as described by {@link Board}, or 0 if location is invalid
 	 */
 	public static int gridToPosition(int x, int y) {
 		if (!validSquare(x, y))
-			return -1;
+			return 0;
 		return (int) Math.round((y * GRID_SIZE + x + 1) / 2.0);
 	}
 
