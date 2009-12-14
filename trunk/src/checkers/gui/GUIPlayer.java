@@ -1,14 +1,10 @@
 package checkers.gui;
 
-import java.lang.IllegalArgumentException;
 import java.util.ArrayList;
 
 import checkers.Player;
-import checkers.model.Board;
 import checkers.model.GameState;
-import checkers.model.Jump;
 import checkers.model.Move;
-import checkers.model.Walk;
 
 public class GUIPlayer extends Player {
 	private BoardUI gui;
