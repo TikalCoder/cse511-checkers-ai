@@ -36,12 +36,11 @@ class NewMain {
 		// FEN input to set up the initial game state.
 		if (args.length > 0) {
 			String filename = args[0];
-			String ext = (filename.lastIndexOf(".")==-1)?"":filename.substring(filename.lastIndexOf(".")+1,filename.length());
+			String ext = (filename.lastIndexOf(".")==-1)?"":filename.substring(filename.lastIndexOf(".")+1,filename.length()).toLowerCase();
 			if (ext.equals("fen") || ext.equals("txt"))
 				startingState = FenIO.parseFenFile(filename);
 			else
 				startingState = FenIO.parseFen(filename);
-			
 		}
 		
 		Frame gui = new Frame();
