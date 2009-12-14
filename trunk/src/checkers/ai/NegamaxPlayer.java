@@ -4,10 +4,10 @@ import checkers.model.GameState;
 import checkers.model.Move;
 import checkers.model.PlayerId;
 
-public class NegamaxPlayer extends AIPlayer {
-	private Integer searchDepth;
-	private Integer searches;
-	private Integer evals;
+public class NegamaxPlayer extends AIPlayer implements Cloneable {
+	private int searchDepth;
+	private int searches;
+	private int evals;
 	
 	/**
 	 * Private constructor with no arguments. Disallows creation of a NegamaxPlayer
@@ -24,7 +24,7 @@ public class NegamaxPlayer extends AIPlayer {
 	 * depth of searchDepth.
 	 * @param searchDepth
 	 */
-	public NegamaxPlayer(Integer searchDepth) {
+	public NegamaxPlayer(int searchDepth) {
 		super();
 		this.searchDepth = searchDepth;
 		
@@ -43,12 +43,12 @@ public class NegamaxPlayer extends AIPlayer {
 		// we expand the first level here so we can keep track of the best move (because
 		// the negamax method doesn't keep track of moves, just values).
 		Move bestChoice = null;
-		Double alpha = Double.NEGATIVE_INFINITY;
-		Double beta = Double.POSITIVE_INFINITY;
+		double alpha = Double.NEGATIVE_INFINITY;
+		double beta = Double.POSITIVE_INFINITY;
 		for (Move choice : state.possibleMoves()) {
 			GameState successor = (GameState) state.clone();
 			successor.makeMove(choice);
-			Double util = -negamax(successor, searchDepth - 1,  -beta, -alpha, choice);
+			double util = -negamax(successor, searchDepth - 1,  -beta, -alpha, choice);
 			
 			if (util > alpha) {
 				alpha = util;
@@ -68,19 +68,19 @@ public class NegamaxPlayer extends AIPlayer {
 		return bestChoice;
 	}
 	
-	private Double negamax(GameState state, Integer depth, Double alpha, Double beta, Move lastMove) {
+	private Double negamax(GameState state, int depth, double alpha, double beta, Move lastMove) {
 		searches++;
 		
 		if (state.gameIsOver() || (depth <= 0 && !lastMove.isJump())) {
 			evals++;
-			Double util = Utils.utilityOf(state);
+			double util = Utils.utilityOf(state);
 			return (state.playerToMove() == PlayerId.WHITE) ? util : -util;
 		}
 		
 		for (Move choice : state.possibleMoves()) {
 			GameState successor = (GameState) state.clone();
 			successor.makeMove(choice);
-			Double util = -negamax(successor, depth - 1, -beta, -alpha, choice);
+			double util = -negamax(successor, depth - 1, -beta, -alpha, choice);
 			
 			if (util > alpha) {
 				alpha = util;
@@ -92,6 +92,14 @@ public class NegamaxPlayer extends AIPlayer {
 			}
 		}
 		return alpha;
+	}
+
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		NegamaxPlayer clone =  (NegamaxPlayer) super.clone();
+		clone.evals = 0;
+		clone.searches = 0;
+		return clone;
 	}
 
 }

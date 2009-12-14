@@ -46,7 +46,7 @@ class NewMain {
 		Frame gui = new Frame();
 		
 //		Player playerForWhite = new RandomPlayer();
-		Player playerForWhite = new NegamaxPlayer(6);
+		Player playerForWhite = new NegamaxPlayer(5);
 //		Player playerForWhite = new GUIPlayer(gui.getBoardUI());
 //		Player playerForWhite = new AsciiPlayer();
 		Player playerForBlack = new GUIPlayer(gui.getBoardUI());
@@ -56,7 +56,7 @@ class NewMain {
 
 		Game game = new Game(playerForBlack, playerForWhite, startingState);
 
-		gui.setPlayerTypes();
+		gui.init();
 		
 //		game.registerDisplay(display);
 		game.registerDisplay(new GUIDisplay(gui.getBoardUI()));

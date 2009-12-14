@@ -275,6 +275,13 @@ public class Board implements Cloneable {
 
 		return ret;
 	}
+	
+	/**
+	 * Returns true if a move can be made from fromPos to toPos.
+	 */
+	public boolean possibleSingleMove(int fromPos, int toPos) {
+		return hasPieceAt(fromPos) && (areWalkable(fromPos, toPos) || areJumpable(fromPos, toPos));
+	}
 
 	/**
 	 * Makes a single move, from one position to another; this may be a
@@ -283,7 +290,7 @@ public class Board implements Cloneable {
 	 * there are more jumps to make, or the move failed.
 	 */
 	public boolean makeSingleMove(int fromPos, int toPos) {
-		if (!areWalkable(fromPos, toPos) && !areJumpable(fromPos, toPos)) {
+		if (!areWalkable(fromPos, toPos) && !areJumpable(fromPos, toPos)) { // TODO: replace with possibleSingleMove from above?
 			// impossible move; should probably throw exception?
 			assert false;
 			return false;

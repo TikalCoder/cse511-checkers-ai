@@ -75,10 +75,14 @@ public class Game {
 
 	/**
 	 * Constructor initializes game provided a list of players and displays.
+	 * @throws CloneNotSupportedException 
 	 */
-	public Game(EnumMap<PlayerId, Player> players, ArrayList<Display> displays) {
+	public Game(EnumMap<PlayerId, Player> players, ArrayList<Display> displays) throws CloneNotSupportedException {
 		this.state = new GameState();
-		this.players = players;
+
+		this.players = new EnumMap<PlayerId, Player>(PlayerId.class);
+		this.players.put(PlayerId.WHITE, (Player) players.get(PlayerId.WHITE).clone());
+		this.players.put(PlayerId.BLACK, (Player) players.get(PlayerId.BLACK).clone());
 		this.displays = displays;
 		
 		stateHistory = new Stack<GameState>();
@@ -153,8 +157,9 @@ public class Game {
 
 	/**
 	 * Starts a new Game 
+	 * @throws CloneNotSupportedException 
 	 */
-	public static void newGame() {
+	public static void newGame() throws CloneNotSupportedException {
 		Game oldGame = currentGame();
 		Game newGame = new Game(oldGame.players, oldGame.displays);
 		CURRENT_GAME = newGame;
@@ -194,5 +199,15 @@ public class Game {
 			for (Display display : displays)
 				display.init(state);
 		}
+	}
+	
+	public boolean stateHistoryEmpty() {
+		return stateHistory.size() == 1;
+	}
+
+	public PlayerId getWinner() {
+		if (!isOver())
+			throw new IllegalStateException("Game is not over yet. There is no winner.");
+		return state.playerToMove().opponent();
 	}
 }
