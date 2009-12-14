@@ -1,11 +1,10 @@
 package checkers.ai;
 
-import checkers.Player;
 import checkers.model.GameState;
 import checkers.model.Move;
 import checkers.model.PlayerId;
 
-public class NegamaxOrderingPlayer extends Player {
+public class NegamaxOrderingPlayer extends AIPlayer {
 	private Integer searchDepth;
 	private Integer differential;
 	

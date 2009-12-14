@@ -3,7 +3,6 @@ package checkers.ai;
 import java.util.ArrayList;
 import java.util.Random;
 
-import checkers.Player;
 import checkers.Utils;
 import checkers.model.GameState;
 import checkers.model.Move;
@@ -13,7 +12,7 @@ import checkers.model.Move;
  *
  * @author Kurt Glastetter
  */
-public class RandomPlayer extends Player {
+public class RandomPlayer extends AIPlayer {
 	static Random r = new Random(Utils.SEED);
 
 	public Move chooseMove(GameState state) {
