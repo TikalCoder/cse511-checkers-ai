@@ -31,20 +31,21 @@ class NewMain {
 		
 		Frame gui = new Frame();
 		
-		Player playerForWhite = new RandomPlayer();
-//		Player playerForWhite = new NegamaxPlayer(10);
+//		Player playerForWhite = new RandomPlayer();
+		Player playerForWhite = new NegamaxPlayer(5);
 //		Player playerForWhite = new GUIPlayer(gui.getBoardUI());
 //		Player playerForWhite = new AsciiPlayer();
 		Player playerForBlack = new GUIPlayer(gui.getBoardUI());
 //		Player playerForBlack = new RandomPlayer();
 		
 //		Display display = new AsciiDisplay();
-		Display guiDisplay = new GUIDisplay(gui.getBoardUI());
 
 		Game game = new Game(playerForBlack, playerForWhite, startingState);
 
+		gui.setPlayerTypes();
+		
 //		game.registerDisplay(display);
-		game.registerDisplay(guiDisplay);
+		game.registerDisplay(new GUIDisplay(gui.getBoardUI()));
 		game.registerDisplay(new FenDisplay());
 
 		while (!game.isOver()) {

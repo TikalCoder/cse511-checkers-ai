@@ -25,4 +25,9 @@ public final class Constants {
 	 * Filename of crown image.
 	 */
 	public static final String CROWN_IMG = "crown-smaller.png";
+	
+	/**
+	 * Default negamax search depth.
+	 */
+	public static final int DEFAULT_NEGAMAX_SEARCH_DEPTH = 5;
 }

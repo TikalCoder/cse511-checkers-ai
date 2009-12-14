@@ -74,12 +74,39 @@ public class Game {
 	}
 
 	/**
+	 * Constructor initializes game provided a list of players and displays.
+	 */
+	public Game(EnumMap<PlayerId, Player> players, ArrayList<Display> displays) {
+		this.state = new GameState();
+		this.players = players;
+		this.displays = displays;
+		
+		stateHistory = new Stack<GameState>();
+
+		// Add first state to state history for undo support.
+		stateHistory.push((GameState) state.clone());
+		
+		updateDisplays();
+		
+		if (CURRENT_GAME == null)
+			CURRENT_GAME = this;
+	}
+
+	/**
 	 * Registers the given Display object to receive updates everytime a move is
 	 * made, and also initializes it to the current state of the game.
 	 */
 	public void registerDisplay(Display display) {
 		displays.add(display);
 		display.init(state);
+	}
+	
+	/**
+	 * Updates all the registered displays with a new {@link GameState}.
+	 */
+	public void updateDisplays() {
+		for (Display d : displays)
+			d.init(stateHistory.peek());
 	}
 
 	/**
@@ -124,6 +151,39 @@ public class Game {
 		return CURRENT_GAME;
 	}
 
+	/**
+	 * Starts a new Game 
+	 */
+	public static void newGame() {
+		Game oldGame = currentGame();
+		Game newGame = new Game(oldGame.players, oldGame.displays);
+		CURRENT_GAME = newGame;
+	}
+	
+	public void setPlayer(PlayerId playerId, Player player) {
+		players.put(playerId, player);
+	}
+	
+	public void setBlackPlayer(Player blackPlayer) {
+		setPlayer(PlayerId.BLACK, blackPlayer);
+	}
+	
+	public void setWhitePlayer(Player whitePlayer) {
+		setPlayer(PlayerId.WHITE, whitePlayer);
+	}
+	
+	public Player getPlayer(PlayerId playerId) {
+		return players.get(playerId);
+	}
+	
+	public Player getBlackPlayer() {
+		return getPlayer(PlayerId.BLACK);
+	}
+
+	public Player getWhitePlayer() {
+		return getPlayer(PlayerId.WHITE);
+	}
+	
 	/**
 	 * Undo a single move in this Game.
 	 */
