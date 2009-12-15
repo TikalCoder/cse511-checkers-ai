@@ -272,7 +272,7 @@ public class Board implements Cloneable {
 
 		return ret;
 	}
-	
+
 	/**
 	 * Returns true if a move can be made from fromPos to toPos.
 	 */
@@ -836,5 +836,28 @@ public class Board implements Cloneable {
 		for (int i = 0; i < positionStates.length; i++) {
 			positionStates[i] = board.positionStates[i];
 		}
+	}
+
+	public boolean equals(Object other) {
+		if (!(other instanceof Board)) return
+			false;
+
+		Board otherBoard = (Board) other;
+
+		if (positionStates.length != otherBoard.positionStates.length)
+			return false;
+
+		for (int i = 0; i < positionStates.length; ++i)
+			if (positionStates[i] != otherBoard.positionStates[i])
+				return false;
+
+		return true;
+	}
+
+	public int hashCode() {
+		int hash = 1;
+		for (int i = 0; i < positionStates.length; ++i)
+			hash = hash * 31 + positionStates[i].hashCode();
+		return hash;
 	}
 }
