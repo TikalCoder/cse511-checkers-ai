@@ -52,13 +52,9 @@ public class NegamaxPlayer extends AIPlayer implements Cloneable {
 		double alpha = Double.NEGATIVE_INFINITY;
 		double beta = Double.POSITIVE_INFINITY;
 		for (Move choice : state.possibleMoves()) {
-			GameState clone = (GameState) state.clone();
 			state.makeMove(choice);
 			double util = -negamax(state, searchDepth - 1,  -beta, -alpha, choice);
 			state.undoMoveUnchecked(choice);
-			assert state.equals(clone) :
-					"state: " + state + "\nclone: " + clone +
-					 "\nundone choice: " + choice;
 
 			if (util > alpha) {
 				alpha = util;
@@ -99,13 +95,9 @@ public class NegamaxPlayer extends AIPlayer implements Cloneable {
 		}
 
 		for (Move choice : state.possibleMoves()) {
-			GameState clone = (GameState) state.clone();
 			state.makeMove(choice);
 			double util = -negamax(state, depth - 1, -beta, -alpha, choice);
 			state.undoMoveUnchecked(choice);
-			assert state.equals(clone) :
-					"state: " + state + "\nclone: " + clone +
-					 "\nundone choice: " + choice;
 
 			if (util > alpha) {
 				alpha = util;
