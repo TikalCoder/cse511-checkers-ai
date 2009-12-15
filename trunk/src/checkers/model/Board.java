@@ -388,8 +388,9 @@ public class Board implements Cloneable {
 	}
 
 	public void makeMoveUnchecked(Move move) {
-		setStateAt(move.endPos(), stateAt(move.startPos()));
+		PositionState startingState = stateAt(move.startPos());
 		setStateAt(move.startPos(), PositionState.EMPTY);
+		setStateAt(move.endPos(), startingState);
 
 		if (move.isJump()) {
 			for (int i = 1; i < move.getSequence().size(); ++i) {
