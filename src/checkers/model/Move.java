@@ -41,7 +41,7 @@ public abstract class Move {
 	public String toString() {
 		char delim = isJump() ? 'x' : '-';
 
-		String ret = sequence.get(0).toString();
+		String ret = (movingKing ? "K" : "") + sequence.get(0).toString();
 
 		for (int pos = 1; pos < sequence.size(); ++pos) {
 			ret += delim;
