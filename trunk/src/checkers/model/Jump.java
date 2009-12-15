@@ -11,8 +11,9 @@ import java.util.ArrayList;
 public class Jump extends Move {
 	private ArrayList<Boolean> jumpedKings;
 
-	public Jump(int startPos, int landPos, boolean jumpedKing) {
-		super(startPos, landPos);
+	public Jump(int startPos, int landPos,
+				boolean movingKing, boolean jumpedKing) {
+		super(startPos, landPos, movingKing);
 
 		if (!Board.areJumpable(startPos, landPos))
 			throw new IllegalArgumentException(
