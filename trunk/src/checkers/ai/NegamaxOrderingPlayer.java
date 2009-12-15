@@ -63,6 +63,17 @@ public class NegamaxOrderingPlayer extends AIPlayer {
 		if (!state.equals(origState))
 			throw new RuntimeException("internal error: game state inconsistent");
 
+		//FIXME: Kluge put in by Kurt.  Sometimes bestChoice is null due to
+		// util (above) never increasing above negative infinity.  Another way
+		// to fix it is to use >= instead of > in the comparison between util
+		// and alpha, but this leads to very different games being played.
+		// There may be other ways to fix it as well.  To reproduce the
+		// problem, use FEN "B:WK5,6,17,24:BK2.", which was created by playing
+		// Negamax(4) as white against Negamax(1) as black.
+		//
+		if (bestChoice == null)
+			bestChoice = state.possibleMoves().get(0);
+
 		return bestChoice;
 	}
 
