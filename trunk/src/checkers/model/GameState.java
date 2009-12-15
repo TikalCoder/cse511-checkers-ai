@@ -139,13 +139,7 @@ public class GameState implements Cloneable {
 	}
 
 	public void makeMoveUnchecked(Move move) {
-		//board.makeMoveUnchecked(move);
-
-		//TODO: simply board.makeMove(move) ?
-		ArrayList<Integer> sequence = move.getSequence();
-		for (int i = 0; i < sequence.size() - 1; ++i)
-			board.makeSingleMove(sequence.get(i), sequence.get(i + 1));
-
+		board.makeMoveUnchecked(move);
 		playerToMove = playerToMove.opponent();
 	}
 	public void undoMoveUnchecked(Move move) {
