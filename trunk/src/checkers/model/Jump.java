@@ -34,4 +34,8 @@ public class Jump extends Move {
 		sequence.add(landPos);
 		jumpedKings.add(jumpedKing);
 	}
+
+	public ArrayList<Boolean> jumpedKings() {
+		return jumpedKings;
+	}
 }
