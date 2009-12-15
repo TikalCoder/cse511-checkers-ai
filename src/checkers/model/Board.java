@@ -788,7 +788,8 @@ public class Board implements Cloneable {
 			boolean jumpedKingFirst =
 					hasKingAt(jumpSequence.get(0).jumpedPos());
 
-			Jump jump = new Jump(pos0, pos1, hasKingAt(pos0), jumpedKingFirst);
+			Jump jump = new Jump(pos0, pos1,
+					startPosState.hasKing(), jumpedKingFirst);
 
 			for (int i = 1; i < jumpSequence.size(); ++i)
 				jump.jumpAgain(
