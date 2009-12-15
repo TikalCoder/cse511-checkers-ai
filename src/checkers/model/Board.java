@@ -416,8 +416,11 @@ public class Board implements Cloneable {
 
 	//TODO: undo move
 	public void undoMoveUnchecked(Move move) {
-		setStateAt(move.startPos(), stateAt(move.endPos()));
+		PositionState landingState = stateAt(move.endPos());
+		assert landingState.hasPiece();
+
 		setStateAt(move.endPos(), PositionState.EMPTY);
+		setStateAt(move.startPos(), landingState);
 
 		if (move.isJump()) {
 			Jump jump = (Jump) move;
@@ -427,7 +430,7 @@ public class Board implements Cloneable {
 							jump.getSequence().get(i - 1),
 							jump.getSequence().get(i)),
 						PositionState.createPieceForPlayer(
-							stateAt(jump.startPos()).playerOfPiece().opponent(),
+							landingState.playerOfPiece().opponent(),
 							jump.jumpedKings().get(i - 1)));
 			}
 		}
