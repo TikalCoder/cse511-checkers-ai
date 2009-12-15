@@ -34,9 +34,15 @@ public class NegamaxPlayer extends AIPlayer implements Cloneable {
 	}
 
 	@Override
-	public Move chooseMove(GameState state) {
+	public Move chooseMove(GameState origState) {
 		searches = 1;
 		evals = 0;
+
+		// we will be modifying the state, so we'd better make a copy of it
+		GameState state = null;
+		synchronized (origState) {
+			state = (GameState)origState.clone();
+		}
 
 		if (state.gameIsOver()) throw new IllegalArgumentException("Can't make a decision; state is terminal.");
 
