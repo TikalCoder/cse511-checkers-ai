@@ -398,6 +398,12 @@ public class Board implements Cloneable {
 							move.getSequence().get(i)), PositionState.EMPTY);
 			}
 		}
+
+		if (posIsInBlacksKingRow(move.endPos()) && hasBlackManAt(move.endPos())) {
+			setStateAt(move.endPos(), PositionState.BLACK_KING);
+		} else if (posIsInWhitesKingRow(move.endPos()) && hasWhiteManAt(move.endPos())) {
+			setStateAt(move.endPos(), PositionState.WHITE_KING);
+		}
 	}
 
 	//TODO: undo move
