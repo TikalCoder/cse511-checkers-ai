@@ -8,8 +8,8 @@ import java.lang.IllegalArgumentException;
  * @author Kurt Glastetter
  */
 public class Walk extends Move {
-	public Walk(int startPos, int endPos) {
-		super(startPos, endPos);
+	public Walk(int startPos, int endPos, boolean movingKing) {
+		super(startPos, endPos, movingKing);
 
 		if (!Board.areWalkable(startPos, endPos))
 			throw new IllegalArgumentException(

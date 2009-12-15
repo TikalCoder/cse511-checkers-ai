@@ -11,13 +11,20 @@ import java.util.ArrayList;
 public abstract class Move {
 	protected ArrayList<Integer> sequence;
 
-	protected Move(int startPos, int nextPos) {
+	private boolean movingKing;
+
+	protected Move(int startPos, int nextPos, boolean movingKing) {
 		sequence = new ArrayList<Integer>(10);
 		sequence.add(startPos);
 		sequence.add(nextPos);
+		this.movingKing = movingKing;
 	}
 
 	public abstract boolean isJump();
+
+	public boolean movingKing() {
+		return movingKing;
+	}
 
 	public int startPos() {
 		return sequence.get(0);
@@ -46,10 +53,15 @@ public abstract class Move {
 
 	public boolean equals(Object other) {
 		if (!(other instanceof Move)) return false;
-		return sequence.equals(((Move)other).sequence);
+		Move otherMove = (Move)other;
+		return sequence.equals(otherMove.sequence)
+				&& movingKing == otherMove.movingKing;
 	}
 
 	public int hashCode() {
-		return sequence.hashCode();
+		int hash = 1;
+		hash = hash * 31 + sequence.hashCode();
+		hash = hash * 31 + (movingKing ? 2 : 1 );
+		return hash;
 	}
 }

@@ -325,7 +325,7 @@ public class Board implements Cloneable {
 			}
 
 			// one last double-check
-			if (!walkIsInList(new Walk(fromPos, toPos),
+			if (!walkIsInList(new Walk(fromPos, toPos, hasKingAt(fromPos)),
 					possibleWalks(movingPlayer))) {
 				// we must have missed something...  exception?
 				assert false;
@@ -673,7 +673,7 @@ public class Board implements Cloneable {
 
 		for (Direction dir : Direction.values())
 			if (canWalk(pos, dir))
-				ret.add(new Walk(pos, walkPos(pos, dir)));
+				ret.add(new Walk(pos, walkPos(pos, dir), hasKingAt(pos)));
 
 		return ret;
 	}
@@ -788,7 +788,7 @@ public class Board implements Cloneable {
 			boolean jumpedKingFirst =
 					hasKingAt(jumpSequence.get(0).jumpedPos());
 
-			Jump jump = new Jump(pos0, pos1, jumpedKingFirst);
+			Jump jump = new Jump(pos0, pos1, hasKingAt(pos0), jumpedKingFirst);
 
 			for (int i = 1; i < jumpSequence.size(); ++i)
 				jump.jumpAgain(
@@ -821,11 +821,13 @@ public class Board implements Cloneable {
 		if (posSequence.size() != 2)
 			throw new IllegalArgumentException("can only walk one step at a time");
 
-		return new Walk(posSequence.get(0), posSequence.get(1));
+		return new Walk(posSequence.get(0), posSequence.get(1),
+				hasKingAt(posSequence.get(0)));
 	}
 
 	public Jump generateJump(ArrayList<Integer> posSequence) {
 		Jump jump = new Jump(posSequence.get(0), posSequence.get(1),
+				hasKingAt(posSequence.get(0)),
 				hasKingAt(jumpOverPos(
 						posSequence.get(0), posSequence.get(1))));
 
