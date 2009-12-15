@@ -389,7 +389,9 @@ public class Board implements Cloneable {
 	}
 
 	public void makeMove(Move move) {
-		//TODO: fill this in (Kurt)
+		if (!isPossibleMove(move))
+			throw new IllegalArgumentException("impossible move " + move);
+		makeMoveUnchecked(move);
 	}
 
 	public void makeMoveUnchecked(Move move) {
