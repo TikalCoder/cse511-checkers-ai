@@ -135,13 +135,16 @@ public class GameState implements Cloneable {
 	public void makeMove(Move move) {
 		if (!board.possibleMoves(playerToMove).contains(move))
 			throw new IllegalArgumentException("impossible move " + move);
+		makeMoveUnchecked(move);
+	}
+
+	public void makeMoveUnchecked(Move move) {
+		//board.makeMoveUnchecked(move);
 
 		//TODO: simply board.makeMove(move) ?
 		ArrayList<Integer> sequence = move.getSequence();
 		for (int i = 0; i < sequence.size() - 1; ++i)
-		{
 			board.makeSingleMove(sequence.get(i), sequence.get(i + 1));
-		}
 
 		playerToMove = playerToMove.opponent();
 	}
