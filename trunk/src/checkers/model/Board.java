@@ -383,6 +383,11 @@ public class Board implements Cloneable {
 		return moveIsComplete;
 	}
 
+	public boolean isPossibleMove(Move move) {
+		return possibleMoves(PlayerId.BLACK).contains(move)
+				|| possibleMoves(PlayerId.WHITE).contains(move);
+	}
+
 	public void makeMove(Move move) {
 		//TODO: fill this in (Kurt)
 	}
