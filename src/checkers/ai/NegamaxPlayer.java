@@ -93,7 +93,9 @@ public class NegamaxPlayer extends AIPlayer implements Cloneable {
 			successor.makeMove(choice);
 			double util = -negamax(successor, depth - 1, -beta, -alpha, choice);
 			successor.undoMoveUnchecked(choice);
-			assert state.equals(successor);
+			assert state.equals(successor) :
+					"state: " + state + "\nsuccessor: " + successor +
+					 "\nundone choice: " + choice;
 
 			if (util > alpha) {
 				alpha = util;
