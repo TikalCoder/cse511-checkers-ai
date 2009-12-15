@@ -148,6 +148,10 @@ public class GameState implements Cloneable {
 
 		playerToMove = playerToMove.opponent();
 	}
+	public void undoMoveUnchecked(Move move) {
+		board.undoMoveUnchecked(move);
+		playerToMove = playerToMove.opponent();
+	}
 
 	public boolean makeSingleMove(int startPos, int nextPos) {
 		ArrayList<? extends Move> possibleMoves = possibleMoves();
