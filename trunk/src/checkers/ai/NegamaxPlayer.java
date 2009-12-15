@@ -1,5 +1,7 @@
 package checkers.ai;
 
+import java.lang.RuntimeException;
+
 import checkers.model.GameState;
 import checkers.model.Move;
 import checkers.model.PlayerId;
@@ -66,6 +68,9 @@ public class NegamaxPlayer extends AIPlayer implements Cloneable {
 				return bestChoice;
 			}
 		}
+
+		if (!state.equals(origState))
+			throw new RuntimeException("internal error: game state inconsistent");
 
 		System.out.println("Depth: " + searchDepth + " plies");
 		System.out.println("Searches: " + searches);
