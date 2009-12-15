@@ -237,4 +237,10 @@ public class GameState implements Cloneable {
 		jumper = state.jumper;
 		playerToMove = state.playerToMove;
 	}
+
+	public String toString() {
+		return "" + playerToMove + " to "
+				+ ((jumper == 0) ? "move" : ("jump from " + jumper)) + "\n"
+				+ board;
+	}
 }
