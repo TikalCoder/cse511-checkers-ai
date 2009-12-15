@@ -92,14 +92,14 @@ public class GameState implements Cloneable {
 					move.getSequence().get(1)));
 		return ret;
 	}
-	
+
 	/**
 	 * Returns true if the given endPos is a valid end position for a currently
 	 * possible single move.
 	 */
 	public boolean isValidSingleMoveEndPos(int endPos) {
 		boolean ret = false;
-		
+
 		ArrayList<SingleMove> moves = possibleSingleMoves();
 		for (SingleMove singleMove : moves) {
 			if (singleMove.endPos() == endPos) {
@@ -107,17 +107,17 @@ public class GameState implements Cloneable {
 				break;
 			}
 		}
-		
+
 		return ret;
 	}
-	
+
 	/**
 	 * Returns true if the given startPos and endPos describe a possible single move
 	 * from the current state.
 	 */
 	public boolean isPossibleSingleMove(int startPos, int endPos) {
 		boolean ret = false;
-		
+
 		ArrayList<SingleMove> moves = possibleSingleMoves();
 		for (SingleMove singleMove : moves) {
 			if (singleMove.startPos() == startPos && singleMove.endPos() == endPos) {
@@ -125,7 +125,7 @@ public class GameState implements Cloneable {
 				break;
 			}
 		}
-		
+
 		return ret;
 	}
 
@@ -236,6 +236,22 @@ public class GameState implements Cloneable {
 		board.set(state.board);
 		jumper = state.jumper;
 		playerToMove = state.playerToMove;
+	}
+
+	public boolean equals(Object other) {
+		if (!(other instanceof GameState)) return false;
+		GameState otherState = (GameState) other;
+		return playerToMove == otherState.playerToMove
+				&& jumper == otherState.jumper
+				&& board.equals(otherState.board);
+	}
+
+	public int hashCode() {
+		int hash = 1;
+		hash = hash * 31 + playerToMove.hashCode();
+		hash = hash * 31 + jumper;
+		hash = hash * 31 + board.hashCode();
+		return hash;
 	}
 
 	public String toString() {
