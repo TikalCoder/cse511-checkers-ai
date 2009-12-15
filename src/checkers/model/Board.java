@@ -415,6 +415,29 @@ public class Board implements Cloneable {
 	}
 
 	//TODO: undo move
+	public void undoMoveUnchecked(Move move) {
+		setStateAt(move.startPos(), stateAt(move.endPos()));
+		setStateAt(move.endPos(), PositionState.EMPTY);
+
+		if (move.isJump()) {
+			Jump jump = (Jump) move;
+			for (int i = 1; i < jump.getSequence().size(); ++i) {
+				setStateAt(
+						jumpOverPos(
+							jump.getSequence().get(i - 1),
+							jump.getSequence().get(i)),
+						PositionState.createPieceForPlayer(
+							stateAt(jump.startPos()).playerOfPiece().opponent(),
+							jump.jumpedKings().get(i - 1)));
+			}
+		}
+
+		// if we weren't moving a king, make sure the returned piece is a man
+		if (!move.movingKing())
+			setStateAt(move.startPos(),
+					PositionState.createPieceForPlayer(
+						stateAt(move.startPos()).playerOfPiece(), false));
+	}
 
 	static boolean posIsInBlacksKingRow(int pos) {
 		return 29 <= pos && pos <= 32;
