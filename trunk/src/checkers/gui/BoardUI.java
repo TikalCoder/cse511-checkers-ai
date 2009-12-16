@@ -66,8 +66,15 @@ public class BoardUI extends JPanel {
 	 * True if the possible moves a computer player can make should be hidden.
 	 */
 	private boolean hidePossibleAIMoves;
+	
+	/**
+	 * True if piece position indices should be hidden.
+	 */
+	private boolean hideIndices;
 
 	public BoardUI() {
+		hideIndices = true;
+		
 		setPreferredSize(new Dimension(Constants.WIDTH, Constants.HEIGHT));
 		kingImg = null;
 		try {
@@ -110,7 +117,7 @@ public class BoardUI extends JPanel {
 							&& validEnd)) // ignore clicks on invalid locations
 					return;
 
-				PositionState selectedState = gameState.getBoard().stateAt(selectedIndex);
+//				PositionState selectedState = gameState.getBoard().stateAt(selectedIndex);
 				selectedSquare = selection;
 
 
@@ -118,7 +125,6 @@ public class BoardUI extends JPanel {
 					clearSelection();
 				} else if (validSquare(x, y) && oldSquare != null
 						&& oldState.hasPlayersPiece(gameState.playerToMove())
-						//&& gameState.getBoard().possibleSingleMove(oldIndex, selectedIndex)) {
 						&& gameState.isPossibleSingleMove(oldIndex, selectedIndex)) {
 					// try to make a move from oldSquare to selectedSquare in Board (model)...
 					String move = gameState.getBoard().singleJumpIsPossible(oldIndex, selectedIndex) ? "jump" : "walk";
@@ -161,6 +167,14 @@ public class BoardUI extends JPanel {
 		this.hidePossibleAIMoves = hidePossibleAIMoves;
 	}
 
+	public boolean hideIndices() {
+		return hideIndices;
+	}
+
+	public void setHideIndices(boolean hideIndices) {
+		this.hideIndices = hideIndices;
+	}
+
 	/**
 	 * Draw the board with black and light gray cells.
 	 */
@@ -179,7 +193,7 @@ public class BoardUI extends JPanel {
 
 		// Draw the board squares
 		drawBoard(g, cellWidth, cellHeight);
-
+		
 		// Draw the possible moves from the current game state for non-AI players
 		Player currPlayer = Game.currentGame().getPlayerToMove();
 		if (currPlayer instanceof AIPlayer && !hidePossibleAIMoves || !(currPlayer instanceof AIPlayer))
@@ -187,7 +201,14 @@ public class BoardUI extends JPanel {
 
 		for (int i = 0; i < GRID_SIZE; i++) {
 			for (int j = 0; j < GRID_SIZE; j++) {
-				if (validSquare(i, j) && gameState.getBoard().hasPieceAt(gridToPosition(i, j))) { // if looking at a cell with a piece
+				int position = gridToPosition(i, j);
+				if (position != 0) {
+					g.setColor(Color.white);
+					if (!hideIndices())
+						g.drawString("" + position, cellWidth * i, cellHeight * j + cellHeight / 5);
+				}
+				
+				if (validSquare(i, j) && gameState.getBoard().hasPieceAt(position)) { // if looking at a cell with a piece
 					highlightSelectedPiece(g, cellWidth, cellHeight, pieceWidth, pieceHeight, i, j);
 					drawAllPieces(g, cellWidth, cellHeight, pieceWidth, pieceHeight, i, j);
 				}
@@ -214,7 +235,7 @@ public class BoardUI extends JPanel {
 			}
 		}
 	}
-
+	
 	/**
 	 * Helper method for paintComponent that draws the selected piece, if there is one.
 	 */
