@@ -80,6 +80,8 @@ public class NegamaxExtensionPlayer extends AIPlayer implements Cloneable {
 		
 		List<? extends Move> choices = state.possibleMoves();
 		
+		// if depth <= 0, don't stop if our next move is a jump -- keep searching
+		// if depth <= 0 and no jumps, stop searching
 		if (depth <= 0 && !choices.get(0).isJump()) {
 			evals++;
 			double util = Utils.utilityOf(state);
@@ -88,7 +90,7 @@ public class NegamaxExtensionPlayer extends AIPlayer implements Cloneable {
 		
 		for (Move choice : choices) {
 			state.makeMoveUnchecked(choice);
-			double util = -negamax(state, searchDepth - 1,  -beta, -alpha);
+			double util = -negamax(state, depth - 1,  -beta, -alpha);
 			state.undoMoveUnchecked(choice);
 			
 			if (util > alpha) {
