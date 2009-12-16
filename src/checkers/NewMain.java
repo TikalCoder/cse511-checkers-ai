@@ -5,6 +5,7 @@ import static checkers.Constants.DEFAULT_NEGAMAX_SEARCH_DEPTH;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import checkers.ai.NegamaxExtensionPlayer;
 import checkers.ai.NegamaxOrderingPlayer;
 import checkers.ai.NegamaxPlayer;
 import checkers.ai.RandomPlayer;
@@ -66,7 +67,7 @@ class NewMain {
 		Player playerForWhite = parsePlayerString(playerForWhiteString);
 		parseDisplayStrings(displayStrings);
 
-		Game game = new Game(new NegamaxPlayer(6), new NegamaxPlayer(6), startingState);
+		Game game = new Game(new NegamaxPlayer(1), new NegamaxExtensionPlayer(6), startingState);
 
 		// if the GUI was created by parsePlayerString or parseDisplayStrings,
 		// then we need to initialize it.  (Note: must do this after creation

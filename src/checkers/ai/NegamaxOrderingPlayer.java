@@ -1,5 +1,7 @@
 package checkers.ai;
 
+import java.util.List;
+
 import checkers.model.GameState;
 import checkers.model.Move;
 import checkers.model.PlayerId;
@@ -45,7 +47,12 @@ public class NegamaxOrderingPlayer extends AIPlayer {
 		evals = 0;
 		
 		if (state.gameIsOver()) throw new IllegalArgumentException("Can't make a decision; state is terminal.");
-				
+		
+		List<? extends Move> choices = state.possibleMoves();
+		if (choices.size() == 1) {
+			return choices.get(0);
+		}
+		
 		// we expand the first level here so we can keep track of the best move (because
 		// the negamax method doesn't keep track of moves, just values).
 		Move bestChoice = null;
@@ -62,7 +69,7 @@ public class NegamaxOrderingPlayer extends AIPlayer {
 			}
 			
 			// this is sufficient for alpha-beta pruning
-			if (alpha > beta) {
+			if (alpha >= beta) {
 				return bestChoice;
 			}
 		}
@@ -89,7 +96,7 @@ public class NegamaxOrderingPlayer extends AIPlayer {
 			}
 			
 			// this is sufficient for alpha-beta pruning
-			if (alpha > beta) {
+			if (alpha >= beta) {
 				return alpha;
 			}
 		}
@@ -104,14 +111,14 @@ public class NegamaxOrderingPlayer extends AIPlayer {
 		// we expand the first level here so we can keep track of the moves (because
 		// the negamax method doesn't keep track of moves, just values).
 		OrderedMoveList orderedChoices = new OrderedMoveList();
-		for (Move choice : getOrderedMoves(state, interiorSearchDepth - differential, -beta, -alpha)) {
+		for (Move choice : state.possibleMoves()) {
 			state.makeMoveUnchecked(choice);
 
 			// This is our "pruning." If alpha > beta, we use alpha as the util value.
 			// This may save us some shallow searches, and keeps the best node at the
 			// front of the list.
 			double util;
-			if( alpha > beta) {
+			if( alpha >= beta) {
 				util = alpha;
 			} else {
 				util = -orderingNegamax(state, interiorSearchDepth - 1, interiorSearchDepth, -beta, -alpha);
