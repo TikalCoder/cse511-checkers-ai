@@ -221,9 +221,9 @@ public class BoardUI extends JPanel {
 
 	private void drawEndGameMessage(Graphics2D g) {
 		String winner = Game.currentGame().getWinner().toString();
-		g.setFont(new Font("Verdana", Font.BOLD, getWidth() / 10));
+		g.setFont(new Font("Arial", Font.BOLD, getWidth() / 10));
 		g.setColor(Color.green);
-		g.drawString(winner + " wins!!", getWidth() / 7, getHeight() / 2 + getHeight() / 30);
+		g.drawString(winner + " wins!!!", getWidth() / 6, getHeight() / 2 + getHeight() / 30);
 	}
 
 	private void drawBoard(Graphics2D g, int cellWidth, int cellHeight) {
