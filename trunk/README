@@ -1,0 +1,49 @@
+CSE 511A Checkers AI README
+
+Andrew Duffey
+Scott Bressler
+Kurt Glastetter
+Ranjan Khan
+
+http://code.google.com/p/cse511-checkers-ai/
+
+To build and/or run the project, *make sure* your current directory is the main
+project directory, "cse511-checkers-ai", which is where this README file is
+located.
+
+To build the project from the command line, the following command should
+suffice (on Linux):
+
+    find src/ -name '*.java' | xargs javac -cp src/
+
+Then, to execute the program, run this command:
+
+    java -cp src/ checkers/NewMain
+
+This will launch a human-vs-AI checkers game with default options.
+
+To see all the other options, run this command instead:
+
+    java -cp src/ checkers/NewMain -h
+
+If you are going to be doing a lot of repeated game playing, then of particular
+note are the FEN (Forsyth-Edwards Notation) related options; you can use
+"-d fen" to have the game print a FEN string to stdout after every move, which
+you can later supply to the "-f" or "-F" options to reload that game state and
+play again from there.  Here is an example FEN string:
+
+    "B:W20,26,28,29,31,32:B4,8,10,11,12,15,22."
+
+If you want to watch an AI play against another AI using the GUI, be sure to
+include the "-d gui" option; otherwise the game will play out invisibly, and
+only the resulting metrics will be shown.
+
+You can also use the "-d ascii" option to have the game print the board after
+every move, which you can refer to help see the history of what positions were
+played (in a more human-readable fashion than FEN strings).
+
+In our testing, the game has been reasonably playable with AI search depths of
+up to 10 or 11; setting the depth to 9 or lower results in snappier play.
+
+This software has been tested with Sun Java 6; other recent version of Java
+will probably also work.
