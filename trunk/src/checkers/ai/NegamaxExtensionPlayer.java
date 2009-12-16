@@ -4,7 +4,7 @@ import checkers.model.GameState;
 import checkers.model.Move;
 import checkers.model.PlayerId;
 
-public class NegamaxQuiescentPlayer extends AIPlayer implements Cloneable {
+public class NegamaxExtensionPlayer extends AIPlayer implements Cloneable {
 	private int searchDepth;
 	private int searches;
 	private int evals;
@@ -15,7 +15,7 @@ public class NegamaxQuiescentPlayer extends AIPlayer implements Cloneable {
 	 * constructor.
 	 */
 	@SuppressWarnings("unused")
-	private NegamaxQuiescentPlayer() {
+	private NegamaxExtensionPlayer() {
 		super();
 	}
 	
@@ -24,7 +24,7 @@ public class NegamaxQuiescentPlayer extends AIPlayer implements Cloneable {
 	 * depth of searchDepth.
 	 * @param searchDepth
 	 */
-	public NegamaxQuiescentPlayer(int searchDepth) {
+	public NegamaxExtensionPlayer(int searchDepth) {
 		super();
 		this.searchDepth = searchDepth;
 		
@@ -96,7 +96,7 @@ public class NegamaxQuiescentPlayer extends AIPlayer implements Cloneable {
 
 	@Override
 	public Object clone() throws CloneNotSupportedException {
-		NegamaxQuiescentPlayer clone =  (NegamaxQuiescentPlayer) super.clone();
+		NegamaxExtensionPlayer clone =  (NegamaxExtensionPlayer) super.clone();
 		clone.evals = 0;
 		clone.searches = 0;
 		return clone;

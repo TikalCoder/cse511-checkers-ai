@@ -25,12 +25,14 @@ public class NegamaxOrderingPlayer extends AIPlayer {
 	 * Constructs a Player that chooses moves based on a negamax search with a maximum
 	 * depth of searchDepth and uses internal searches <code>differential</code> plies
 	 * shallower to order the moves.
-	 * @param searchDepth
+	 * 
+	 * @param searchDepth How deep to search.
+	 * @param searchDifferential How many fewer plies to search for internal ordering searches.
 	 */
-	public NegamaxOrderingPlayer(int searchDepth, int orderingSearchDepth) {
+	public NegamaxOrderingPlayer(int searchDepth, int searchDifferential) {
 		super();
 		this.searchDepth = searchDepth;
-		this.differential = orderingSearchDepth;
+		this.differential = searchDifferential;
 		
 		// statistics for each search
 		this.searches = 0;
@@ -49,7 +51,7 @@ public class NegamaxOrderingPlayer extends AIPlayer {
 		Move bestChoice = null;
 		double alpha = Double.NEGATIVE_INFINITY;
 		double beta = Double.POSITIVE_INFINITY;
-		for (Move choice : state.possibleMoves()) {
+		for (Move choice : getOrderedMoves(state, searchDepth - differential, -beta, -alpha)) {
 			state.makeMoveUnchecked(choice);
 			double util = -orderingNegamax(state, searchDepth - 1, searchDepth - differential,  -beta, -alpha);
 			state.undoMoveUnchecked(choice);
@@ -65,37 +67,7 @@ public class NegamaxOrderingPlayer extends AIPlayer {
 			}
 		}
 		
-		System.out.println("Depth: " + searchDepth + " plies");
-		System.out.println("Searches: " + searches);
-		System.out.println("Evals: " + evals);
-		
 		return bestChoice;
-	}
-	
-	private double negamax(GameState state, Integer depth, Double alpha, Double beta) {
-		searches++;
-		
-		if (state.gameIsOver() || depth <= 0) {
-			evals++;
-			double util = Utils.utilityOf(state);
-			return (state.playerToMove() == PlayerId.WHITE) ? util : -util;
-		}
-		
-		for (Move choice : state.possibleMoves()) {
-			state.makeMoveUnchecked(choice);
-			double util = -negamax(state, depth - 1, -beta, -alpha);
-			state.undoMoveUnchecked(choice);
-
-			if (util > alpha) {
-				alpha = util;
-			}
-			
-			// this is sufficient for alpha-beta pruning
-			if (alpha > beta) {
-				return alpha;
-			}
-		}
-		return alpha;
 	}
 
 	private double orderingNegamax(GameState state, Integer depth, Integer interiorSearchDepth, Double alpha, Double beta) {
@@ -107,9 +79,9 @@ public class NegamaxOrderingPlayer extends AIPlayer {
 			return (state.playerToMove() == PlayerId.WHITE) ? util : -util;
 		}
 
-		for (Move choice : getOrderedMoves(state, interiorSearchDepth, -beta, -alpha)) {
+		for (Move choice : getOrderedMoves(state, interiorSearchDepth - differential, -beta, -alpha)) {
 			state.makeMoveUnchecked(choice);
-			double util = -orderingNegamax(state, depth - 1, interiorSearchDepth - differential, -beta, -alpha);
+			double util = -orderingNegamax(state, depth - 1, interiorSearchDepth, -beta, -alpha);
 			state.undoMoveUnchecked(choice);
 
 			if (util > alpha) {
@@ -132,7 +104,7 @@ public class NegamaxOrderingPlayer extends AIPlayer {
 		// we expand the first level here so we can keep track of the moves (because
 		// the negamax method doesn't keep track of moves, just values).
 		OrderedMoveList orderedChoices = new OrderedMoveList();
-		for (Move choice : state.possibleMoves()) {
+		for (Move choice : getOrderedMoves(state, interiorSearchDepth - differential, -beta, -alpha)) {
 			state.makeMoveUnchecked(choice);
 
 			// This is our "pruning." If alpha > beta, we use alpha as the util value.
@@ -142,7 +114,7 @@ public class NegamaxOrderingPlayer extends AIPlayer {
 			if( alpha > beta) {
 				util = alpha;
 			} else {
-				util = -orderingNegamax(state, interiorSearchDepth - 1, interiorSearchDepth - differential, -beta, -alpha);
+				util = -orderingNegamax(state, interiorSearchDepth - 1, interiorSearchDepth, -beta, -alpha);
 			}
 
 			state.undoMoveUnchecked(choice);
@@ -155,7 +127,7 @@ public class NegamaxOrderingPlayer extends AIPlayer {
 			
 		}
 		
-		return orderedChoices; //TODO avoid converting to list
+		return orderedChoices;
 	}
 	
 }
