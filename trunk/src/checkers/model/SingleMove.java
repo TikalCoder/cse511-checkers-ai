@@ -28,4 +28,8 @@ public class SingleMove {
 
 	int startPos() { return startPos; }
 	int endPos() { return endPos; }
+	
+	public String toString() {
+		return startPos + (isJump() ? "x" : "-") + endPos;
+	}
 }
