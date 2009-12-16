@@ -76,7 +76,8 @@ class NewMain {
 
 		// the game's main loop:
 		while (!game.isOver()) {
-			game.makeMove(game.getPlayerToMove().chooseMove(game.getState()));
+			game.makeMove(game.getPlayerToMove().chooseMove(
+						(GameState) game.getState().clone()));
 		}
 
 		// Print end-game messages
