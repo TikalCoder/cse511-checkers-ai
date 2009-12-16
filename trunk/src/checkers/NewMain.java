@@ -84,11 +84,6 @@ class NewMain {
 		printEndGameMessages(game);
 	}
 
-	private static String getFileExtension(String filename) {
-		String ext = (filename.lastIndexOf(".")==-1)?"":filename.substring(filename.lastIndexOf(".")+1,filename.length()).toLowerCase();
-		return ext;
-	}
-
 	private static void printEndGameMessages(Game game) {
 		System.out.println("\n");
 		new PrettyBoardPrinter().print(game.getState().getBoard());
