@@ -1,8 +1,10 @@
 package checkers;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import checkers.ai.NegamaxPlayer;
+import checkers.ai.NegamaxOrderingPlayer;
 import checkers.ai.RandomPlayer;
 import checkers.ascii.AsciiDisplay;
 import checkers.ascii.AsciiPlayer;
@@ -17,64 +19,62 @@ import checkers.print.PrettyBoardPrinter;
 /**
  * Meant to provide a unified main program, to execute a checkers game for any
  * kind of AI or human player.
- * 
+ *
  * Usage:
  * 1) Without any arguments, a new checkers game will be created.
  * 1) Provide the filename of a file containing FEN.
  * 2) Provide FEN input directly.
- * 
+ *
  * Using either options 2 or 3, the initial game state will be set to match the provided FEN.
  *
  * @author Kurt Glastetter
  * @author Scott Bressler
  */
 class NewMain {
+	private static Frame gui = null;
+	private static Display asciiDisplay = null;
+	private static Display guiDisplay = null;
+	private static Display fenDisplay = null;
+
 	public static void main(String args[]) throws IOException {
-		GameState startingState = new GameState();
+		// default options:
+		GameState startingState = new GameState(); // start of new game
+		String playerForBlackString = "GUI";
+		String playerForWhiteString = "NEGAMAX";
+
+		ArrayList<String> displayStrings = new ArrayList<String>();
 
 		for (int i = 0; i < args.length; ++i) {
-			if (args[i].equals("-f")) {
-				System.out.println(args[i + 1]);
+			if (args[i].equals("-h") || args[i].equals("-help")
+					|| args[i].equals("--help"))
+				exitWithHelp();
+			else if (args[i].equals("-f"))
 				startingState = FenIO.parseFen(args[++i]);
-			}
-			else if (args[i].equals("-F")) {
-				System.out.println(args[i + 1]);
+			else if (args[i].equals("-F"))
 				startingState = FenIO.parseFenFile(args[++i]);
-			}
+			else if (args[i].equals("-b"))
+				playerForBlackString = args[++i];
+			else if (args[i].equals("-w"))
+				playerForWhiteString = args[++i];
+			else if (args[i].equals("-d"))
+				displayStrings.add(args[++i]);
 		}
 
-		/*
-		// If FEN notation is provided to the game, parse the FEN input
-		// to set up the initial game state.
-		if (args.length > 0) {
-			String filename = args[0];
-			String ext = getFileExtension(filename);
-			if (ext.equals("fen") || ext.equals("txt"))
-				startingState = FenIO.parseFenFile(filename);
-			else
-				startingState = FenIO.parseFen(filename);
-		}
-		*/
-
-		Frame gui = new Frame();
-		
-//		Player playerForWhite = new RandomPlayer();
-		Player playerForWhite = new NegamaxPlayer(5);
-//		Player playerForWhite = new GUIPlayer(gui.getBoardUI());
-//		Player playerForWhite = new AsciiPlayer();
-		Player playerForBlack = new GUIPlayer(gui.getBoardUI());
-//		Player playerForBlack = new RandomPlayer();
-		
-//		Display display = new AsciiDisplay();
+		Player playerForBlack = parsePlayerString(playerForBlackString);
+		Player playerForWhite = parsePlayerString(playerForWhiteString);
+		parseDisplayStrings(displayStrings);
 
 		Game game = new Game(playerForBlack, playerForWhite, startingState);
 
-		gui.init();
-		
-//		game.registerDisplay(display);
-		game.registerDisplay(new GUIDisplay(gui.getBoardUI()));
-		game.registerDisplay(new FenDisplay());
+		// if the GUI was created by parsePlayerString or parseDisplayStrings,
+		// then we need to initialize it.  (Note: must do this after creation
+		// of game, but before registering the displays.)
+		if (gui != null)
+			gui.init();
 
+		registerDisplays(game);
+
+		// the game's main loop:
 		while (!game.isOver()) {
 			game.makeMove(game.getPlayerToMove().chooseMove(game.getState()));
 		}
@@ -93,5 +93,76 @@ class NewMain {
 		new PrettyBoardPrinter().print(game.getState().getBoard());
 		System.out.println("\n" + game.getState().playerToMove().opponent() + " wins!!!\n");
 		System.out.println(" Game Over.");
+	}
+
+	private static Player parsePlayerString(String playerString) {
+		if (playerString.toUpperCase().equals("GUI")) {
+			ensureGuiDisplayExists();
+			return new GUIPlayer(gui.getBoardUI());
+		}
+		if (playerString.toUpperCase().equals("ASCII")) {
+			ensureAsciiDisplayExists();
+			return new AsciiPlayer();
+		}
+		if (playerString.toUpperCase().equals("RANDOM")) {
+			return new RandomPlayer();
+		}
+		if (playerString.toUpperCase().equals("NEGAMAX")) {
+			return new NegamaxPlayer(5); // TODO: make the depth an option
+		}
+		if (playerString.toUpperCase().equals("NEGAMAXORDERING")) {
+			return new NegamaxOrderingPlayer(5, 4); // TODO: make the depths an option
+		}
+
+		throw new IllegalArgumentException(
+				"could not parse player string `" + playerString + "'");
+	}
+
+	private static void parseDisplayStrings(ArrayList<String> displayStrings) {
+		for (String displayString : displayStrings) {
+			if (displayString.toUpperCase().equals("GUI"))
+				ensureGuiDisplayExists();
+			else if (displayString.toUpperCase().equals("ASCII"))
+				ensureAsciiDisplayExists();
+			else if (displayString.toUpperCase().equals("FEN"))
+				ensureFenDisplayExists();
+			else if (displayString.toUpperCase().equals("ALL")) {
+				ensureGuiDisplayExists();
+				ensureAsciiDisplayExists();
+				ensureFenDisplayExists();
+			}
+			else
+				throw new IllegalArgumentException(
+						"could not parse display string `" + displayString + "'");
+		}
+	}
+
+	private static void ensureGuiDisplayExists() {
+		if (gui == null)
+			gui = new Frame();
+
+		if (guiDisplay == null)
+			guiDisplay = new GUIDisplay(gui.getBoardUI());
+	}
+
+	private static void ensureAsciiDisplayExists() {
+		if (asciiDisplay == null)
+			asciiDisplay = new AsciiDisplay();
+	}
+
+	private static void ensureFenDisplayExists() {
+		if (fenDisplay == null)
+			fenDisplay = new FenDisplay();
+	}
+
+	private static void registerDisplays(Game game) {
+		if (guiDisplay   != null) game.registerDisplay(guiDisplay);
+		if (asciiDisplay != null) game.registerDisplay(asciiDisplay);
+		if (fenDisplay   != null) game.registerDisplay(fenDisplay);
+	}
+
+	private static void exitWithHelp() {
+		System.out.println("TODO: Help message goes here.");
+		System.exit(0);
 	}
 }
