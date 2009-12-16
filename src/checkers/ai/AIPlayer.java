@@ -7,4 +7,16 @@ import checkers.Player;
  * 
  * @author Scott Bressler
  */
-public abstract class AIPlayer extends Player {}
+public abstract class AIPlayer extends Player {
+	protected int searches;
+	protected int evals;
+
+	public int getSearches() {
+		return searches;
+	}
+
+	public int getEvals() {
+		return evals;
+	}
+	
+}

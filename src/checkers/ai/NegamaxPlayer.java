@@ -1,17 +1,11 @@
 package checkers.ai;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import checkers.model.GameState;
 import checkers.model.Move;
 import checkers.model.PlayerId;
 
 public class NegamaxPlayer extends AIPlayer implements Cloneable {
 	private int searchDepth;
-	
-	private int searches;
-	private int evals;
 	
 	/**
 	 * Private constructor with no arguments. Disallows creation of a NegamaxPlayer
@@ -42,8 +36,6 @@ public class NegamaxPlayer extends AIPlayer implements Cloneable {
 		searches = 1;
 		evals = 0;
 		
-		GameState state = (GameState)origState.clone();
-		
 		if (state.gameIsOver()) throw new IllegalArgumentException("Can't make a decision; state is terminal.");
 		
 		// we expand the first level here so we can keep track of the best move (because
@@ -67,13 +59,6 @@ public class NegamaxPlayer extends AIPlayer implements Cloneable {
 				return bestChoice;
 			}
 		}
-
-		if (!state.equals(origState))
-			throw new RuntimeException("internal error: game state inconsistent");
-
-		System.out.println("Depth: " + searchDepth + " plies");
-		System.out.println("Searches: " + searches);
-		System.out.println("Evals: " + evals);
 		
 		return bestChoice;
 	}
@@ -110,6 +95,11 @@ public class NegamaxPlayer extends AIPlayer implements Cloneable {
 		clone.evals = 0;
 		clone.searches = 0;
 		return clone;
+	}
+	
+	@Override
+	public String toString() {
+		return "Negamax player with depth " + searchDepth;
 	}
 
 }
