@@ -8,6 +8,7 @@ import checkers.ai.AIPlayer;
 import checkers.ai.NegamaxExtensionPlayer;
 import checkers.ai.NegamaxOrderingPlayer;
 import checkers.ai.NegamaxPlayer;
+import checkers.ai.NegascoutOrderingPlayer;
 import checkers.ai.RandomPlayer;
 import checkers.ascii.AsciiPlayer;
 import checkers.model.GameState;
@@ -53,7 +54,9 @@ public class AIStats {
 
 	private static void aiVsAI() {
 		List<AIPlayer> aiPlayers = new ArrayList<AIPlayer>();
-		aiPlayers.add(new NegamaxOrderingPlayer(9, 20));
+//		aiPlayers.add(new NegascoutOrderingPlayer(9, 7));
+//		aiPlayers.add(new NegascoutOrderingPlayer(9, 9));
+		aiPlayers.add(new NegascoutOrderingPlayer(9, 15));
 		
 		int steps = 0;
 		int evals = 0;
@@ -64,6 +67,7 @@ public class AIStats {
 		int trials = 25;
 
 		for (AIPlayer aip : aiPlayers) {
+			System.out.println("Running statistics for player: " + aip);
 			for (int i = 0; i < trials; i++) {
 				Game game = new Game(new RandomPlayer(), aip, new GameState());
 				
