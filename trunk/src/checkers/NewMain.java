@@ -96,22 +96,34 @@ class NewMain {
 	}
 
 	private static Player parsePlayerString(String playerString) {
-		if (playerString.toUpperCase().equals("GUI")) {
+		if (playerString.equalsIgnoreCase("GUI")) {
 			ensureGuiDisplayExists();
 			return new GUIPlayer(gui.getBoardUI());
 		}
-		if (playerString.toUpperCase().equals("ASCII")) {
+		if (playerString.equalsIgnoreCase("ASCII")) {
 			ensureAsciiDisplayExists();
 			return new AsciiPlayer();
 		}
-		if (playerString.toUpperCase().equals("RANDOM")) {
+		if (playerString.equalsIgnoreCase("RANDOM")) {
 			return new RandomPlayer();
 		}
-		if (playerString.toUpperCase().equals("NEGAMAX")) {
-			return new NegamaxPlayer(5); // TODO: make the depth an option
+		if (playerString.toUpperCase().matches("^NEGAMAX(:\\d+)?")) {
+			String[] parts = playerString.split(":");
+			if (parts.length == 2)
+				return new NegamaxPlayer(Integer.parseInt(parts[1]));
+			else
+				return new NegamaxPlayer(5); // default
 		}
-		if (playerString.toUpperCase().equals("NEGAMAXORDERING")) {
-			return new NegamaxOrderingPlayer(5, 4); // TODO: make the depths an option
+		if (playerString.toUpperCase().matches("^NEGAMAXORDERING(:\\d+,\\d+)?")) {
+			String[] parts = playerString.split(":");
+			if (parts.length == 2) {
+				String[] depths = parts[1].split(",");
+				return new NegamaxOrderingPlayer(
+						Integer.parseInt(depths[0]),
+						Integer.parseInt(depths[1]));
+			}
+			else
+				return new NegamaxOrderingPlayer(5, 4); // default
 		}
 
 		throw new IllegalArgumentException(
@@ -120,20 +132,20 @@ class NewMain {
 
 	private static void parseDisplayStrings(ArrayList<String> displayStrings) {
 		for (String displayString : displayStrings) {
-			if (displayString.toUpperCase().equals("GUI"))
+			if (displayString.equalsIgnoreCase("GUI"))
 				ensureGuiDisplayExists();
-			else if (displayString.toUpperCase().equals("ASCII"))
+			else if (displayString.equalsIgnoreCase("ASCII"))
 				ensureAsciiDisplayExists();
-			else if (displayString.toUpperCase().equals("FEN"))
+			else if (displayString.equalsIgnoreCase("FEN"))
 				ensureFenDisplayExists();
-			else if (displayString.toUpperCase().equals("ALL")) {
+			else if (displayString.equalsIgnoreCase("ALL")) {
 				ensureGuiDisplayExists();
 				ensureAsciiDisplayExists();
 				ensureFenDisplayExists();
 			}
 			else
 				throw new IllegalArgumentException(
-						"could not parse display string `" + displayString + "'");
+					"could not parse display string `" + displayString + "'");
 		}
 	}
 
