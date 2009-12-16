@@ -163,6 +163,6 @@ public class Frame extends JFrame {
 		whitePlayer.setSelected(Game.currentGame().getWhitePlayer() instanceof AIPlayer);
 		hideAIMoves.setSelected((Game.currentGame().getBlackPlayer() instanceof AIPlayer && Game.currentGame().getWhitePlayer() instanceof AIPlayer));
 		boardUI.setHidePossibleAIMoves(hideAIMoves.isEnabled());
-		updateUndoable();
+	//	updateUndoable();
 	}
 }

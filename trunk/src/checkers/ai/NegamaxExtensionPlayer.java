@@ -1,13 +1,13 @@
 package checkers.ai;
 
+import java.util.List;
+
 import checkers.model.GameState;
 import checkers.model.Move;
 import checkers.model.PlayerId;
 
 public class NegamaxExtensionPlayer extends AIPlayer implements Cloneable {
 	private int searchDepth;
-	private int searches;
-	private int evals;
 	
 	/**
 	 * Private constructor with no arguments. Disallows creation of a NegamaxPlayer
@@ -40,15 +40,20 @@ public class NegamaxExtensionPlayer extends AIPlayer implements Cloneable {
 		
 		if (state.gameIsOver()) throw new IllegalArgumentException("Can't make a decision; state is terminal.");
 		
+		List<? extends Move> choices = state.possibleMoves();
+		if (choices.size() == 1) {
+			return choices.get(0);
+		}
+		
 		// we expand the first level here so we can keep track of the best move (because
 		// the negamax method doesn't keep track of moves, just values).
 		Move bestChoice = null;
 		double alpha = Double.NEGATIVE_INFINITY;
 		double beta = Double.POSITIVE_INFINITY;
-		for (Move choice : state.possibleMoves()) {
-			GameState successor = (GameState) state.clone();
-			successor.makeMove(choice);
-			double util = -negamax(successor, searchDepth - 1,  -beta, -alpha, choice);
+		for (Move choice : choices) {
+			state.makeMoveUnchecked(choice);
+			double util = -negamax(state, searchDepth - 1,  -beta, -alpha);
+			state.undoMoveUnchecked(choice);
 			
 			if (util > alpha) {
 				alpha = util;
@@ -56,38 +61,42 @@ public class NegamaxExtensionPlayer extends AIPlayer implements Cloneable {
 			}
 			
 			// this is sufficient for alpha-beta pruning
-			if (alpha > beta) {
+			if (alpha >= beta) {
 				return bestChoice;
 			}
 		}
 		
-		System.out.println("Depth: " + searchDepth + " plies");
-		System.out.println("Searches: " + searches);
-		System.out.println("Evals: " + evals);
-		
 		return bestChoice;
 	}
 	
-	private Double negamax(GameState state, int depth, double alpha, double beta, Move lastMove) {
+	private Double negamax(GameState state, int depth, double alpha, double beta) {
 		searches++;
 		
-		if (state.gameIsOver() || (depth <= 0 && !lastMove.isJump())) {
+		if (state.gameIsOver()) {
 			evals++;
 			double util = Utils.utilityOf(state);
 			return (state.playerToMove() == PlayerId.WHITE) ? util : -util;
 		}
 		
-		for (Move choice : state.possibleMoves()) {
-			GameState successor = (GameState) state.clone();
-			successor.makeMove(choice);
-			double util = -negamax(successor, depth - 1, -beta, -alpha, choice);
+		List<? extends Move> choices = state.possibleMoves();
+		
+		if (depth <= 0 && !choices.get(0).isJump()) {
+			evals++;
+			double util = Utils.utilityOf(state);
+			return (state.playerToMove() == PlayerId.WHITE) ? util : -util;
+		}
+		
+		for (Move choice : choices) {
+			state.makeMoveUnchecked(choice);
+			double util = -negamax(state, searchDepth - 1,  -beta, -alpha);
+			state.undoMoveUnchecked(choice);
 			
 			if (util > alpha) {
 				alpha = util;
 			}
 			
 			// this is sufficient for alpha-beta pruning
-			if (alpha > beta) {
+			if (alpha >= beta) {
 				return alpha;
 			}
 		}

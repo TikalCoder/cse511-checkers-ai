@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import checkers.ai.AIPlayer;
+import checkers.ai.NegamaxOrderingPlayer;
 import checkers.ai.NegamaxPlayer;
 import checkers.ai.RandomPlayer;
 import checkers.model.GameState;
@@ -19,7 +20,7 @@ public class AIStats {
 	 */
 	public static void main(String[] args) {
 		List<AIPlayer> aiPlayers = new ArrayList<AIPlayer>();
-		aiPlayers.add(new NegamaxPlayer(10));
+		aiPlayers.add(new NegamaxOrderingPlayer(6, 2));
 		
 		int steps = 0;
 		int evals = 0;

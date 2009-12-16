@@ -1,5 +1,7 @@
 package checkers.ai;
 
+import java.util.List;
+
 import checkers.model.GameState;
 import checkers.model.Move;
 import checkers.model.PlayerId;
@@ -38,13 +40,18 @@ public class NegamaxPlayer extends AIPlayer implements Cloneable {
 		
 		if (state.gameIsOver()) throw new IllegalArgumentException("Can't make a decision; state is terminal.");
 		
+		List<? extends Move> choices = state.possibleMoves();
+		if (choices.size() == 1) {
+			return choices.get(0);
+		}
+		
 		// we expand the first level here so we can keep track of the best move (because
 		// the negamax method doesn't keep track of moves, just values).
 		Move bestChoice = null;
 		double alpha = Double.NEGATIVE_INFINITY;
 		double beta = Double.POSITIVE_INFINITY;
 		
-		for (Move choice : state.possibleMoves()) {
+		for (Move choice : choices) {
 			state.makeMoveUnchecked(choice);
 			double util = -negamax(state, searchDepth - 1,  -beta, -alpha, choice);
 			state.undoMoveUnchecked(choice);
