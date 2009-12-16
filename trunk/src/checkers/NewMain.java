@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import checkers.ai.NegamaxExtensionPlayer;
 import checkers.ai.NegamaxOrderingPlayer;
 import checkers.ai.NegamaxPlayer;
+import checkers.ai.NegascoutOrderingPlayer;
 import checkers.ai.RandomPlayer;
 import checkers.ascii.AsciiDisplay;
 import checkers.ascii.AsciiPlayer;
@@ -132,19 +133,17 @@ class NewMain {
 			else
 				return new NegamaxOrderingPlayer(5, 4); // default
 		}
-		/*TODO: add creation of NegaScoutPlayer, when implemented
 		if (playerString.toUpperCase().matches("^NEGASCOUT(:\\d+,\\d+)?")) {
 			String[] parts = playerString.split(":");
 			if (parts.length == 2) {
 				String[] depths = parts[1].split(",");
-				return new NegaScoutPlayer(
+				return new NegascoutOrderingPlayer(
 						Integer.parseInt(depths[0]),
 						Integer.parseInt(depths[1]));
 			}
 			else
-				return new NegaScoutPlayer(5, 4); // default
+				return new NegascoutOrderingPlayer(5, 4); // default
 		}
-		*/
 
 		throw new IllegalArgumentException(
 				"could not parse player string `" + playerString + "'");
