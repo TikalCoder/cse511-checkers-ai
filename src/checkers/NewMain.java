@@ -199,6 +199,15 @@ class NewMain {
 			+ "          AI player, similar to Negamax above, but with a move-ordering stage\n"
 			+ "          that can make alpha-beta pruning more efficient; has search depth N,\n"
 			+ "          and move-ordering search depth M (which should be less than N)\n"
+			+ "\n"
+			+ "DISPLAY(s) may be any of:  gui  ascii  fen  all\n"
+			+ "\n"
+			+ "Examples:\n"
+			+ "  java -cp src checkers/NewMain -b random -w negamax:3 -d gui -d fen\n"
+			+ "    will launch a checkers match with a random player for black and a negamax\n"
+			+ "    AI with search depth 3 for white, with a GUI, and with FEN notation output\n"
+			+ "  java -cp src checkers/NewMain -f B:WK5:BK21,K18,K31,K32.\n"
+			+ "    will start toward the end of a game, with black in a material advantage\n"
 		);
 		System.exit(0);
 	}
