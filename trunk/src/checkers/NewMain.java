@@ -174,7 +174,32 @@ class NewMain {
 	}
 
 	private static void exitWithHelp() {
-		System.out.println("TODO: Help message goes here.");
+		System.out.println(
+			"CSE 511A Checkers: an American Checkers (English Draughts) game with AI\n"
+			// ---------1---------2---------3---------4---------5---------6---------7---------
+			+ "\n"
+			+ "Usage: java -cp src checkers/NewMain [OPTIONS]...\n"
+			+ "\n"
+			+ "Options:\n"
+			+ "  -b PLAYER   Specifies the player type for black (default: gui)\n"
+			+ "  -w PLAYER   Specifies the player type for white (default: negamax:5)\n"
+			+ "  -d DISPLAY  Specifies (additional) display type (repeat for more)\n"
+			+ "  -f FEN      Specifies initial game state in a FEN notation string\n"
+			+ "  -F FILE     Same as above, but reads FEN notation from FILE instead\n"
+			+ "  -h, --help  Output this incredibly helpful message\n"
+			+ "\n"
+			+ "PLAYER may be one of:\n"
+			+ "  gui     human player, using a graphical user interface\n"
+			+ "  ascii   human player, using a text-based user interface\n"
+			+ "  random  AI player that makes random moves\n"
+			+ "  negamax[:N]\n"
+			+ "          AI player, similar to Minimax with alpha-beta pruning, with search\n"
+			+ "          depth specified by integer N\n"
+			+ "  negamaxordering[:N,M]\n"
+			+ "          AI player, similar to Negamax above, but with a move-ordering stage\n"
+			+ "          that can make alpha-beta pruning more efficient; has search depth N,\n"
+			+ "          and move-ordering search depth M (which should be less than N)\n"
+		);
 		System.exit(0);
 	}
 }
