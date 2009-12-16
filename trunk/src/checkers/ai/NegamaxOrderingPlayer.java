@@ -14,7 +14,7 @@ public class NegamaxOrderingPlayer extends AIPlayer {
 	 * Private constructor with no arguments. Disallows creation of a NegamaxOrderingPlayer
 	 * if there was no depth specified. Use the 
 	 * 
-	 * <code>NegamaxOrderingPlayer(Integer searchDepth, Integer orderingSearchDepth)</code>
+	 * <code>NegamaxOrderingPlayer(Integer searchDepth, Integer searchDifferential)</code>
 	 * 
 	 * constructor instead.
 	 */
@@ -60,7 +60,7 @@ public class NegamaxOrderingPlayer extends AIPlayer {
 		double beta = Double.POSITIVE_INFINITY;
 		for (Move choice : getOrderedMoves(state, searchDepth - differential, -beta, -alpha)) {
 			state.makeMoveUnchecked(choice);
-			double util = -orderingNegamax(state, searchDepth - 1, searchDepth - differential,  -beta, -alpha);
+			double util = -negamax(state, searchDepth - 1,  -beta, -alpha);
 			state.undoMoveUnchecked(choice);
 
 			if (util > alpha) {
@@ -77,7 +77,7 @@ public class NegamaxOrderingPlayer extends AIPlayer {
 		return bestChoice;
 	}
 
-	private double orderingNegamax(GameState state, Integer depth, Integer interiorSearchDepth, Double alpha, Double beta) {
+	private double negamax(GameState state, Integer depth, Double alpha, Double beta) {
 		searches++;
 		
 		if (state.gameIsOver() || depth <= 0) {
@@ -86,9 +86,9 @@ public class NegamaxOrderingPlayer extends AIPlayer {
 			return (state.playerToMove() == PlayerId.WHITE) ? util : -util;
 		}
 
-		for (Move choice : getOrderedMoves(state, interiorSearchDepth - differential, -beta, -alpha)) {
+		for (Move choice : getOrderedMoves(state, depth - differential, -beta, -alpha)) {
 			state.makeMoveUnchecked(choice);
-			double util = -orderingNegamax(state, depth - 1, interiorSearchDepth, -beta, -alpha);
+			double util = -negamax(state, depth - 1, -beta, -alpha);
 			state.undoMoveUnchecked(choice);
 
 			if (util > alpha) {
@@ -121,7 +121,7 @@ public class NegamaxOrderingPlayer extends AIPlayer {
 			if( alpha >= beta) {
 				util = alpha;
 			} else {
-				util = -orderingNegamax(state, interiorSearchDepth - 1, interiorSearchDepth, -beta, -alpha);
+				util = -negamax(state, interiorSearchDepth - 1, -beta, -alpha);
 			}
 
 			state.undoMoveUnchecked(choice);
@@ -135,6 +135,11 @@ public class NegamaxOrderingPlayer extends AIPlayer {
 		}
 		
 		return orderedChoices;
+	}
+	
+	@Override
+	public String toString() {
+		return "Ordering negamax player with depth " + searchDepth + ", differential " + differential;
 	}
 	
 }
