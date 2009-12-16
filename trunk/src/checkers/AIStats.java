@@ -23,8 +23,8 @@ public class AIStats {
 	 * @param args Command line args. Currently none supported.
 	 */
 	public static void main(String[] args) {
-		aiOpeningMoves();
-//		aiVsAI();
+//		aiOpeningMoves();
+		aiVsAI();
 	}
 
 	private static void aiOpeningMoves() {
@@ -53,7 +53,7 @@ public class AIStats {
 
 	private static void aiVsAI() {
 		List<AIPlayer> aiPlayers = new ArrayList<AIPlayer>();
-		aiPlayers.add(new NegamaxOrderingPlayer(6, 2));
+		aiPlayers.add(new NegamaxOrderingPlayer(9, 20));
 		
 		int steps = 0;
 		int evals = 0;
