@@ -32,6 +32,18 @@ class NewMain {
 	public static void main(String args[]) throws IOException {
 		GameState startingState = new GameState();
 
+		for (int i = 0; i < args.length; ++i) {
+			if (args[i].equals("-f")) {
+				System.out.println(args[i + 1]);
+				startingState = FenIO.parseFen(args[++i]);
+			}
+			else if (args[i].equals("-F")) {
+				System.out.println(args[i + 1]);
+				startingState = FenIO.parseFenFile(args[++i]);
+			}
+		}
+
+		/*
 		// If FEN notation is provided to the game, parse the FEN input
 		// to set up the initial game state.
 		if (args.length > 0) {
@@ -42,7 +54,8 @@ class NewMain {
 			else
 				startingState = FenIO.parseFen(filename);
 		}
-		
+		*/
+
 		Frame gui = new Frame();
 		
 //		Player playerForWhite = new RandomPlayer();
