@@ -10,9 +10,9 @@ public class Utils {
 	public static double utilityOf(GameState state) {
 		if (state.gameIsOver()) {
 			if (state.playerToMove() == PlayerId.WHITE) { // white lost!
-				return Double.NEGATIVE_INFINITY;
+				return -10000;
 			} else {
-				return Double.POSITIVE_INFINITY;
+				return 10000;
 			}
 		}
 		

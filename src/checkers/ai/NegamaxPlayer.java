@@ -55,7 +55,7 @@ public class NegamaxPlayer extends AIPlayer implements Cloneable {
 			}
 			
 			// this is sufficient for alpha-beta pruning
-			if (alpha > beta) {
+			if (alpha >= beta) {
 				return bestChoice;
 			}
 		}
@@ -82,7 +82,7 @@ public class NegamaxPlayer extends AIPlayer implements Cloneable {
 			}
 			
 			// this is sufficient for alpha-beta pruning
-			if (alpha > beta) {
+			if (alpha >= beta) {
 				return alpha;
 			}
 		}

@@ -1,10 +1,12 @@
 package checkers;
 
+import static checkers.Constants.DEFAULT_NEGAMAX_SEARCH_DEPTH;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
-import checkers.ai.NegamaxPlayer;
 import checkers.ai.NegamaxOrderingPlayer;
+import checkers.ai.NegamaxPlayer;
 import checkers.ai.RandomPlayer;
 import checkers.ascii.AsciiDisplay;
 import checkers.ascii.AsciiPlayer;
@@ -64,7 +66,7 @@ class NewMain {
 		Player playerForWhite = parsePlayerString(playerForWhiteString);
 		parseDisplayStrings(displayStrings);
 
-		Game game = new Game(playerForBlack, playerForWhite, startingState);
+		Game game = new Game(new NegamaxPlayer(6), new NegamaxPlayer(6), startingState);
 
 		// if the GUI was created by parsePlayerString or parseDisplayStrings,
 		// then we need to initialize it.  (Note: must do this after creation
@@ -108,7 +110,7 @@ class NewMain {
 			if (parts.length == 2)
 				return new NegamaxPlayer(Integer.parseInt(parts[1]));
 			else
-				return new NegamaxPlayer(5); // default
+				return new NegamaxPlayer(DEFAULT_NEGAMAX_SEARCH_DEPTH); // default
 		}
 		if (playerString.toUpperCase().matches("^NEGAMAXORDERING(:\\d+,\\d+)?")) {
 			String[] parts = playerString.split(":");

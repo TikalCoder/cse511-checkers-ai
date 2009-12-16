@@ -37,7 +37,7 @@ public class Frame extends JFrame {
 
 	private BoardUI boardUI;
 	
-	private JCheckBoxMenuItem blackPlayer, whitePlayer;
+	private JCheckBoxMenuItem blackPlayer, whitePlayer, hideAIMoves;
 	
 	private JMenuItem undoMove;
 
@@ -86,7 +86,7 @@ public class Frame extends JFrame {
 		JMenu optionsMenu = new JMenu("Options");
 		blackPlayer = new JCheckBoxMenuItem("Player 1 AI");
 		whitePlayer = new JCheckBoxMenuItem("Player 2 AI");
-		final JCheckBoxMenuItem hideAIMoves = new JCheckBoxMenuItem("Hide AI Moves");
+		hideAIMoves = new JCheckBoxMenuItem("Hide AI Moves");
 		optionsMenu.add(blackPlayer);
 		optionsMenu.add(whitePlayer);
 		optionsMenu.add(hideAIMoves);
@@ -161,6 +161,8 @@ public class Frame extends JFrame {
 	public void init() {
 		blackPlayer.setSelected(Game.currentGame().getBlackPlayer() instanceof AIPlayer);
 		whitePlayer.setSelected(Game.currentGame().getWhitePlayer() instanceof AIPlayer);
+		hideAIMoves.setSelected((Game.currentGame().getBlackPlayer() instanceof AIPlayer && Game.currentGame().getWhitePlayer() instanceof AIPlayer));
+		boardUI.setHidePossibleAIMoves(hideAIMoves.isEnabled());
 		updateUndoable();
 	}
 }

@@ -3,7 +3,6 @@ package checkers.ai;
 import java.util.ArrayList;
 import java.util.Random;
 
-import checkers.Utils;
 import checkers.model.GameState;
 import checkers.model.Move;
 
