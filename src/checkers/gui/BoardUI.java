@@ -31,12 +31,11 @@ import checkers.model.GameState;
 import checkers.model.Move;
 import checkers.model.SingleMove;
 import checkers.model.Board.PositionState;
-import checkers.print.PrettyBoardPrinter;
 
 /**
  * This class represents a Checkers board with pieces on it, displaying the
  * possible moves for the current player.
- * 
+ *
  * @author Scott Bressler
  */
 public class BoardUI extends JPanel {
@@ -62,19 +61,19 @@ public class BoardUI extends JPanel {
 	 * The player that chooses moves for this UI.
 	 */
 	private GUIPlayer player;
-	
+
 	/**
 	 * True if the possible moves a computer player can make should be hidden.
 	 */
 	private boolean hidePossibleAIMoves;
-	
+
 	public BoardUI() {
 		setPreferredSize(new Dimension(Constants.WIDTH, Constants.HEIGHT));
 		kingImg = null;
 		try {
 		    kingImg = ImageIO.read(new File(CROWN_IMG));
 		} catch (IOException e) {}
-		
+
 		addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent me) {
 				// Keep track of last selection
@@ -85,7 +84,7 @@ public class BoardUI extends JPanel {
 					oldIndex = gridToPosition(oldSquare);
 					oldState = gameState.getBoard().stateAt(oldIndex);
 				}
-				
+
 				// Determine the newly selected square
 				int cellWidth = getWidth() / GRID_SIZE;
 				int cellHeight = getHeight() / GRID_SIZE;
@@ -93,7 +92,7 @@ public class BoardUI extends JPanel {
 				int y = me.getY() / cellHeight;
 				Point selection = new Point(x, y);
 				int selectedIndex = gridToPosition(selection);
-				
+
 				ArrayList<SingleMove> possibleMoves = gameState.possibleSingleMoves();
 				boolean validStart = false;
 				boolean validEnd = false;
@@ -103,18 +102,18 @@ public class BoardUI extends JPanel {
 					if (singleMove.endPos == selectedIndex)
 						validEnd = true;
 				}
-				
+
 				if (Game.currentGame().getPlayerToMove() instanceof AIPlayer
 						|| !(validStart
 							|| oldState != null
 							&& oldState.hasPlayersPiece(gameState.playerToMove())
 							&& validEnd)) // ignore clicks on invalid locations
 					return;
-				
+
 				PositionState selectedState = gameState.getBoard().stateAt(selectedIndex);
 				selectedSquare = selection;
-				
-				
+
+
 				if (selectedSquare.equals(oldSquare)) {
 					clearSelection();
 				} else if (validSquare(x, y) && oldSquare != null
@@ -136,14 +135,13 @@ public class BoardUI extends JPanel {
 					   * This will happen if clicking from a square with a piece to a square that
 					   * cannot be reached from that piece should not change the selection.
 					   * Note/TODO: will not work until there is some way to know the user is in the middle of a jump
-				*/	  
+				*/
 //					if (!gameState.isJumping())
 //						selectedSquare = oldSquare;
-					
-					new PrettyBoardPrinter().print(gameState.getBoard());
+
 				} else if (oldSquare != null)
 					selectedSquare = oldSquare;
-				
+
 
 				// Update the display
 				repaint();
@@ -170,10 +168,10 @@ public class BoardUI extends JPanel {
 	public void paintComponent(Graphics graphics) {
 		super.paintComponent(graphics);
 		Graphics2D g = (Graphics2D) graphics;
-		
+
 		if (gameState == null)
 			return;
-		
+
 		int cellWidth = getWidth() / GRID_SIZE;
 		int cellHeight = getHeight() / GRID_SIZE;
 		int pieceWidth = (getWidth() - (Constants.PADDING * 8)) / GRID_SIZE;
@@ -195,7 +193,7 @@ public class BoardUI extends JPanel {
 				}
 			}
 		}
-		
+
 		if (Game.currentGame().isOver())
 			drawEndGameMessage(g);
 	}
@@ -218,7 +216,7 @@ public class BoardUI extends JPanel {
 	}
 
 	/**
-	 * Helper method for paintComponent that draws the selected piece, if there is one. 
+	 * Helper method for paintComponent that draws the selected piece, if there is one.
 	 */
 	private void highlightSelectedPiece(Graphics2D g, int cellWidth, int cellHeight, int pieceWidth, int pieceHeight, int x, int y) {
 		if (new Point(x, y).equals(selectedSquare)) {
@@ -233,7 +231,7 @@ public class BoardUI extends JPanel {
 	}
 
 	/**
-	 * Helper method for paintComponent that draws all the pieces on the board. 
+	 * Helper method for paintComponent that draws all the pieces on the board.
 	 */
 	private void drawAllPieces(Graphics2D g, int cellWidth, int cellHeight,int pieceWidth, int pieceHeight, int i, int j) {
 		PositionState state = gameState.getBoard().stateAt(gridToPosition(i, j));
@@ -245,7 +243,7 @@ public class BoardUI extends JPanel {
 		double x = cellWidth * i + Constants.PADDING / 2.0;
 		double y = cellHeight * j + Constants.PADDING / 2.0;
 		g.fill(new Ellipse2D.Double(x, y, pieceWidth, pieceHeight));
-		
+
 		if (state.hasKing()) {
 			g.drawImage(kingImg,
 						cellWidth * i + cellWidth / 2 - kingImg.getWidth() / 2,
@@ -265,7 +263,7 @@ public class BoardUI extends JPanel {
 			else // draw jumps from selected piece
 				moves = gameState.getBoard().possibleJumps(selectedIndex);
 		}
-		
+
 		drawPossibleMoves(g, cellWidth, cellHeight, pieceWidth, pieceHeight, moves);
 	}
 
