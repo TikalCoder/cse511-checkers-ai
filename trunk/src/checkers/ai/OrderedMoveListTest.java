@@ -21,10 +21,10 @@ public class OrderedMoveListTest {
 		t.add(move2, 5.0);
 		t.add(move3, 3.0); //Another 3.0 to make sure the ordering is stable
 		
-		assertEquals(t.get(0), move1);
-		assertEquals(t.get(1), move3);
-		assertEquals(t.get(2), move0);
-		assertEquals(t.get(3), move2);
+		assertEquals(t.get(0), move2);
+		assertEquals(t.get(1), move0);
+		assertEquals(t.get(2), move1);
+		assertEquals(t.get(3), move3);
 	}
-
+	
 }
