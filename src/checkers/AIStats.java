@@ -30,8 +30,11 @@ public class AIStats {
 	private static void aiOpeningMoves() {
 		List<AIPlayer> aiPlayers = new ArrayList<AIPlayer>();
 		for (int i = 8; i <= 10; i++) {
-			aiPlayers.add(new NegamaxPlayer(i));
-			aiPlayers.add(new NegamaxExtensionPlayer(i));
+//			aiPlayers.add(new NegamaxPlayer(i));
+//			aiPlayers.add(new NegamaxExtensionPlayer(i));
+			aiPlayers.add(new NegamaxOrderingPlayer(i, i));
+			aiPlayers.add(new NegamaxOrderingPlayer(i, 4));
+//			aiPlayers.add(new NegamaxOrderingPlayer(i, 0));
 		}
 		for (AIPlayer aip : aiPlayers) {
 			System.out.println(aip);
@@ -40,10 +43,10 @@ public class AIStats {
 			Collections.reverse(possibleMoves);
 			for(Move move : possibleMoves) {
 				game = new Game(new AsciiPlayer(), aip, new GameState());
-				System.out.println("Move " + move);
+//				System.out.println("Move " + move);
 				game.makeMove(move);
 				game.makeMove(game.getPlayerToMove().chooseMove(game.getState()));
-				System.out.println(aip.getSearches() + "\t" + aip.getEvals());
+				System.out.println(aip.getSearches() + "\t" + aip.getEvals() + "\t" + (aip.getSearches()-aip.getEvals()));
 			}
 		}
 	}

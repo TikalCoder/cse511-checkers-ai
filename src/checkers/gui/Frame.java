@@ -37,7 +37,7 @@ public class Frame extends JFrame {
 
 	private BoardUI boardUI;
 	
-	private JCheckBoxMenuItem blackPlayer, whitePlayer, hideAIMoves;
+	private JCheckBoxMenuItem blackPlayer, whitePlayer, hideAIMoves, hidePositionIndices;
 	
 	private JMenuItem undoMove;
 
@@ -87,9 +87,11 @@ public class Frame extends JFrame {
 		blackPlayer = new JCheckBoxMenuItem("Player 1 AI");
 		whitePlayer = new JCheckBoxMenuItem("Player 2 AI");
 		hideAIMoves = new JCheckBoxMenuItem("Hide AI Moves");
+		hidePositionIndices = new JCheckBoxMenuItem("Hide Position Indices");
 		optionsMenu.add(blackPlayer);
 		optionsMenu.add(whitePlayer);
 		optionsMenu.add(hideAIMoves);
+		optionsMenu.add(hidePositionIndices);
 		
 		newGame.addActionListener(new ActionListener() {
 			@Override
@@ -133,6 +135,22 @@ public class Frame extends JFrame {
 			}
 		});
 		
+		hideAIMoves.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				boardUI.setHidePossibleAIMoves(hideAIMoves.isSelected());
+				boardUI.repaint();
+			}
+		});
+		
+		hidePositionIndices.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				boardUI.setHideIndices(hidePositionIndices.isSelected());
+				boardUI.repaint();
+			}
+		});
+		
 		undoMove.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -163,6 +181,7 @@ public class Frame extends JFrame {
 		whitePlayer.setSelected(Game.currentGame().getWhitePlayer() instanceof AIPlayer);
 		hideAIMoves.setSelected((Game.currentGame().getBlackPlayer() instanceof AIPlayer && Game.currentGame().getWhitePlayer() instanceof AIPlayer));
 		boardUI.setHidePossibleAIMoves(hideAIMoves.isEnabled());
+		hidePositionIndices.setSelected(boardUI.hideIndices());
 	//	updateUndoable();
 	}
 }
