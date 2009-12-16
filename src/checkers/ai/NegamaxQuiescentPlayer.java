@@ -1,15 +1,11 @@
 package checkers.ai;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import checkers.model.GameState;
 import checkers.model.Move;
 import checkers.model.PlayerId;
 
-public class NegamaxPlayer extends AIPlayer implements Cloneable {
+public class NegamaxQuiescentPlayer extends AIPlayer implements Cloneable {
 	private int searchDepth;
-	
 	private int searches;
 	private int evals;
 	
@@ -19,7 +15,7 @@ public class NegamaxPlayer extends AIPlayer implements Cloneable {
 	 * constructor.
 	 */
 	@SuppressWarnings("unused")
-	private NegamaxPlayer() {
+	private NegamaxQuiescentPlayer() {
 		super();
 	}
 	
@@ -28,7 +24,7 @@ public class NegamaxPlayer extends AIPlayer implements Cloneable {
 	 * depth of searchDepth.
 	 * @param searchDepth
 	 */
-	public NegamaxPlayer(int searchDepth) {
+	public NegamaxQuiescentPlayer(int searchDepth) {
 		super();
 		this.searchDepth = searchDepth;
 		
@@ -42,8 +38,6 @@ public class NegamaxPlayer extends AIPlayer implements Cloneable {
 		searches = 1;
 		evals = 0;
 		
-		GameState state = (GameState)origState.clone();
-		
 		if (state.gameIsOver()) throw new IllegalArgumentException("Can't make a decision; state is terminal.");
 		
 		// we expand the first level here so we can keep track of the best move (because
@@ -51,12 +45,11 @@ public class NegamaxPlayer extends AIPlayer implements Cloneable {
 		Move bestChoice = null;
 		double alpha = Double.NEGATIVE_INFINITY;
 		double beta = Double.POSITIVE_INFINITY;
-		
 		for (Move choice : state.possibleMoves()) {
-			state.makeMoveUnchecked(choice);
-			double util = -negamax(state, searchDepth - 1,  -beta, -alpha, choice);
-			state.undoMoveUnchecked(choice);
-
+			GameState successor = (GameState) state.clone();
+			successor.makeMove(choice);
+			double util = -negamax(successor, searchDepth - 1,  -beta, -alpha, choice);
+			
 			if (util > alpha) {
 				alpha = util;
 				bestChoice = choice;
@@ -67,10 +60,7 @@ public class NegamaxPlayer extends AIPlayer implements Cloneable {
 				return bestChoice;
 			}
 		}
-
-		if (!state.equals(origState))
-			throw new RuntimeException("internal error: game state inconsistent");
-
+		
 		System.out.println("Depth: " + searchDepth + " plies");
 		System.out.println("Searches: " + searches);
 		System.out.println("Evals: " + evals);
@@ -81,17 +71,17 @@ public class NegamaxPlayer extends AIPlayer implements Cloneable {
 	private Double negamax(GameState state, int depth, double alpha, double beta, Move lastMove) {
 		searches++;
 		
-		if (state.gameIsOver() || depth <= 0) {
+		if (state.gameIsOver() || (depth <= 0 && !lastMove.isJump())) {
 			evals++;
 			double util = Utils.utilityOf(state);
 			return (state.playerToMove() == PlayerId.WHITE) ? util : -util;
 		}
 		
 		for (Move choice : state.possibleMoves()) {
-			state.makeMoveUnchecked(choice);
-			double util = -negamax(state, depth - 1, -beta, -alpha, choice);
-			state.undoMoveUnchecked(choice);
-
+			GameState successor = (GameState) state.clone();
+			successor.makeMove(choice);
+			double util = -negamax(successor, depth - 1, -beta, -alpha, choice);
+			
 			if (util > alpha) {
 				alpha = util;
 			}
@@ -106,7 +96,7 @@ public class NegamaxPlayer extends AIPlayer implements Cloneable {
 
 	@Override
 	public Object clone() throws CloneNotSupportedException {
-		NegamaxPlayer clone =  (NegamaxPlayer) super.clone();
+		NegamaxQuiescentPlayer clone =  (NegamaxQuiescentPlayer) super.clone();
 		clone.evals = 0;
 		clone.searches = 0;
 		return clone;

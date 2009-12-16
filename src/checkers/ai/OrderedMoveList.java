@@ -19,7 +19,7 @@ public class OrderedMoveList implements Iterable<Move> {
 	public void add(Move m, Double val) {
 		ListIterator<Pair> iter = list.listIterator();
 		while (iter.hasNext()) {
-			if (iter.next().getVal() > val) {
+			if (iter.next().getVal() < val) {
 				iter.previous();
 				break;
 			}
