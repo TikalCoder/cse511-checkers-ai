@@ -13,7 +13,23 @@ import checkers.model.Move;
  * @author Kurt Glastetter
  */
 public class RandomPlayer extends AIPlayer {
-	static Random r = new Random(Utils.SEED);
+	Random r;
+	int seed;
+	
+	public RandomPlayer() {
+		r = new Random();
+		seed = r.nextInt();
+		r = new Random(seed);
+	}
+	
+	public RandomPlayer(int seed) {
+		this.seed = seed;
+		r = new Random(seed);
+	}
+	
+	public int getSeed() {
+		return seed;
+	}
 
 	public Move chooseMove(GameState state) {
 //		try {
@@ -23,7 +39,6 @@ public class RandomPlayer extends AIPlayer {
 //		}
 		ArrayList<? extends Move> possibleMoves = state.possibleMoves();
 		Move moveToMake = possibleMoves.get((int) (r.nextDouble() * possibleMoves.size()));
-		System.out.println("Random player making move: " + moveToMake);
 		return moveToMake;
 	}
 }

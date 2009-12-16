@@ -8,9 +8,6 @@ public class NegamaxOrderingPlayer extends AIPlayer {
 	private int searchDepth;
 	private int differential;
 	
-	private int searches;
-	private int evals;
-	
 	/**
 	 * Private constructor with no arguments. Disallows creation of a NegamaxOrderingPlayer
 	 * if there was no depth specified. Use the 
@@ -46,9 +43,7 @@ public class NegamaxOrderingPlayer extends AIPlayer {
 		evals = 0;
 		
 		if (state.gameIsOver()) throw new IllegalArgumentException("Can't make a decision; state is terminal.");
-		
-		GameState state = (GameState) origState.clone();
-		
+				
 		// we expand the first level here so we can keep track of the best move (because
 		// the negamax method doesn't keep track of moves, just values).
 		Move bestChoice = null;
@@ -69,9 +64,6 @@ public class NegamaxOrderingPlayer extends AIPlayer {
 				return bestChoice;
 			}
 		}
-		
-		if (!state.equals(origState))
-			throw new RuntimeException("internal error: game state inconsistent");
 		
 		System.out.println("Depth: " + searchDepth + " plies");
 		System.out.println("Searches: " + searches);
