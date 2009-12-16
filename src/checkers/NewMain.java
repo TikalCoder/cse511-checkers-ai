@@ -67,7 +67,7 @@ class NewMain {
 		Player playerForWhite = parsePlayerString(playerForWhiteString);
 		parseDisplayStrings(displayStrings);
 
-		Game game = new Game(new NegamaxPlayer(1), new NegamaxExtensionPlayer(6), startingState);
+		Game game = new Game(new NegamaxPlayer(10), new NegamaxExtensionPlayer(9), startingState);
 
 		// if the GUI was created by parsePlayerString or parseDisplayStrings,
 		// then we need to initialize it.  (Note: must do this after creation
