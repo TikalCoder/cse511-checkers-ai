@@ -24,18 +24,19 @@ public class AIStats {
 	 * @param args Command line args. Currently none supported.
 	 */
 	public static void main(String[] args) {
-//		aiOpeningMoves();
-		aiVsAI();
+		aiOpeningMoves();
+//		aiVsAI();
 	}
 
 	private static void aiOpeningMoves() {
 		List<AIPlayer> aiPlayers = new ArrayList<AIPlayer>();
-		for (int i = 8; i <= 10; i++) {
+		for (int i = 9; i <= 10; i++) {
 //			aiPlayers.add(new NegamaxPlayer(i));
 //			aiPlayers.add(new NegamaxExtensionPlayer(i));
-			aiPlayers.add(new NegamaxOrderingPlayer(i, i));
-			aiPlayers.add(new NegamaxOrderingPlayer(i, 4));
-//			aiPlayers.add(new NegamaxOrderingPlayer(i, 0));
+//			aiPlayers.add(new NegamaxOrderingPlayer(i, i));
+//			aiPlayers.add(new NegamaxOrderingPlayer(i, 4));
+			aiPlayers.add(new NegascoutOrderingPlayer(i, i));
+			aiPlayers.add(new NegascoutOrderingPlayer(i, 4));
 		}
 		for (AIPlayer aip : aiPlayers) {
 			System.out.println(aip);
@@ -54,9 +55,12 @@ public class AIStats {
 
 	private static void aiVsAI() {
 		List<AIPlayer> aiPlayers = new ArrayList<AIPlayer>();
+//		aiPlayers.add(new NegamaxOrderingPlayer(9, 5));
+//		aiPlayers.add(new NegamaxOrderingPlayer(9, 7));
+//		aiPlayers.add(new NegamaxOrderingPlayer(9, 9));
+		aiPlayers.add(new NegascoutOrderingPlayer(9, 5));
 //		aiPlayers.add(new NegascoutOrderingPlayer(9, 7));
 //		aiPlayers.add(new NegascoutOrderingPlayer(9, 9));
-		aiPlayers.add(new NegascoutOrderingPlayer(9, 15));
 		
 		int steps = 0;
 		int evals = 0;
