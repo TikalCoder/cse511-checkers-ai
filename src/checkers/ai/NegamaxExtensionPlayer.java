@@ -112,5 +112,10 @@ public class NegamaxExtensionPlayer extends AIPlayer implements Cloneable {
 		clone.searches = 0;
 		return clone;
 	}
+	
+	@Override
+	public String toString() {
+		return "Negamax extension player with depth " + searchDepth;
+	}
 
 }

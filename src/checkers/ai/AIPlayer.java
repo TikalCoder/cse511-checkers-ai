@@ -17,6 +17,5 @@ public abstract class AIPlayer extends Player {
 
 	public int getEvals() {
 		return evals;
-	}
-	
+	}	
 }

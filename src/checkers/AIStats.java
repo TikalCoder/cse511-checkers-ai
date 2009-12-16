@@ -1,13 +1,17 @@
 package checkers;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import checkers.ai.AIPlayer;
+import checkers.ai.NegamaxExtensionPlayer;
 import checkers.ai.NegamaxOrderingPlayer;
 import checkers.ai.NegamaxPlayer;
 import checkers.ai.RandomPlayer;
+import checkers.ascii.AsciiPlayer;
 import checkers.model.GameState;
+import checkers.model.Move;
 
 public class AIStats {
 
@@ -19,6 +23,32 @@ public class AIStats {
 	 * @param args Command line args. Currently none supported.
 	 */
 	public static void main(String[] args) {
+		aiOpeningMoves();
+//		aiVsAI();
+	}
+
+	private static void aiOpeningMoves() {
+		List<AIPlayer> aiPlayers = new ArrayList<AIPlayer>();
+		for (int i = 8; i <= 10; i++) {
+			aiPlayers.add(new NegamaxPlayer(i));
+			aiPlayers.add(new NegamaxExtensionPlayer(i));
+		}
+		for (AIPlayer aip : aiPlayers) {
+			System.out.println(aip);
+			Game game = new Game(new AsciiPlayer(), aip, new GameState());
+			ArrayList<? extends Move> possibleMoves = game.getState().possibleMoves();
+			Collections.reverse(possibleMoves);
+			for(Move move : possibleMoves) {
+				game = new Game(new AsciiPlayer(), aip, new GameState());
+				System.out.println("Move " + move);
+				game.makeMove(move);
+				game.makeMove(game.getPlayerToMove().chooseMove(game.getState()));
+				System.out.println(aip.getSearches() + "\t" + aip.getEvals());
+			}
+		}
+	}
+
+	private static void aiVsAI() {
 		List<AIPlayer> aiPlayers = new ArrayList<AIPlayer>();
 		aiPlayers.add(new NegamaxOrderingPlayer(6, 2));
 		
@@ -62,7 +92,6 @@ public class AIStats {
 			System.out.println("Maximum evals: " + evalsMax);
 			System.out.println();
 		}
-
 	}
 
 }
