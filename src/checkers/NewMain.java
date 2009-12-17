@@ -100,8 +100,12 @@ class NewMain {
 			ensureAsciiDisplayExists();
 			return new AsciiPlayer();
 		}
-		if (playerString.equalsIgnoreCase("RANDOM")) {
-			return new RandomPlayer();
+		if (playerString.toUpperCase().matches("^RANDOM(:-?\\d+)?")) {
+			String[] parts = playerString.split(":");
+			if (parts.length == 2)
+				return new RandomPlayer(Integer.parseInt(parts[1]));
+			else
+				return new RandomPlayer();
 		}
 		if (playerString.toUpperCase().matches("^NEGAMAX(:\\d+)?")) {
 			String[] parts = playerString.split(":");
@@ -205,7 +209,9 @@ class NewMain {
 			+ "PLAYER may be one of:\n"
 			+ "  gui     human player, using a graphical user interface\n"
 			+ "  ascii   human player, using a text-based user interface\n"
-			+ "  random  AI player that makes random moves\n"
+			+ "  random[:N]\n"
+			+ "          AI player that makes random moves; optional integer N specifies a\n"
+			+ "          seed for the PRNG; default behavior is to seed with current time\n"
 			+ "  negamax[:N]\n"
 			+ "          AI player, similar to Minimax with alpha-beta pruning, with search\n"
 			+ "          depth specified by integer N\n"
