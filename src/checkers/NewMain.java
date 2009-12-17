@@ -25,12 +25,7 @@ import checkers.print.PrettyBoardPrinter;
  * Meant to provide a unified main program, to execute a checkers game for any
  * kind of AI or human player.
  *
- * Usage:
- * 1) Without any arguments, a new checkers game will be created.
- * 1) Provide the filename of a file containing FEN.
- * 2) Provide FEN input directly.
- *
- * Using either options 2 or 3, the initial game state will be set to match the provided FEN.
+ * For usage, see the help message in exitWithHelp() below.
  *
  * @author Kurt Glastetter
  * @author Scott Bressler
