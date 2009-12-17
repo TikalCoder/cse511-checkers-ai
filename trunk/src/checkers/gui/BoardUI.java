@@ -2,9 +2,11 @@ package checkers.gui;
 
 import static checkers.Constants.CROWN_IMG;
 import static checkers.Constants.GRID_SIZE;
+import static checkers.Constants.SPINNER_IMG;
 import static checkers.Utils.gridToPosition;
 import static checkers.Utils.validSquare;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -20,6 +22,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import checkers.Constants;
@@ -51,6 +55,11 @@ public class BoardUI extends JPanel {
 	private Point selectedSquare;
 
 	private BufferedImage kingImg;
+	
+	/**
+	 * Label with a spinning image to show that the AI is thinking.
+	 */
+	private JLabel spinnerImg;
 
 	/**
 	 * Maintain the current game state.
@@ -80,6 +89,9 @@ public class BoardUI extends JPanel {
 		try {
 		    kingImg = ImageIO.read(new File(CROWN_IMG));
 		} catch (IOException e) {}
+		
+		setLayout(new BorderLayout());
+		add(spinnerImg = new JLabel(new ImageIcon(SPINNER_IMG)), BorderLayout.CENTER);
 
 		addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent me) {
@@ -198,6 +210,11 @@ public class BoardUI extends JPanel {
 		Player currPlayer = Game.currentGame().getPlayerToMove();
 		if (currPlayer instanceof AIPlayer && !hidePossibleAIMoves || !(currPlayer instanceof AIPlayer))
 			drawPossibleMoves(g, cellWidth, cellHeight, pieceWidth, pieceHeight);
+		
+		if (currPlayer instanceof AIPlayer && !Game.currentGame().allAIGame() && !Game.currentGame().isOver())
+			spinnerImg.setVisible(true);
+		else
+			spinnerImg.setVisible(false);
 
 		for (int i = 0; i < GRID_SIZE; i++) {
 			for (int j = 0; j < GRID_SIZE; j++) {

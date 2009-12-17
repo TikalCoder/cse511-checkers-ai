@@ -30,6 +30,13 @@ public final class Constants {
 	 * Filename of crown image.
 	 */
 	public static final String CROWN_IMG = "crown-smaller.png";
+	
+	/**
+	 * Filename of spinner image.
+	 * Image generated at http://www.ajaxload.info/ with "Squares"
+	 * spinner - white background and #D33E3E foreground.
+	 */
+	public static final String SPINNER_IMG = "spinner.gif";
 
 	/**
 	 * Default negamax search depth.
