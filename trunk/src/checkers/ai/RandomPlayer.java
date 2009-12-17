@@ -48,4 +48,8 @@ public class RandomPlayer extends AIPlayer {
 		Move moveToMake = possibleMoves.get((int) (r.nextDouble() * possibleMoves.size()));
 		return moveToMake;
 	}
+
+	public String toString() {
+		return "Random player with seed " + seed;
+	}
 }
