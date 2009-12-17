@@ -10,6 +10,8 @@ import checkers.print.PrettyBoardPrinter;
 
 /**
  * An ASCII-based 2-player checkers game interface, playable using stdin.
+ *
+ * @author Kurt Glastetter
  */
 public class AsciiMain {
 	public static void main(String[] args) {

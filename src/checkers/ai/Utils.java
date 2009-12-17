@@ -5,8 +5,13 @@ import checkers.model.GameState;
 import checkers.model.PlayerId;
 import checkers.model.Board.PositionState;
 
+/**
+ * AI utilities package, including evaluation function.
+ *
+ * @author Andrew Duffey
+ */
 public class Utils {
-	
+
 	public static double utilityOf(GameState state) {
 		if (state.gameIsOver()) {
 			if (state.playerToMove() == PlayerId.WHITE) { // white lost!
@@ -15,9 +20,9 @@ public class Utils {
 				return 10000;
 			}
 		}
-		
+
 		Board gameBoard = state.getBoard();
-		
+
 		Integer white = 0;
 		Integer black = 0;
 		for (int pos = 1; pos <= 32; pos++) {
@@ -30,12 +35,11 @@ public class Utils {
 				case BLACK_KING: black += 130; break;
 			}
 		}
-		
+
 		int util = white - black;
 		util += (250 * (white - black)) / (white + black);
-		
+
 		return util;
 	}
-	
-	
+
 }

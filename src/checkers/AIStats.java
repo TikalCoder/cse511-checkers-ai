@@ -14,13 +14,19 @@ import checkers.ascii.AsciiPlayer;
 import checkers.model.GameState;
 import checkers.model.Move;
 
+/**
+ * AIStats
+ *
+ * @author Andrew Duffey
+ * @author Scott Bressler
+ */
 public class AIStats {
 
 	/**
 	 * This class is essentially a script to benchmark the various AIPlayers.
-	 * They are set up against a RandomPlayer, and the number of searches and 
+	 * They are set up against a RandomPlayer, and the number of searches and
 	 * node evaluations they do is printed.
-	 * 
+	 *
 	 * @param args Command line args. Currently none supported.
 	 */
 	public static void main(String[] args) {
@@ -61,7 +67,7 @@ public class AIStats {
 		aiPlayers.add(new NegascoutOrderingPlayer(9, 5));
 //		aiPlayers.add(new NegascoutOrderingPlayer(9, 7));
 //		aiPlayers.add(new NegascoutOrderingPlayer(9, 9));
-		
+
 		int steps = 0;
 		int evals = 0;
 		int evalsMax = 0;
@@ -74,7 +80,7 @@ public class AIStats {
 			System.out.println("Running statistics for player: " + aip);
 			for (int i = 0; i < trials; i++) {
 				Game game = new Game(new RandomPlayer(), aip, new GameState());
-				
+
 				System.out.println("Playing game " + (i + 1) + " of " + trials);
 
 				while (!game.isOver()) {

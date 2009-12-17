@@ -8,14 +8,19 @@ import java.util.ListIterator;
 import checkers.model.Move;
 
 
+/**
+ * OrderedMoveList
+ *
+ * @author Andrew Duffey
+ */
 public class OrderedMoveList implements Iterable<Move> {
-	
+
 	private List<Pair> list;
-	
+
 	public OrderedMoveList() {
 		list = new ArrayList<Pair>();
 	}
-	
+
 	public void add(Move m, Double val) {
 		ListIterator<Pair> iter = list.listIterator();
 		while (iter.hasNext()) {
@@ -26,15 +31,15 @@ public class OrderedMoveList implements Iterable<Move> {
 		}
 		iter.add(new Pair(m, val));
 	}
-	
+
 	public Move get(int index) {
 		return list.get(index).getMove();
 	}
-	
+
 	public Iterator<Move> iterator() {
 		return new OrderedMoveListIterator();
 	}
-	
+
 	public List<Move> toList() {
 		List<Move> result = new ArrayList<Move>();
 		for (Pair p : list) {
@@ -42,23 +47,23 @@ public class OrderedMoveList implements Iterable<Move> {
 		}
 		return result;
 	}
-	
+
 	private class Pair {
 		private Move m;
 		private Double val;
-		
+
 		public Pair(Move m, Double val) {
 			this.m = m;
 			this.val = val;
 		}
-		
+
 		public Move getMove() { return m; };
 		public Double getVal() { return val; };
 	}
-	
+
 	private class OrderedMoveListIterator implements Iterator<Move> {
 		private Integer index;
-		
+
 		public OrderedMoveListIterator() {
 			this.index = 0;
 		}
@@ -77,9 +82,9 @@ public class OrderedMoveList implements Iterable<Move> {
 
 		@Override
 		public void remove() {
-			list.remove(index);			
+			list.remove(index);
 		}
-		
+
 	}
 
 }
