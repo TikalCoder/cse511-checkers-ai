@@ -6,6 +6,8 @@ import static checkers.Constants.DEFAULT_NEGAMAX_EXTENSION_SEARCH_DEPTH;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import checkers.ai.AIPlayer;
+import checkers.ai.AIStatsDisplay;
 import checkers.ai.NegamaxExtensionPlayer;
 import checkers.ai.NegamaxOrderingPlayer;
 import checkers.ai.NegamaxPlayer;
@@ -35,6 +37,10 @@ class NewMain {
 	private static Display asciiDisplay = null;
 	private static Display guiDisplay = null;
 	private static Display fenDisplay = null;
+	private static Display aiStatsDisplayBlack = null;
+	private static Display aiStatsDisplayWhite = null;
+	private static Player playerForBlack = null;
+	private static Player playerForWhite = null;
 
 	public static void main(String args[]) throws IOException {
 		// default options:
@@ -60,8 +66,8 @@ class NewMain {
 				displayStrings.add(args[++i]);
 		}
 
-		Player playerForBlack = parsePlayerString(playerForBlackString);
-		Player playerForWhite = parsePlayerString(playerForWhiteString);
+		playerForBlack = parsePlayerString(playerForBlackString);
+		playerForWhite = parsePlayerString(playerForWhiteString);
 		parseDisplayStrings(displayStrings);
 
 		Game game = new Game(playerForBlack, playerForWhite, startingState);
@@ -156,10 +162,16 @@ class NewMain {
 				ensureAsciiDisplayExists();
 			else if (displayString.equalsIgnoreCase("FEN"))
 				ensureFenDisplayExists();
+			else if (displayString.equalsIgnoreCase("AISTATS-B"))
+				ensureAiStatsDisplayBlackExists();
+			else if (displayString.equalsIgnoreCase("AISTATS-W"))
+				ensureAiStatsDisplayWhiteExists();
 			else if (displayString.equalsIgnoreCase("ALL")) {
 				ensureGuiDisplayExists();
 				ensureAsciiDisplayExists();
 				ensureFenDisplayExists();
+				ensureAiStatsDisplayBlackExists();
+				ensureAiStatsDisplayWhiteExists();
 			}
 			else
 				throw new IllegalArgumentException(
@@ -185,10 +197,22 @@ class NewMain {
 			fenDisplay = new FenDisplay();
 	}
 
+	private static void ensureAiStatsDisplayBlackExists() {
+		if (aiStatsDisplayBlack == null && playerForBlack instanceof AIPlayer)
+			aiStatsDisplayBlack = new AIStatsDisplay((AIPlayer) playerForBlack);
+	}
+
+	private static void ensureAiStatsDisplayWhiteExists() {
+		if (aiStatsDisplayWhite == null && playerForWhite instanceof AIPlayer)
+			aiStatsDisplayWhite = new AIStatsDisplay((AIPlayer) playerForWhite);
+	}
+
 	private static void registerDisplays(Game game) {
 		if (guiDisplay   != null) game.registerDisplay(guiDisplay);
 		if (asciiDisplay != null) game.registerDisplay(asciiDisplay);
 		if (fenDisplay   != null) game.registerDisplay(fenDisplay);
+		if (aiStatsDisplayBlack != null) game.registerDisplay(aiStatsDisplayBlack);
+		if (aiStatsDisplayWhite != null) game.registerDisplay(aiStatsDisplayWhite);
 	}
 
 	private static void exitWithHelp() {
@@ -226,7 +250,7 @@ class NewMain {
 			+ "          AI player that uses move ordering similar to the above, but uses a\n"
 			+ "          null window search as opposed to a normal Negamax.\n"
 			+ "\n"
-			+ "DISPLAY(s) may be any of:  gui  ascii  fen  all\n"
+			+ "DISPLAY(s) may be any of:  gui  ascii  fen  aistats-b  aistats-w  all\n"
 			+ "\n"
 			+ "Examples:\n"
 			+ "  java -cp src checkers/NewMain -b random -w negamax:7 -d gui -d fen\n"
