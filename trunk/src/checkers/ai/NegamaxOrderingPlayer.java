@@ -6,28 +6,33 @@ import checkers.model.GameState;
 import checkers.model.Move;
 import checkers.model.PlayerId;
 
+/**
+ * Negamax player with move ordering.
+ *
+ * @author Andrew Duffey
+ */
 public class NegamaxOrderingPlayer extends AIPlayer {
 	private int searchDepth;
 	private int differential;
-	
+
 	/**
 	 * Private constructor with no arguments. Disallows creation of a NegamaxOrderingPlayer
-	 * if there was no depth specified. Use the 
-	 * 
+	 * if there was no depth specified. Use the
+	 *
 	 * <code>NegamaxOrderingPlayer(Integer searchDepth, Integer searchDifferential)</code>
-	 * 
+	 *
 	 * constructor instead.
 	 */
 	@SuppressWarnings("unused")
 	private NegamaxOrderingPlayer() {
 		super();
 	}
-	
+
 	/**
 	 * Constructs a Player that chooses moves based on a negamax search with a maximum
 	 * depth of searchDepth and uses internal searches <code>differential</code> plies
 	 * shallower to order the moves.
-	 * 
+	 *
 	 * @param searchDepth How deep to search.
 	 * @param searchDifferential How many fewer plies to search for internal ordering searches.
 	 */
@@ -35,7 +40,7 @@ public class NegamaxOrderingPlayer extends AIPlayer {
 		super();
 		this.searchDepth = searchDepth;
 		this.differential = searchDifferential;
-		
+
 		// statistics for each search
 		this.searches = 0;
 		this.evals = 0;
@@ -45,14 +50,14 @@ public class NegamaxOrderingPlayer extends AIPlayer {
 	public Move chooseMove(GameState state) {
 		searches = 1;
 		evals = 0;
-		
+
 		if (state.gameIsOver()) throw new IllegalArgumentException("Can't make a decision; state is terminal.");
-		
+
 		List<? extends Move> choices = state.possibleMoves();
 		if (choices.size() == 1) {
 			return choices.get(0);
 		}
-		
+
 		// we expand the first level here so we can keep track of the best move (because
 		// the negamax method doesn't keep track of moves, just values).
 		Move bestChoice = null;
@@ -67,19 +72,19 @@ public class NegamaxOrderingPlayer extends AIPlayer {
 				alpha = util;
 				bestChoice = choice;
 			}
-			
+
 			// this is sufficient for alpha-beta pruning
 			if (alpha >= beta) {
 				return bestChoice;
 			}
 		}
-		
+
 		return bestChoice;
 	}
 
 	private double negamax(GameState state, Integer depth, Double alpha, Double beta) {
 		searches++;
-		
+
 		if (state.gameIsOver() || depth <= 0) {
 			evals++;
 			double util = Utils.utilityOf(state);
@@ -94,7 +99,7 @@ public class NegamaxOrderingPlayer extends AIPlayer {
 			if (util > alpha) {
 				alpha = util;
 			}
-			
+
 			// this is sufficient for alpha-beta pruning
 			if (alpha >= beta) {
 				return alpha;
@@ -102,12 +107,12 @@ public class NegamaxOrderingPlayer extends AIPlayer {
 		}
 		return alpha;
 	}
-	
+
 	private OrderedMoveList getOrderedMoves(GameState state, Integer interiorSearchDepth,  Double alpha, Double beta) {
 		searches++;
-		
+
 		if (state.gameIsOver()) throw new IllegalArgumentException("Can't make a move; state is terminal.");
-		
+
 		// we expand the first level here so we can keep track of the moves (because
 		// the negamax method doesn't keep track of moves, just values).
 		OrderedMoveList orderedChoices = new OrderedMoveList();
@@ -127,19 +132,19 @@ public class NegamaxOrderingPlayer extends AIPlayer {
 			state.undoMoveUnchecked(choice);
 
 			orderedChoices.add(choice, util);
-			
+
 			if (util > alpha) {
 				alpha = util;
 			}
-			
+
 		}
-		
+
 		return orderedChoices;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "Ordering negamax player with depth " + searchDepth + ", differential " + differential;
 	}
-	
+
 }

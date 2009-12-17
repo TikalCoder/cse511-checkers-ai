@@ -7,6 +7,9 @@ import checkers.model.Board;
 /**
  * Represents a single move of a piece from one square to another.  This may
  * be a walk move, or it may be a single jump within a complete jump move.
+ *
+ * @author Kurt Glastetter
+ * @author Scott Bressler
  */
 public class SingleMove {
 	public int startPos;
@@ -28,7 +31,7 @@ public class SingleMove {
 
 	int startPos() { return startPos; }
 	int endPos() { return endPos; }
-	
+
 	public String toString() {
 		return startPos + (isJump() ? "x" : "-") + endPos;
 	}

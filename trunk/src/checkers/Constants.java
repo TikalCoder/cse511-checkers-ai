@@ -1,5 +1,10 @@
 package checkers;
 
+/**
+ * Global Constants package.
+ *
+ * @author Scott Bressler
+ */
 public final class Constants {
 	/**
 	 * Board size for Checkers game

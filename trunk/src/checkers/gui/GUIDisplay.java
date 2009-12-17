@@ -4,9 +4,15 @@ import checkers.Display;
 import checkers.model.GameState;
 import checkers.model.Move;
 
+/**
+ * Display class for updating the GUI.
+ *
+ * @author Kurt Glastetter
+ * @author Scott Bressler
+ */
 public class GUIDisplay extends Display {
 	private BoardUI gui;
-	
+
 	public GUIDisplay(BoardUI boardUI) {
 		this.gui = boardUI;
 	}

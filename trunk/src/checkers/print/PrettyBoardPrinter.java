@@ -2,6 +2,11 @@ package checkers.print;
 
 import checkers.model.Board;
 
+/**
+ * PrettyBoardPrinter
+ *
+ * @author Kurt Glastetter
+ */
 public class PrettyBoardPrinter implements BoardPrinter {
 	private static final String INDENT        = "    ";
 	private static final String LEFT_BORDER   = INDENT + "| ";
