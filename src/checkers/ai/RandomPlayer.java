@@ -21,11 +21,17 @@ public class RandomPlayer extends AIPlayer {
 		r = new Random();
 		seed = r.nextInt();
 		r = new Random(seed);
+
+		searches = 0;
+		evals = 0;
 	}
 
 	public RandomPlayer(int seed) {
 		this.seed = seed;
 		r = new Random(seed);
+
+		searches = 0;
+		evals = 0;
 	}
 
 	public int getSeed() {
