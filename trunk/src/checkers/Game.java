@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.Stack;
 
+import checkers.ai.AIPlayer;
 import checkers.model.GameState;
 import checkers.model.Move;
 import checkers.model.PlayerId;
@@ -188,6 +189,14 @@ public class Game {
 
 	public Player getWhitePlayer() {
 		return getPlayer(PlayerId.WHITE);
+	}
+	
+	/**
+	 * Returns true if both players currently playing are AI players,
+	 * false otherwise.
+	 */
+	public boolean allAIGame() {
+		return getBlackPlayer() instanceof AIPlayer && getWhitePlayer() instanceof AIPlayer;
 	}
 
 	/**
