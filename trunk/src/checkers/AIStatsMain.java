@@ -15,12 +15,12 @@ import checkers.model.GameState;
 import checkers.model.Move;
 
 /**
- * AIStats
+ * AIStatsMain
  *
  * @author Andrew Duffey
  * @author Scott Bressler
  */
-public class AIStats {
+public class AIStatsMain {
 
 	/**
 	 * This class is essentially a script to benchmark the various AIPlayers.
