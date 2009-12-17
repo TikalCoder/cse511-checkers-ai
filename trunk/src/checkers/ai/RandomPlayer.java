@@ -10,22 +10,24 @@ import checkers.model.Move;
  * A simple AI player that makes completely random moves.
  *
  * @author Kurt Glastetter
+ * @author Scott Bressler
+ * @author Andrew Duffey
  */
 public class RandomPlayer extends AIPlayer {
 	Random r;
 	int seed;
-	
+
 	public RandomPlayer() {
 		r = new Random();
 		seed = r.nextInt();
 		r = new Random(seed);
 	}
-	
+
 	public RandomPlayer(int seed) {
 		this.seed = seed;
 		r = new Random(seed);
 	}
-	
+
 	public int getSeed() {
 		return seed;
 	}

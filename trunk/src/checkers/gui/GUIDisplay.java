@@ -7,7 +7,6 @@ import checkers.model.Move;
 /**
  * Display class for updating the GUI.
  *
- * @author Kurt Glastetter
  * @author Scott Bressler
  */
 public class GUIDisplay extends Display {

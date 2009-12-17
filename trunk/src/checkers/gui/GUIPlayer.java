@@ -10,7 +10,6 @@ import checkers.model.Move;
  * Player class for interfacing with the GUI to get a human's move choices.
  *
  * @author Scott Bressler
- * @author Kurt Glastetter
  */
 public class GUIPlayer extends Player {
 	private BoardUI gui;

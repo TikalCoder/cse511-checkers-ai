@@ -11,8 +11,9 @@ import checkers.model.PlayerId;
 /**
  * Represents a single checkers game, and allows it to be played by any kind of
  * Player (human or AI) and displayed by any kind of Display.
- * 
+ *
  * @author Kurt Glastetter
+ * @author Scott Bressler
  */
 public class Game {
 	/**
@@ -75,7 +76,7 @@ public class Game {
 
 	/**
 	 * Constructor initializes game provided a list of players and displays.
-	 * @throws CloneNotSupportedException 
+	 * @throws CloneNotSupportedException
 	 */
 	public Game(EnumMap<PlayerId, Player> players, ArrayList<Display> displays) throws CloneNotSupportedException {
 		this.state = new GameState();
@@ -84,14 +85,14 @@ public class Game {
 		this.players.put(PlayerId.WHITE, (Player) players.get(PlayerId.WHITE).clone());
 		this.players.put(PlayerId.BLACK, (Player) players.get(PlayerId.BLACK).clone());
 		this.displays = displays;
-		
+
 		stateHistory = new Stack<GameState>();
 
 		// Add first state to state history for undo support.
 		stateHistory.push((GameState) state.clone());
-		
+
 		updateDisplays();
-		
+
 		if (CURRENT_GAME == null)
 			CURRENT_GAME = this;
 	}
@@ -104,7 +105,7 @@ public class Game {
 		displays.add(display);
 		display.init(state);
 	}
-	
+
 	/**
 	 * Updates all the registered displays with a new {@link GameState}.
 	 */
@@ -156,31 +157,31 @@ public class Game {
 	}
 
 	/**
-	 * Starts a new Game 
-	 * @throws CloneNotSupportedException 
+	 * Starts a new Game
+	 * @throws CloneNotSupportedException
 	 */
 	public static void newGame() throws CloneNotSupportedException {
 		Game oldGame = currentGame();
 		Game newGame = new Game(oldGame.players, oldGame.displays);
 		CURRENT_GAME = newGame;
 	}
-	
+
 	public void setPlayer(PlayerId playerId, Player player) {
 		players.put(playerId, player);
 	}
-	
+
 	public void setBlackPlayer(Player blackPlayer) {
 		setPlayer(PlayerId.BLACK, blackPlayer);
 	}
-	
+
 	public void setWhitePlayer(Player whitePlayer) {
 		setPlayer(PlayerId.WHITE, whitePlayer);
 	}
-	
+
 	public Player getPlayer(PlayerId playerId) {
 		return players.get(playerId);
 	}
-	
+
 	public Player getBlackPlayer() {
 		return getPlayer(PlayerId.BLACK);
 	}
@@ -188,7 +189,7 @@ public class Game {
 	public Player getWhitePlayer() {
 		return getPlayer(PlayerId.WHITE);
 	}
-	
+
 	/**
 	 * Undo a single move in this Game.
 	 */
@@ -200,7 +201,7 @@ public class Game {
 				display.init(state);
 		}
 	}
-	
+
 	public boolean stateHistoryEmpty() {
 		return stateHistory.size() == 1;
 	}
