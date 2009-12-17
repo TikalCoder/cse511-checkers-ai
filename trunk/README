@@ -35,8 +35,11 @@ play again from there.  Here is an example FEN string:
     "B:W20,26,28,29,31,32:B4,8,10,11,12,15,22."
 
 If you want to watch an AI play against another AI using the GUI, be sure to
-include the "-d gui" option; otherwise the game will play out invisibly, and
-only the resulting metrics will be shown.
+include the "-d gui" option; otherwise the game will play out invisibly.
+
+If you want to see stats for AI players (such as number of searches and
+evaluations), include the "-d aistats-b" and/or "-d aistats-w" options, for
+black and white stats, respectively.
 
 You can also use the "-d ascii" option to have the game print the board after
 every move, which you can refer to help see the history of what positions were
