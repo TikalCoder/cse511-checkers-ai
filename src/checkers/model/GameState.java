@@ -1,6 +1,5 @@
 package checkers.model;
 
-import java.lang.IllegalArgumentException;
 import java.util.ArrayList;
 
 /**
@@ -28,6 +27,11 @@ public class GameState implements Cloneable {
 	* The state of the board, and all the pieces.
 	*/
 	private Board board;
+	
+	/**
+	 * Store the last move made.
+	 */
+	private Move lastMove;
 
 	/**
 	* Constructor initializes to the start of a new game.
@@ -136,6 +140,7 @@ public class GameState implements Cloneable {
 		if (!board.possibleMoves(playerToMove).contains(move))
 			throw new IllegalArgumentException("impossible move " + move);
 		makeMoveUnchecked(move);
+		lastMove = move;
 	}
 
 	public void makeMoveUnchecked(Move move) {
@@ -221,6 +226,25 @@ public class GameState implements Cloneable {
 
 	public int getJumpingPos() {
 		return jumper;
+	}
+	
+	/**
+	 * Returns the last move made in the game.
+	 */
+	public Move getLastMove() {
+		return lastMove;
+	}
+	
+	/**
+	 * Returns the ending position of the last move made in the game.
+	 * 
+	 * @return the ending position of the last move made in the game,
+	 *         or 0 if there was no last move made.
+	 */
+	public int getLastMoveEndPos() {
+		if (lastMove == null)
+			return 0;
+		return lastMove.endPos();
 	}
 
 	@Override

@@ -1,5 +1,8 @@
 package checkers;
 
+import java.awt.BasicStroke;
+import java.awt.Stroke;
+
 /**
  * Global Constants package.
  *
@@ -27,16 +30,27 @@ public final class Constants {
 	public static final int PADDING = 14;
 
 	/**
+	 * Directory of images used in the game.
+	 */
+	public static final String IMG = "img/";
+
+	/**
 	 * Filename of crown image.
 	 */
-	public static final String CROWN_IMG = "crown-smaller.png";
+	public static final String CROWN_IMG = IMG + "crown-small.png";
 	
 	/**
 	 * Filename of spinner image.
 	 * Image generated at http://www.ajaxload.info/ with "Squares"
 	 * spinner - white background and #D33E3E foreground.
 	 */
-	public static final String SPINNER_IMG = "spinner.gif";
+	public static final String SPINNER_IMG = IMG + "spinner.gif";
+	
+	/**
+	 * 3-pixel-wide dashed stroke.
+	 */
+	public static final Stroke DASHED_STROKE = new BasicStroke(3.0f, BasicStroke.CAP_ROUND,
+			BasicStroke.JOIN_ROUND, 10.0f, new float[] {10.0f}, 0.0f);
 
 	/**
 	 * Default negamax search depth.

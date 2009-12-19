@@ -1,9 +1,11 @@
 package checkers.gui;
 
 import static checkers.Constants.CROWN_IMG;
+import static checkers.Constants.DASHED_STROKE;
 import static checkers.Constants.GRID_SIZE;
 import static checkers.Constants.SPINNER_IMG;
 import static checkers.Utils.gridToPosition;
+import static checkers.Utils.positionToGridPoint;
 import static checkers.Utils.validSquare;
 
 import java.awt.BorderLayout;
@@ -205,6 +207,9 @@ public class BoardUI extends JPanel {
 
 		// Draw the board squares
 		drawBoard(g, cellWidth, cellHeight);
+
+		// Highlight the last move made
+		highlightLastMove(g, cellWidth, cellHeight, pieceWidth, pieceHeight, Game.currentGame().getState().getLastMoveEndPos());
 		
 		// Draw the possible moves from the current game state for non-AI players
 		Player currPlayer = Game.currentGame().getPlayerToMove();
@@ -267,7 +272,21 @@ public class BoardUI extends JPanel {
 			g.fill(new Ellipse2D.Double(cellWidth * x + Constants.PADDING / 2.0 - outlinePadding, cellHeight * y + Constants.PADDING / 2.0 - outlinePadding, pieceWidth + 2 * outlinePadding, pieceHeight + 2 * outlinePadding));
 		}
 	}
-
+	
+	/**
+	 * Helper method for paintComponent that highlights the previous move.
+	 * 
+	 * Note: Does not work with current undo functionality.
+	 */
+	private void highlightLastMove(Graphics2D g, int cellWidth, int cellHeight, int pieceWidth, int pieceHeight, int lastMoveEndPos) {
+		Point p = positionToGridPoint(lastMoveEndPos);
+		if (lastMoveEndPos > 0) {
+			g.setColor(new Color(153, 0, 51));
+			final int outlinePadding = 3;
+			g.setStroke(DASHED_STROKE);
+			g.draw(new Ellipse2D.Double(cellWidth * p.getX() + Constants.PADDING / 2.0 - outlinePadding, cellHeight * p.getY() + Constants.PADDING / 2.0 - outlinePadding, pieceWidth + 2 * outlinePadding, pieceHeight + 2 * outlinePadding));
+		}
+	}
 	/**
 	 * Helper method for paintComponent that draws all the pieces on the board.
 	 */
