@@ -1,0 +1,1 @@
+Checkers AI final project for Fall '09 CSE511A, written by Ranjan Khan, Kurt Glastetter, Andrew Duffey, and Scott Bressler.
